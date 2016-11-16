@@ -1,0 +1,193 @@
+\documentclass[11pt,a4paper]{article}
+\renewcommand{\baselinestretch}{1.2}
+\usepackage[top=1.00in, bottom=1.0in, left=1in, right=1in]{geometry} 
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath,latexsym,amssymb,wasysym}
+\usepackage{natbib}
+\usepackage{textcomp}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{multicol}
+
+\setlength\parindent{0pt} % no indents throughout
+\setlength{\bibsep}{0pt plus 0.3ex}
+
+\parskip=5pt
+\pagenumbering{arabic}
+\pagestyle{plain}
+% squeeze space
+\linespread{0.99}
+\addtolength{\itemsep}{-0.05in}
+\usepackage{multicol}
+ 
+\newenvironment{smitemize}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}}
+{\end{itemize}
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[LO]{September 2016}
+\fancyhead[RO]{Heat tolerance}
+
+\newcommand{\Section}[1]{\vspace{-8pt}\section{\hskip -1em.~~#1}\vspace{-3pt}} 
+
+\def\labelitemi{--}
+\parindent=0pt
+
+%% Always look for %%
+%% START HERE %%
+%% to find where to start, durrr %%
+
+\begin{document}
+\bibliographystyle{/Users/Lizzie/Documents/EndnoteRelated/Bibtex/styles/amnat}
+\renewcommand{\refname}{\CHead{}}
+
+\title{Heat tolerance of winegrapes: Experimental deisgn}
+% formerly entitled: Trees in North America: Don't perl!
+% other titles: Mapping the diversity of phenological cues in temperate plant species
+\date{Last updated: 7 September 2016}
+\author{Lizzie, Nicole, Amber, I\~naki, and Andy (Walker)}
+\maketitle
+
+\section{Methods so far...}
+Cuttings taken from RMI vineyard at UC-Davis in December 2015. Growing started in January 2016. They are currently planted in 26 cm diameter pots.
+
+Grapevines were dried down and placed into chambers with moist soils on 27 May 2016. Chambers are set (program called \verb|VITIS.DORM|) to 6$^{\circ}$C and 400 ppm light for 8 hours (day) then 4$^{\circ}$C and no light for the other 16 hours. Humidity is set at 80\%. 
+
+They were then watered again on 13-14 June 2016 (still greenish then) but Kea (greenhouse manager) said they appeared dormant about a week late (should check with her on this).
+
+Plants were removed on 15 August 2016 and put into cool greenhouses (15.5-18$^{\circ}$C during the night, 18-21$^{\circ}$C during the day). They were pruned down to 2-bud spurs and measurements of the buds were taken. Plants were kept moist and monitored 2X/week for possible growth. Greenhouses temperatures after the first week were slowly ramped up to normal operating temperatures (I need to check but I think 10$^{\circ}$C at night 23-28$^{\circ}$C during the day).
+
+\section{What we measure in the greenhouse}
+
+For baseline data we measured the spur size---the size of the two buds and the distance between them also. 
+
+We monitor the plants every 2-3 days recording Eichorn Lorenz stage (for each bud) and soil moisture (for each plant). 
+
+\section{Training and managing growth}
+
+We'll aim to manage plants for relatively equal growth and for one strong cluster per stem following the below:
+
+\begin{itemize}
+\item Make sure all the plants are pruned back to 2 bud spurs. (Done.)
+\item Train the whole shoot, and plan to train the two shoots (with two stakes). Sucker all the other shoots.
+\item Aim for one cluster per shoot; be careful removing the other clusters ... wait until they are separated from the leaves completely then \emph{carefully} pinch them out.
+\item We'll aim to train to some number of leaves perhaps (around 10 or so). Try to keep the number similar across varieties. Remove the leaf and remove the apex (pinch it off once the plant hits desired leaf number) BUT, we'll also keep an eye on shoot length … for really short plants we should allow more leaves probably.
+\end{itemize}
+
+Remember the goal is to manage growth so that the plants---across varieties and across replicates---are as similar as possible. So we may need to adjust the above guidelines to make sure we reach this goal. 
+
+\section{Sulphur \& water}
+
+Plant receive nightly puffs of sulphur in the greenhouse. So far we have not seen mildew so we'll plan to monitor plants closely in the chamber but will only treat if we see mildew. If we see mildew we'll treat with a sulphur spray. \\
+
+Plants will be kept moist, we'll record soil moisture in each pot every time we measure phenology.
+
+\section{Proposed design}
+
+We've designed the experiment to test how high temperatures alter both the \emph{timing} and \emph{duration} of flowering. Ideally with photos we'll also try see how the total flowering is affected (and thus possibly fruitset, as we follow the plants in the greenhouse when they come out of the chambers). 
+
+Plants will go into chambers when they hit EL stage 12 (5 leaves stage). We'll randomly assign which order they go in (e.g., if an individual of one variety hits EL stage 12 then we'll use a randomizor (in \verb|R|, try the \verb|sample| command, which works like this: \verb|sample(c(1:5), 1)| or \verb|sample(c(1,3,5), 1)|) to decide if it goes into treatment 1, 2, 3, 4, or 5 until all the plants for that variety are in a treatment).\\
+
+Plant will stay in chambers until the end of flowering. That is, they will each be removed once they reach 100\% flower development (I realize they may not all flower but I think they will either flower or abort so 100\% would be 100\% flowering + flower aborting). Or they will be removed if they remain at the same stage for 3 measurement times in a row.\\
+
+We'll rotate the treatment of each chamber once per 10 days to remove (as much as possible) chamber effects.\\
+
+\emph{Varieties selected:}\\
+
+The following 20 varieties will go into the experiment:
+\begin{itemize}
+\item Pinot Gris
+\item Tempranillo/Valdepenas
+\item Durif
+\item Carmenere
+\item Sangiovese
+\item Nebbiolo
+\item Merlot
+\item Syrah
+\item Cinsault
+\item Cabernet Sauvignon
+\item Furmint
+\item Chasselas doree
+\item Chardonnay
+\item Gewurtztraminer
+\item Sauvignon blanc
+\item Rkatsiteli
+\item Viognier
+\item Palomino fino
+\item Ugni blanc/Trebbiano
+\item Verdelho
+\end{itemize}
+See \verb|heattol_vars.xlsx| for the most up to date list and the number of reps of each variety that will go into the chambers. We may also consider adding:
+\begin{itemize}
+\item Macabeo
+\item Dolcetto
+\item Zinfandel
+\end{itemize}
+
+
+\emph{Chamber setup:}\\
+
+{\bf Light:} During day (12 hours) lights will be all fluorescent at set to 800$\mumol m^{-2} s^{-1}$.\\
+% From Nicole Merrill on 7 Sept 2016: After a survey of the literature, plants in controlled environments seemed to be exposed to an average of about 700 μmol m-2 s-1 thought the numbers range from 350-2000 μmol m-2 s-1 .  Plants in field conditions tended to be exposed to well over 1000 μmol m-2 s-1.  I think 700-800 μmol m-2 s-1 would make sense, but wanted to see what you thought.  
+
+{\bf Humidity:} Humidity will be set at 80\%.\\
+
+{\bf Photoperiod:} Based on a literature review of 13 studies, of which 5 were using ambient conditions (i.e., no control): 5 used 12 hours, 2 used 15 hours and 1 used 18 hours. So we'll do 12 hour days. It makes most sense for me given that we're replicating the earlier part of the season and it makes the math easier too. \\
+
+{\bf CO$_{2}$:} We'll set daytime maximum $CO_{2}$ to 400ppm and nightime maximum to 600ppm (as $CO_{2}$ can double naturally overnight due to plant respiration). \\ % http://joannenova.com.au/2013/09/plants-suck-half-the-co2-out-of-the-air-around-them-before-lunchtime-each-day/
+
+{\bf Temperatures:} Based on the literature review of heat tolerance studies of winegrapes we found studies where temperatures ranged from 10-50$^{\circ}$C (I know!) but for controlled studies the common range was 20-40$^{\circ}$C with many experiments exposing the plants to these temperatures for 7-18 days (often at each stage). So I think we are covering the general range. Also---considering other crops, Porter \& Gawith (1999, \emph{European Journal of Agronomy}) found that 31$^{\circ}$C was the max for wheat and Parent \& Tardieu (2012, \emph{New Phytologist}, this is a super cool paper by the way) found a range of optima temperatures from 21.6$^{\circ}$C-32.7$^{\circ}$C depending on the species. 
+
+Based on the same literature review of winegrapes only we found the difference in daily amplitude of temperature (i.e., night versus day temperatures) is usually about 10$^{\circ}$C. It varies though from a high of 20-35$^{\circ}$C in some studies to 5 or 6 in others. These lower amplitudes generally come from later in the season (for those studies using ambient conditions) or when people have higher temperature treatments. Since our chambers max out at 40$^{\circ}$C for us to do a 10$^{\circ}$C amplitude means the highest temperature we'll get is 35$^{\circ}$C. Thus I think a 6$^{\circ}$C amplitude would be better. My suggested temperatures are below (note I previously considered 4$^{\circ}$C but now I think that seems too low):
+
+\begin{itemize}
+\item Mean of 20$^{\circ}$C -- 17/23$^{\circ}$C
+\item Mean of 26$^{\circ}$C -- 23/29$^{\circ}$C
+\item Mean of 30$^{\circ}$C -- 27/33$^{\circ}$C
+\item Mean of 34$^{\circ}$C -- 31/37$^{\circ}$C
+\item Mean of 37$^{\circ}$C -- 34/40$^{\circ}$C
+\end{itemize}
+
+Again, we need to rotate the treatments {\bf across} the chambers every 10 days so as to avoid any chamber effects. 
+
+\emph{What we'll measure in the chambers}
+
+Here's the hoped for plan to measure every 2-3 days ... 
+
+\begin{itemize}
+\item Shoot length
+\item Leaf number
+\item \% flowering via photos and visual estimates at the time of observation
+\item Count caps via bags (counting each time we remove the bag)
+\item Soil moisture for each pot
+\end{itemize}
+
+Possibly measure photosynthesis once a week? That's a big maybe.
+
+\section{Miscellaneous}
+\begin{enumerate}
+\item Keep photoperiod in greenhouse at 12 hours once we remove grapes.
+\end{enumerate}
+
+%\section{References}
+%\bibliography{/Users/Lizzie/Documents/EndnoteRelated/Bibtex/LizzieMainMinimal}
+
+\end{document}
+
+
+\section{Constraints on experimental design}
+\begin{itemize}
+\item Chamber space and number: 36 dormant plants squeeze intp one regular chamber which is 19.8 or 20.4 ft of growth area; we have four of these chambers and on walk-in. Walk-in chamber has 38 ft, but remember to leave space to walk in and need to use it as a rep so best to plan on it being 20 ft total.
+\item Varieties collected and grown. We have about 50 varieties growing, but not many reps of any of them (I realize this is not ideal, and while it isn't what I wanted, it's what we have). We don'��t really have more than 8 reps for any one variety which limits how many reps of any actual treatment we could do. 
+\item The chambers only go up to 40$^{\circ}$C (though we could see what happens if we set them higher ...).
+\end{itemize}
+
+How moist should we keep soils in chambers?
+
+Sulphur

@@ -1,0 +1,148 @@
+1 July 2016
+Heat tolerance experiment
+
+See also:
+heattol_litreview.rtf
+heattol_litreview.xlsx or .csv
+
+****************
+TO DO:
+- Update lit review and send to Inaki and Amber with suggested amplitudes
+- Make sure Nicole records: soil moisture, stem length, EL stage, photos of clusters 
+
+Add where we got ripening and table info
+- Got data from Adelaide_vars_traits.xlsx
+- Also from UniqueVars_Vitis.xlsx (Davis vars work)
+
+
+****************
+Methods:
+Cuttings taken from RMI at UC-Davis in December 2015.
+Grapevines were dried down and placed into chambers with moist soils on 27 May.
+They were then watered again on 13-14 June 2016 (still greenish then) but Kea said they appeared dormant about a week late (should check with her on this).
+
+****************
+25 July 2016
+Notes from chatting with Amber Parker and Inaki today
+
+(Note that some notes went directly into experimental design tex file)
+Inaki is away on vacation from 29 July to 29 August
+
+We discussed:
+- not doing budburst
+- maybe flowering or veraison
+- BB-flowering temps that are normal are 20-28; so 25 is okay, but sounds high
+- flowering to veraison temps that are normal are 30-40 C.
+- Inaki suggested looking at same temps but different amplitudes
+- Amber suggested holding nighttime temp same but setting different maxes to get different means (I was less excited about this since climate change warms nights more than days)
+
+Decision on stage to study and how:
+- We will work on flowering (and maybe later we will work on veraison). 
+- This will let us also answer questions about how flowering affects fruitset (so we must continue to monitor after treatments … in greenhouse? We did not discuss when the plants come out of the chambers).
+- Plan to use priority varieties for flowering.
+- Set in chamber at EL Stage 12 (even if it means an individual from one variety goes in ahead or after rest of variety individuals).
+- EL stage 12 is 5 leaves separated
+
+- Inaki suggested do some number of vars in all five chambers, add a few more vars that go in the two extreme temperature chambers so that we can do a species-level model.
+
+- Possible MEAN temps: 20, 26, 30, 34, 38
+- Inaki suggested we have a below optimum temp, an optimum temp and 3 above. He said models say optimum is around 28-30 … but we suspect 26-28 might be more realistic optimum maybe?
+
+
+- Plan to sucker and prune to try to keep carbo load equivalent across varieties?? Need to ask Andy Walker too.
+
+- Need protocol to COUNT flowers from camera; download ClimWine: J. Tardaguila, Spain, New plant phenotyping technologies in a changing climate, session 3-2. https://www6.inra.fr/laccave/ClimWine2016. Also he presented at GiESCO.
+
+
+
+****************
+
+Random thoughts:
+- Elisa recommends measuring plant height (stretch out plant and measure)
+- Inaki recommends counting the number of leaves — phylocrhon (Iñaki can send refs) 
+- Measure photosynthesis and respiration?
+- Iñaki recommends doing 10 vars 
+- Valla-aires (??) paper on WUE (can Iñaki send, Madroño & Flexas)
+
+****************
+
+
+****************
+Varieties we have been focusing on in projections (and # we have for experiment):
+
+Chasselas - 7
+Chardonnay - 7
+Pinot Noir - ?? (not sure what that means)
+Sauvignon Blanc - 7 
+Riesling - 0
+Syrah - 8
+Ugni blanc/Trebbiano - 4-5
+Merlot - 6
+Cabernet Sauvignon - 7
+Grenache - 0
+Mourvedre - 0
+****************
+
+Design:
+
+36 plants fit in one regular chamber which is 19.8 or 20.4 ft of growth area (with one level of plants)
+Walk in chamber has 38 ft, but remember to leave space to walk in and need to use it as a rep so best to plan on it being 20 ft too…
+
+5 chambers (incl. room) 
+
+So …. estimate 34 plants/chamber!
+
+We don’t really have more than 8 reps for any one variety which limits how many reps of any actual treatment we could do.
+
+Best idea (to me) is to aim for:
+5 chambers - temps for each chamber:
+
+30/25 C (same below)
+30/25 C (same above)
+34/29 C
+38/33 C
+44/39 C (aiming for super high, but maybe 42 would be better?)
+
+For vars with 7-8 reps:
+2 reps per variety per 3 main temps (30, 34, 38 C) and at least 1 rep at 44 C.
+We can pick 34/2 (17) varieties for this treatment.
+
+For vars with less reps:
+We can pick an addition 12-14 varieties to put into the 30 C and 44 C chambers. 
+
+Should we have a lower lowest temperature (25/20 C or something aiming for sort of ideal temp)?
+How moist should we keep soils in chambers?
+When should plants go into chambers? At a certain date or as each meets a certain phenological stage?
+
+Vars for 4 treatments:
+
+Barbera
+Cabernet Sauvignon - 7
+Cabernet franc
+Chasselas doree - 7
+Chardonnay - 7 (of which 2 are small)
+Dolcetto
+Durif (Petite Sirah)
+Furmint
+Gewurtztraminer
+Merlot - 6
+Pinot Noir - ?? (not sure what that means yet)
+Rotgipfler
+Sangiovese (7 of which 1 is small)
+Sauvignon Blanc - 7 
+Syrah - 8
+Szagos feher (7 of which 2 are small)
+Schiopettino
+Zinfandel/Primitivo (6 only)
+
+Other vars for which we have enough reps for 4 treatments:
+DolcettoDurifGamay NoirPinot  Meunier (7 of which 2 are small)Pinot grisRuby CabernetSauvignon blanc (6 only)CarmenereCounoiseCarnelianMarsanne
+
+
+Vars for which we have enough for 2 treatments (need to pick 12-14): 
+
+Ugni blanc/Trebbiano - 4-5
+RkatsiteliAuxerroisCalzinCinsaultCoda di VolpePinotageTocai FriulanoUgni blanc/TrebbianoValdepenasAlicante BouchetAligoteEarly MuscatGruner VeltinerMacabeoMelonMerlotMorrastelNebbioloRefoscoRoussanneRuby SeedlessTempranilloVerdelho
+
+
+

@@ -1,0 +1,53 @@
+Row,Plant,Variety,NumReps,NumWeakInds,Notes,NumReps_Good,AP_Selection,AP_Notes
+12,1,Aligote,6,0,,6,3,Well represented 
+12,3,Auxerrois,5,1,one weak,4,N,
+12,5,Chardonnay,7,2,two very small/at bb,5,12,Based on most planted varieties
+12,7,Gamay Noir,7,0,,7,4,Well represented 
+12,10,Melon,6,0,,6,N,
+13,3,Pinot gris,9,0,,9,16,"Well represented in terms of planting, realatively early for flowering and veraison although considered a later varietal. One of the Pinot family is also included by chosing this variety"
+13,5,Pinot  Meunier,7,2,two very small,5,5,Early red variety
+13,8,Pinot Noir,???,??,,#VALUE!,(Y),Can collect NZ and see if we can run this experiment?
+13,9,Cabernet franc,7,0,,7,16,"Middle flowering and veraison, well represented in terms of planted area"
+14,1,Cabernet Sauvignon,8,1,one no bb,7,12,Based on most planted varieties
+14,3,Carmenere,8,0,,8,6,Interesting variety internationally and quality
+15,3,Merlot,6,0,,6,12,Based on most planted varieties
+16,1,Sauvignon blanc,7,1,one looks dead,6,12,Based on most planted varieties
+17,2,Ugni blanc/Trebbiano,5,1,one very small plant,4,12,Based on most planted varieties
+17,3,Alicante Bouchet,6,0,,6,10,Well represented (but maybe less represented)
+18,1,Cinsault,5,0,,5,16,"Well represented in terms of planting, middle for flowering and veraison although considered a later varietal"
+18,3,Counoise,8,0,,8,N,
+18,5,Durif,7,0,,7,N,
+18,7,Marsanne,9,0,,9,1,Late white varietal
+19,7,Roussanne,6,6,three no bb yet,0,2,Early flowering and late veraison white variety
+19,9,Syrah,8,0,,8,12,Based on most planted varieties
+20,2,Valdepenas,5,0,,5,N,
+20,4,Viognier,7,0,,7,12,Based on most planted varieties
+20,5,Gewurtztraminer,8,2,two of them very tiny,6,7,Early white
+21,7,Chasselas doree,7,0,,7,12,Based on most planted varieties
+21,9,Gruner Veltiner,6,0,,6,N,
+22,1,Rotgipfler,7,0,,7,N,
+22,7,Furmint,7,0,,7,N,
+22,9,Durif,8,0,,8,N,
+23,7,Szagos feher,7,2,two tiny plants,5,N,
+24,1,Barbera,8,1,one very small plant,7,9,Well represented in terms of planting
+24,9,Dolcetto,7,0,,7,N,
+25,9,Nebbiolo,6,2,two tiny plants,4,16,"""quality"" wine varietal, also interesting in that it is early flowering and late veraison (could be interesting to roll out a veraison experiment in the future)"
+26,6,Sangiovese,7,1,one tiny plant,6,12,Based on most planted varieties
+27,1,Coda di Volpe,5,0,,5,N,
+28,7,Refosco,6,0,,6,N,
+29,3,Schiopettino,8,0,,8,N,
+29,7,Tocai Friulano,5,0,,5,N,
+32,3,Zinfandel/Primitivo,7,1,one with no bb yet,6,N,
+32,7,Pinotage,5,0,,5,8,Late varietal
+32,5,Rkatsiteli,4,0,,4,N,
+34,1,Macabeo,6,0,,6,N,
+34,5,Morrastel,6,2,two of plants look diseased,4,12,Not enough reps but should include 
+34,7,Palomino,4,2,two were planted upside down,2,N,
+35,3,Tempranillo,6,1,one just breaking bud,5,12,Based on most planted varieties
+38,7,Verdelho,6,0,,6,12,Based on most planted varieties
+39,3,Calzin,5,0,,5,N,
+39,7,Carnelian,9,1,two very small,8,N,
+40,9,Ruby Cabernet,7,0,,7,N,
+42,7,Early Muscat,6,0,,6,N,
+43,3,July Muscat,4,3,"three tiny, one without roots",1,N,
+44,1,Ruby Seedless,6,0,,6,N,
