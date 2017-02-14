@@ -11,7 +11,9 @@ options(stringsAsFactors = FALSE)
 library(ggplot2)
 require(plyr); require(dplyr); require(tidyr)
 
-## set working directory
+# Set working directory: 
+if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
+} else
 setwd("/Users/Nicole/Desktop/Wolkovich/analysis/")
 
 ## get data
@@ -28,7 +30,6 @@ ids.sm <- subset(ids, select=c("RowNum", "Num", "Var"))
 ## join dfs
 dats <- join(dater, ids.sm, by=c("RowNum", "Num"))
 nsdats <- join(nodespurdater, ids.sm, by=c("RowNum", "Num")) 
-
 
 ## format date (see http://www.statmethods.net/input/dates.html)
 dats$Date <- as.Date(dater$Date, format="%m/%d/%Y")
@@ -101,6 +102,40 @@ ggplot(ds.om, aes(days, EL_mean, color=Var, group=RowNumNumRep)) + geom_point(sh
 
 ggplot(ds.om, aes(days, EL_mean, color=Var, group=RowNumNumRep)) + geom_point(shape=1) + geom_line(aes(linetype=diam_cat)) + labs(x = "Time (days)", y = "EL Stage")
 
+# alternative version of one of the above plots
+ggplot(ds.om, aes(days, EL_mean, color=sm_cat)) +
+    geom_point() +
+    facet_wrap(~Var)
+    geom_line() + labs(x = "Time (days)", y = "EL Stage")
 
 
+################
+## To discuss ##
+################
 
+
+##
+## Working on getting estimates of day each ind reached a certain stage
+source("source/estimatephen.R") # more notes in this file, check it out!
+bbday <- get_pheno_est(ds.om, "budburst", 5, NA) # should double-check what we call budburst with EL paper
+
+## get mean bbday by var (this is not the most efficient way!)
+# and SD and SE (std deviation and error, respectively)
+bb.mean <-
+      ddply(bbday, c("Var"), summarise,
+      mean.bb = mean(days),
+      sd = sd(days),
+      sem = sd(days)/sqrt(length(days)))
+
+# now merge this back in
+bbday.full <- merge(bb.mean, bbday, by="Var", all.y=TRUE)
+
+# We should figure out how to order this plot by the bbday of each var ... figure out how to suppress the legend
+pdf(file="graphs/bbday_byvar.pdf")
+ggplot(bbday, aes(days, Var, color=Var)) +
+    geom_point()
+dev.off()
+
+# Colors not the best ... need to change to rainbow or heat or such, I think
+ggplot(bbday.full, aes(days, Var, color=mean.bb)) +
+    geom_point()
