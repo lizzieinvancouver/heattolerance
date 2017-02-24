@@ -14,7 +14,8 @@ library(ggplot2)
 require(plyr); require(dplyr); require(tidyr) # data formatting
 
 ## set working directory
-setwd("~/GitHub/heattolerance/analysis/")
+setwd("~/GitHub/heattolerance/analyses/")
+# setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses")
 
 ## grab the data and merge them
 dater <- read.csv("input/phenmoist_grapes2016.csv", header=TRUE)
@@ -72,6 +73,8 @@ par(mfcol=c(3, 4), mar = c(3,3,1,0.5))
 for(var in seq_along(cepages)){ # var <- 1
   
   dx <- subset(d, Var==cepages[var])
+    unique(dx$days) # need to switch to numeric for code to run
+    dx$days <- as.numeric(dx$days)
   
   counter = 1
   for(i in sort(as.character((unique(dx$treatcode))))){
