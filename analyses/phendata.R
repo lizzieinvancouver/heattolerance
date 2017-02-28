@@ -36,6 +36,7 @@ d <- join(dat, ids.sm, by=c("RowNum", "Num"))
 d$date <- as.Date(dat$Date, format="%m/%d/%Y")
 d$days <- as.numeric(format(d$date, "%j"))-228 # 228 is around 15 August
 
+## adjusting date to correct for not being able to sample all plants in one day
 d$days[d$days == "8"] <- "7"
 d$days[d$days == "15"] <- "14"
 d$days[d$days == "18"] <- "17"
