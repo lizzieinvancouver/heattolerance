@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ##Started 19 Feb 2016##
 ##By Nicole ##
 
@@ -86,3 +87,6 @@ ggplot(chds, aes(days, fnum_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
 geom_line() + labs(x = "Time (days)", y = "Stem Length")
+=======
+##Started 19 Feb 2016 
+>>>>>>> Stashed changes

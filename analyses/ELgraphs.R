@@ -80,7 +80,7 @@ nsdats <- within(nsdats, {
   ndsz_cat[ndsz_mean>5] <- "5.00-6.00cm"
 })
 
-##NOT YET subset nsdats
+##subset nsdats
 ns <- subset(nsdats, select=c("RowNumNumRep", "diam_cat", "ndsz_cat"))
 
 ## join ns and dats
