@@ -27,6 +27,11 @@ names(ids)[names(ids)=="Variety"] <- "Var"
 names(chambdater)[names(chambdater)=="Treatment"] <- "Treat"
 ids.sm <- subset(ids, select=c("RowNum", "Num", "Var"))
 
+# change a few things to numeric
+unique(chambdater$stem1_percflow) # what does the hypen mean? Can we change to 0 or such?!!
+# quick fix for now ... but we should correct the above
+chambdater$stem1_percflow <- as.numeric(chambdater$stem1_percflow)
+
 ## join dfs
 chambdats <- join(chambdater, ids.sm, by=c("RowNum", "Num"))
 
@@ -67,17 +72,17 @@ ggplot(chds, aes(days, length_mean, color=Var, group=RowNumNumRep)) + geom_point
 ##plots by var
 ggplot(chds, aes(days, length_mean, color=Treat)) +
   geom_point() +
-  facet_wrap(~Var)
+  facet_wrap(~Var) +
 geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
 ##plots length by treat
 ggplot(chds, aes(days, length_mean, color=Var)) +
   geom_point() +
-  facet_wrap(~Treat)
+  facet_wrap(~Treat) +
 geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
 ##plots leafnum by treat
 ggplot(chds, aes(days, fnum_mean, color=Var)) +
   geom_point() +
-  facet_wrap(~Treat)
+  facet_wrap(~Treat) +
 geom_line() + labs(x = "Time (days)", y = "Stem Length")
