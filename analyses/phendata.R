@@ -38,8 +38,8 @@ d <- join(dat, ids.sm, by=c("RowNum", "Num"))
 d$date <- as.Date(dat$Date, format="%m/%d/%Y")
 d$days <- as.numeric(format(d$date, "%j"))-228 # 228 is around 15 August
 
-<<<<<<< HEAD
 # make a new column for days adjusted to sampling dateset
+# this correct for the fact that not all of the plants could be sampled in one day, so the code was calculating averages per day, and if the second day plants were not developing as quickly as the first day plants, it would look like the average was dropping
 d$sampleday <- d$days
 d$sampleday[d$sampleday == 8] <- 7
 d$sampleday[d$sampleday == 15] <- 14
@@ -54,22 +54,6 @@ d$sampleday[d$sampleday == 80] <- 79
 d$sampleday[d$sampleday == 87] <- 86
 d$sampleday[d$sampleday == 88] <- 86
 d$sampleday[d$sampleday == 94] <- 93
-=======
-## adjusting date to correct for not being able to sample all plants in one day
-d$days[d$days == "8"] <- "7"
-d$days[d$days == "15"] <- "14"
-d$days[d$days == "18"] <- "17"
-d$days[d$days == "22"] <- "21"
-d$days[d$days == "25"] <- "24"
-d$days[d$days == "36"] <- "35"
-d$days[d$days == "66"] <- "65"
-d$days[d$days == "67"] <- "65"
-d$days[d$days == "74"] <- "73"
-d$days[d$days == "80"] <- "79"
-d$days[d$days == "87"] <- "86"
-d$days[d$days == "88"] <- "86"
-d$days[d$days == "94"] <- "93"
->>>>>>> 196e45130965d279ab163c8c3e40b4aa66668579
 
 # for now add the same treatment code to all, change to real treatments someday
 d$treatcode <- rep("notreat", nrow(d))
@@ -82,8 +66,7 @@ d$EL_mean <- rowMeans(d[,6:7], na.rm=TRUE) # careful! Relies on column numbers
 ##
 ##
 
-
-plot(EL_stem1~date, data=d)
+# plot(EL_stem1~date, data=d)
 
 ##
 colz <- c("darkred","mediumturquoise") # need to adjust how to use lcol
