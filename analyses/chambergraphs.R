@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 ##Started 19 Feb 2016##
 ##By Nicole ##
 
@@ -13,7 +12,7 @@ library(ggplot2)
 require(plyr); require(dplyr); require(tidyr)
 
 # Set working directory: 
-if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
+if(length(grep("Lizzie", getwd())>0)) {setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
 } else
   setwd("/Users/Nicole/Desktop/Wolkovich/analysis_wolk/")
 
