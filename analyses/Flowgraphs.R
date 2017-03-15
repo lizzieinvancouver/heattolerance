@@ -23,7 +23,7 @@ require(plyr); require(dplyr); require(tidyr)
 # Set working directory: 
 if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
 } else
-setwd("/Users/Nicole/Desktop/Wolkovich/analysis/")
+setwd("/Users/Nicole/GitHub/heattolerance/analysis/")
 
 ## get data
 dater <- read.csv("input/chamberobservations_grapes2016.csv", header=TRUE)
