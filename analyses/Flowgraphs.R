@@ -107,8 +107,11 @@ for(i in seq_along(unique.ind)){ # i = 1
 ## thinking about getting change in stem length (or n leaves) ... need those counts on the min(days)
 # So, skip datsummary and do all the work inside the loop!
 # Inside the loop (column names not quite correct!):
-# leaves_on_chamberday1 <- dat$stem1_leafnum[which(dat$days==min(dat$days))]
-# then adjust column names and follow as above (e.g., adjust dat$stem1_vFper[which(dat$RowNumNumRep==indhere)] <-
+# Step 1: Subset down to the data for that individual
+# subby <- dat[which(dat$RowNumNumRep==indhere),] 
+# Step 2: Get the value you want
+# leaves_on_chamberday1 <- subby$stem1_leafnum[which(subby$days==min(subby$days))]
+# Step 3: then adjust column names and follow as above (e.g., adjust dat$stem1_vFper[which(dat$RowNumNumRep==indhere)] <-
        # dat$stem1_vFcount[which(dat$RowNumNumRep==indhere)]/max1.hereis
 ## end of thinking ... 
 
