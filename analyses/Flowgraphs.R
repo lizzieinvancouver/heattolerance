@@ -68,6 +68,36 @@ dat$bagbuds <- rowSums(dat[,11:12], na.rm=TRUE) # need to deal with numeric
 head(dat[,20:21])
 head(dat[,22:23])
 
+##
+# get % total flowering from vFcount
+# first, find out max flower count per individual plant
+dat$stem1_vFcount <- as.numeric(dat$stem1_vFcount)
+dat$stem2_vFcount <- as.numeric(dat$stem2_vFcount)
+
+datsummary <-
+      ddply(dat, c("RowNum", "Num", "Rep", "RowNumNumRep", "Treatment"), summarise,
+      max.stem1_vFcount= max(stem1_vFcount, na.rm=TRUE),
+      max.stem2_vFcount= max(stem2_vFcount, na.rm=TRUE))
+
+# next, step through data by each indiviual and divide by this max
+unique.ind <- unique(dat$RowNumNumRep)
+
+dat$stem1_vFper <- NA
+dat$stem2_vFper <- NA
+
+for(i in seq_along(unique.ind)){
+    indhere <- unique.ind[i]
+    # indhere <- "16.1.R3" # example of one with a couple values ... 
+    max1.hereis <- datsummary$max.stem1_vFcount[which(datsummary$RowNumNumRep==indhere)]
+    dat$stem1_vFper[which(dat$RowNumNumRep==indhere)] <-
+        dat$stem1_vFcount[which(dat$RowNumNumRep==indhere)]/max1.hereis
+    max2.hereis <- datsummary$max.stem2_vFcount[which(datsummary$RowNumNumRep==indhere)]
+    dat$stem2_vFper[which(dat$RowNumNumRep==indhere)] <-
+        dat$stem2_vFcount[which(dat$RowNumNumRep==indhere)]/max2.hereis
+    }
+## end get total for vFcount ... but general method above would work for vFexpect too
+## or for anything where we want to compare to some one value across individuals
+
 ## and values across methods?
 # should add plots here that compare VitisFlower estimates to our counts ...
 

@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 ##Started 19 Feb 2016##
 ##By Nicole ##
 
@@ -13,7 +12,7 @@ library(ggplot2)
 require(plyr); require(dplyr); require(tidyr)
 
 # Set working directory: 
-if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
+if(length(grep("Lizzie", getwd())>0)) {setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
 } else
   setwd("/Users/Nicole/Desktop/Wolkovich/analysis_wolk/")
 
@@ -29,8 +28,9 @@ names(chambdater)[names(chambdater)=="Treatment"] <- "Treat"
 ids.sm <- subset(ids, select=c("RowNum", "Num", "Var"))
 
 # change a few things to numeric
-unique(chambdater$stem1_percflow) # what does the hypen mean? Can we change to 0 or such?!!
-# quick fix for now ... but we should correct the above
+unique(chambdater$stem1_percflow) # hypens and no entry mean zero, so update
+chambdater$stem1_percflow[which(chambdater$stem1_percflow=="-")] <- 0
+chambdater$stem1_percflow[which(chambdater$stem1_percflow=="")] <- 0
 chambdater$stem1_percflow <- as.numeric(chambdater$stem1_percflow)
 
 ## join dfs
@@ -74,19 +74,16 @@ ggplot(chds, aes(days, length_mean, color=Var, group=RowNumNumRep)) + geom_point
 ggplot(chds, aes(days, length_mean, color=Treat)) +
   geom_point() +
   facet_wrap(~Var) +
-geom_line() + labs(x = "Time (days)", y = "Stem Length")
+  geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
 ##plots length by treat
 ggplot(chds, aes(days, length_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
-geom_line() + labs(x = "Time (days)", y = "Stem Length")
+  geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
 ##plots leafnum by treat
 ggplot(chds, aes(days, fnum_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
-geom_line() + labs(x = "Time (days)", y = "Stem Length")
-=======
-##Started 19 Feb 2016 
->>>>>>> Stashed changes
+  geom_line() + labs(x = "Time (days)", y = "Stem Length")

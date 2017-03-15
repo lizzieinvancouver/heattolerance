@@ -14,14 +14,15 @@ library(ggplot2)
 require(plyr); require(dplyr); require(tidyr) # data formatting
 
 ## set working directory
+if(length(grep("Lizzie", getwd())>0)) {setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses")
+}else 
 setwd("~/GitHub/heattolerance/analyses/")
-# setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses")
 
 ## grab the data and merge them
 dater <- read.csv("input/phenmoist_grapes2016.csv", header=TRUE)
 ids <- read.csv("input/VitisExpReps2.csv", header=TRUE)
 
-dat <- subset(dater, is.na(Date)==FALSE)
+dat <- subset(dater, is.na(Date)==FALSE & Date!="")
 
 # make some changes for the merge
 names(ids)[names(ids)=="Row"] <- "RowNum"
@@ -33,35 +34,39 @@ ids.sm <- subset(ids, select=c("RowNum", "Num", "Var"))
 d <- join(dat, ids.sm, by=c("RowNum", "Num")) 
 
 # format date (see http://www.statmethods.net/input/dates.html)
+# And make it so we set day 0 to around the start of the experiment
 d$date <- as.Date(dat$Date, format="%m/%d/%Y")
 d$days <- as.numeric(format(d$date, "%j"))-228 # 228 is around 15 August
 
-## adjusting date to correct for not being able to sample all plants in one day
-d$days[d$days == "8"] <- "7"
-d$days[d$days == "15"] <- "14"
-d$days[d$days == "18"] <- "17"
-d$days[d$days == "22"] <- "21"
-d$days[d$days == "25"] <- "24"
-d$days[d$days == "36"] <- "35"
-d$days[d$days == "66"] <- "65"
-d$days[d$days == "67"] <- "65"
-d$days[d$days == "74"] <- "73"
-d$days[d$days == "80"] <- "79"
-d$days[d$days == "87"] <- "86"
-d$days[d$days == "88"] <- "86"
-d$days[d$days == "94"] <- "93"
+# make a new column for days adjusted to sampling dateset
+# this correct for the fact that not all of the plants could be sampled in one day, so the code was calculating averages per day, and if the second day plants were not developing as quickly as the first day plants, it would look like the average was dropping
+d$sampleday <- d$days
+d$sampleday[d$sampleday == 8] <- 7
+d$sampleday[d$sampleday == 15] <- 14
+d$sampleday[d$sampleday == 18] <- 17
+d$sampleday[d$sampleday == 22] <- 21
+d$sampleday[d$sampleday == 25] <- 24
+d$sampleday[d$sampleday == 36] <- 35
+d$sampleday[d$sampleday == 66] <- 65
+d$sampleday[d$sampleday == 67] <- 65
+d$sampleday[d$sampleday == 74] <- 73
+d$sampleday[d$sampleday == 80] <- 79
+d$sampleday[d$sampleday == 87] <- 86
+d$sampleday[d$sampleday == 88] <- 86
+d$sampleday[d$sampleday == 94] <- 93
 
 # for now add the same treatment code to all, change to real treatments someday
 d$treatcode <- rep("notreat", nrow(d))
 
 # mean phen per plant
-d$EL_mean <- rowMeans(d[,7:8], na.rm=TRUE) # careful! Relies on column numbers
+print("Make sure the below is the two EL_stem columns!")
+head(d[,6:7])
+d$EL_mean <- rowMeans(d[,6:7], na.rm=TRUE) # careful! Relies on column numbers
 
 ##
 ##
 
-
-plot(EL_stem1~date, data=d)
+# plot(EL_stem1~date, data=d)
 
 ##
 colz <- c("darkred","mediumturquoise") # need to adjust how to use lcol
@@ -74,13 +79,13 @@ par(mfcol=c(3, 4), mar = c(3,3,1,0.5))
 for(var in seq_along(cepages)){ # var <- 1
   
   dx <- subset(d, Var==cepages[var])
-    unique(dx$days) # need to switch to numeric for code to run
-    dx$days <- as.numeric(dx$days)
+    unique(dx$sampleday) # need to switch to numeric for code to run
+    dx$sampleday <- as.numeric(dx$sampleday)
   
   counter = 1
   for(i in sort(as.character((unique(dx$treatcode))))){
     
-    dseq = seq(0, max(dx$days))
+    dseq = seq(0, max(dx$sampleday))
     # Will need to up above 10 when stages get higher!
     plot(dseq, seq(0, 30, length=length(dseq)), type = "n", 
          ylab = "EL Stage",
@@ -89,11 +94,11 @@ for(var in seq_along(cepages)){ # var <- 1
     legend("topleft", bty="n",i, cex = 0.85, inset = 0)
     xx <- dx[dx$treatcode == i,]
     # calculate mean response by date
-    xt <- tapply(pmax(xx$EL_mean, na.rm=TRUE), list(xx$days), mean, na.rm=TRUE)
+    xt <- tapply(pmax(xx$EL_mean, na.rm=TRUE), list(xx$sampleday), mean, na.rm=TRUE)
     
     for(j in unique(xx$Rep)){ 
       xj <- xx[xx$Rep == j,]
-      lines(xj$days, xj$EL_mean, col = colz[2])
+      lines(xj$sampleday, xj$EL_mean, col = colz[2])
     }
     lines(rownames(xt), xt[], col = colz[1])
     

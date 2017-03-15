@@ -2,6 +2,10 @@
 * .Rapp.history
 zarchive/
 emails/
+<<<<<<< HEAD
 
 
 analyses/.Rhistory
+=======
+analyses/.Rapp.history
+>>>>>>> origin/master
