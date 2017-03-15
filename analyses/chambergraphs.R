@@ -14,7 +14,7 @@ require(plyr); require(dplyr); require(tidyr)
 # Set working directory: 
 if(length(grep("Lizzie", getwd())>0)) {setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
 } else
-  setwd("/Users/Nicole/Desktop/Wolkovich/analysis_wolk/")
+  setwd("/Users/Nicole/GotHub/heattolerance/analysis/")
 
 ## get data
 chambdater <- read.csv("input/chamberobservations_grapes2016.csv", header=TRUE)
@@ -32,6 +32,12 @@ unique(chambdater$stem1_percflow) # hypens and no entry mean zero, so update
 chambdater$stem1_percflow[which(chambdater$stem1_percflow=="-")] <- 0
 chambdater$stem1_percflow[which(chambdater$stem1_percflow=="")] <- 0
 chambdater$stem1_percflow <- as.numeric(chambdater$stem1_percflow)
+chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="")] <- 0
+chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="-")] <- 0
+chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="NA")] <- 0
+chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="")] <- 0
+chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="-")] <- 0
+chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="NA")] <- 0
 
 ## join dfs
 chambdats <- join(chambdater, ids.sm, by=c("RowNum", "Num"))
@@ -42,9 +48,10 @@ chambdats$days <- as.numeric(format(chambdats$Date, "%j"))-228 # 245 is around t
 
 ##get means
 chambdats$length_mean <- rowMeans(chambdats[,7:8], na.rm=TRUE)
-chambdats$fnum_mean <- rowMeans(chambdats[,9:10], na.rm=TRUE)
+chambdats$lfnum_mean <- rowMeans(chambdats[,9:10], na.rm=TRUE)
 chambdats$sm_mean <- rowMeans(chambdats[15:17], na.rm=TRUE)
 chambdats$pf_mean <- rowMeans(chambdats[,11:12], na.rm=TRUE)
+chambdats$bfall_mean <- rowMeans(chambdats[,18:19], na.rm=TRUE)
 
 ## categorize by soil moisture
 chambdats <- within(chambdats, {
@@ -63,12 +70,16 @@ chds <- subset(chambdats, select=c(
   "days",
   "sm_cat",
   "length_mean",
-  "fnum_mean",
+  "lfnum_mean",
   "pf_mean",
+  "bfall_mean",
   "Treat"))
 
 ##super basic plot
-ggplot(chds, aes(days, length_mean, color=Var, group=RowNumNumRep)) + geom_point(aes(size=sm_cat), shape=1) + geom_line() + labs(x = "Time (days)", y = "Stem Length")
+ggplot(chds, aes(days, length_mean, color=Var, group=RowNumNumRep)) + 
+  geom_point(aes(size=sm_cat), shape=1) + 
+  geom_line() + 
+  labs(x = "Time (days)", y = "Stem Length")
 
 ##plots by var
 ggplot(chds, aes(days, length_mean, color=Treat)) +
@@ -83,7 +94,19 @@ ggplot(chds, aes(days, length_mean, color=Var)) +
   geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
 ##plots leafnum by treat
-ggplot(chds, aes(days, fnum_mean, color=Var)) +
+ggplot(chds, aes(days, lfnum_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
-  geom_line() + labs(x = "Time (days)", y = "Stem Length")
+  geom_line() + labs(x = "Time (days)", y = "Leaf Number")
+
+##plots perflow by treat
+ggplot(chds, aes(days, pf_mean, color=Var)) +
+  geom_point() +
+  facet_wrap(~Treat) +
+  geom_line() + labs(x = "Time (days)", y = "Percent Flowering")
+
+##plots budfall by treat
+ggplot(chds, aes(days, bfall_mean, color=Var)) +
+  geom_point() +
+  facet_wrap(~Treat) +
+  geom_line() + labs(x = "Time (days)", y = "Number Buds Fallen")
