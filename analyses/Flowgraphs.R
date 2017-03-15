@@ -85,13 +85,16 @@ unique.ind <- unique(dat$RowNumNumRep)
 dat$stem1_vFper <- NA
 dat$stem2_vFper <- NA
 
-for(i in seq_along(unique.ind)){
+for(i in seq_along(unique.ind)){ # i = 1
     indhere <- unique.ind[i]
     # indhere <- "16.1.R3" # example of one with a couple values ... 
     max1.hereis <- datsummary$max.stem1_vFcount[which(datsummary$RowNumNumRep==indhere)]
+    
     dat$stem1_vFper[which(dat$RowNumNumRep==indhere)] <-
         dat$stem1_vFcount[which(dat$RowNumNumRep==indhere)]/max1.hereis
+    
     max2.hereis <- datsummary$max.stem2_vFcount[which(datsummary$RowNumNumRep==indhere)]
+    
     dat$stem2_vFper[which(dat$RowNumNumRep==indhere)] <-
         dat$stem2_vFcount[which(dat$RowNumNumRep==indhere)]/max2.hereis
     }
@@ -101,6 +104,13 @@ for(i in seq_along(unique.ind)){
 ## and values across methods?
 # should add plots here that compare VitisFlower estimates to our counts ...
 
+## thinking about getting change in stem length (or n leaves) ... need those counts on the min(days)
+# So, skip datsummary and do all the work inside the loop!
+# Inside the loop (column names not quite correct!):
+# leaves_on_chamberday1 <- dat$stem1_leafnum[which(dat$days==min(dat$days))]
+# then adjust column names and follow as above (e.g., adjust dat$stem1_vFper[which(dat$RowNumNumRep==indhere)] <-
+       # dat$stem1_vFcount[which(dat$RowNumNumRep==indhere)]/max1.hereis
+## end of thinking ... 
 
 # once we finish the above, we can summarize the data if we want
 datsummary <-
