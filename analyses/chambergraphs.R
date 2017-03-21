@@ -34,10 +34,8 @@ chambdater$stem1_percflow[which(chambdater$stem1_percflow=="")] <- 0
 chambdater$stem1_percflow <- as.numeric(chambdater$stem1_percflow)
 chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="")] <- 0
 chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="-")] <- 0
-chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="NA")] <- 0
 chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="")] <- 0
 chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="-")] <- 0
-chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="NA")] <- 0
 
 ## join dfs
 chambdats <- join(chambdater, ids.sm, by=c("RowNum", "Num"))
