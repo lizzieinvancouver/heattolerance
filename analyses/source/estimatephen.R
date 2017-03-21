@@ -50,7 +50,7 @@ get_pheno_est <- function(dat, stage, percent, EL){
                     # specifically the avg[1]==0 seems wrong, we should be really asking if the row before and after are the same.... 
 		if(count_f>1&avg[1]==0) {del_f <- c(1:(count_f-1)); temp <- temp[-del_f,]}
                 # next the script tries to delete the repeating entries at the end (this looks to work okay)
-		while(avg[count_b]==avg[count_b-1]){count_b <- count_b-1} # while the 
+		while(avg[count_b]==avg[count_b-1]){count_b <- count_b-1} # while the count_b is the same as the count before count_b
 		if(count_b<num){del_b <- c((count_b+1):num);temp <- temp[-del_b,]}
 		###clean up code here! shouldn't have any with single date point or same first and last
 		if(nrow(temp)<=1){days_50==temp[1,'days']}else{
