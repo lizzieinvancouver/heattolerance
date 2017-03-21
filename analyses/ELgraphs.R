@@ -105,13 +105,13 @@ ggplot(ds.om, aes(days, EL_mean, color=Var, group=RowNumNumRep)) + geom_point(sh
 # alternative version of one of the above plots
 ggplot(ds.om, aes(days, EL_mean, color=sm_cat)) +
     geom_point() +
-    facet_wrap(~Var)
+    facet_wrap(~Var) +
     geom_line() + labs(x = "Time (days)", y = "EL Stage")
 
 
-################
-## To discuss ##
-################
+#################################
+## Estimating dates of events! ##
+#################################
 
 
 ##

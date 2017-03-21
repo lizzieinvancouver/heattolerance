@@ -40,11 +40,17 @@ get_pheno_est <- function(dat, stage, percent, EL){
                 else{
 		## removing duplicate values for avgvud at the end or beginning of data collection;
 		num <- length(avg)
-		count_f <- 1
-		count_b <- num
-		while(avg[count_f]==avg[count_f+1]){count_f <- count_f+1}
-		if(count_f>1&avg[1]==0){del_f <- c(1:(count_f-1));temp <- temp[-del_f,]}
-		while(avg[count_b]==avg[count_b-1]){count_b <- count_b-1}
+		count_f <- 1 # start a counter
+		count_b <- num # get max to count to
+                # remember: avg is the stage data as a vector
+                # first the script tries to delete the repeating entries at the start    
+		while(avg[count_f]==avg[count_f+1]){count_f <- count_f+1} # while this entry is the same as the next entry ...
+                # ask if the if-statement below if true, if so, delete 1:through to that count from temp
+                    # the deletion of rows seems to be working, but the count_f>1&avg[1]==0 doesn't make sense to me
+                    # specifically the avg[1]==0 seems wrong, we should be really asking if the row before and after are the same.... 
+		if(count_f>1&avg[1]==0) {del_f <- c(1:(count_f-1)); temp <- temp[-del_f,]}
+                # next the script tries to delete the repeating entries at the end (this looks to work okay)
+		while(avg[count_b]==avg[count_b-1]){count_b <- count_b-1} # while the 
 		if(count_b<num){del_b <- c((count_b+1):num);temp <- temp[-del_b,]}
 		###clean up code here! shouldn't have any with single date point or same first and last
 		if(nrow(temp)<=1){days_50==temp[1,'days']}else{
