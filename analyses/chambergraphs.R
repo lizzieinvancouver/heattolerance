@@ -14,7 +14,7 @@ require(plyr); require(dplyr); require(tidyr)
 # Set working directory: 
 if(length(grep("Lizzie", getwd())>0)) {setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
 } else
-  setwd("/Users/Nicole/GotHub/heattolerance/analysis/")
+  setwd("/Users/Nicole/GitHub/heattolerance/analyses/")
 
 ## get data
 chambdater <- read.csv("input/chamberobservations_grapes2016.csv", header=TRUE)
@@ -36,6 +36,8 @@ chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="")] <- 0
 chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="-")] <- 0
 chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="")] <- 0
 chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="-")] <- 0
+chambdater$stem1_vFcount[which(chambdater$stem1_vFcount=="")] <- 0
+chambdater$stem1_vFcount[which(chambdater$stem1_vFcount=="c")] <- 0
 
 ## join dfs
 chambdats <- join(chambdater, ids.sm, by=c("RowNum", "Num"))
@@ -44,12 +46,17 @@ chambdats <- join(chambdater, ids.sm, by=c("RowNum", "Num"))
 chambdats$Date <- as.Date(chambdater$Date, format="%m/%d/%Y")
 chambdats$days <- as.numeric(format(chambdats$Date, "%j"))-228 # 245 is around the start of September
 
+##make stem1_vFcount numeric
+chambdats$stem1_vFcount <- as.numeric(chambdats$stem1_vFcount)
+
 ##get means
 chambdats$length_mean <- rowMeans(chambdats[,7:8], na.rm=TRUE)
 chambdats$lfnum_mean <- rowMeans(chambdats[,9:10], na.rm=TRUE)
 chambdats$sm_mean <- rowMeans(chambdats[15:17], na.rm=TRUE)
 chambdats$pf_mean <- rowMeans(chambdats[,11:12], na.rm=TRUE)
 chambdats$bfall_mean <- rowMeans(chambdats[,18:19], na.rm=TRUE)
+chambdats$vFcount_mean <- rowMeans(chambdats[,20:21], na.rm=TRUE)
+chambdats$vFest_mean <- rowMeans(chambdats[,22:23], na.rm=TRUE)
 
 ## categorize by soil moisture
 chambdats <- within(chambdats, {
@@ -71,6 +78,8 @@ chds <- subset(chambdats, select=c(
   "lfnum_mean",
   "pf_mean",
   "bfall_mean",
+  "vFcount_mean",
+  "vFest_mean",
   "Treat"))
 
 ##super basic plot
@@ -108,3 +117,17 @@ ggplot(chds, aes(days, bfall_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
   geom_line() + labs(x = "Time (days)", y = "Number Buds Fallen")
+
+##plot vfcounts as well
+ggplot(chds, aes(days, vFcount_mean, color=Var)) +
+  geom_point() +
+  facet_wrap(~Treat) +
+  geom_line() + labs(x = "Time (days)", y = "vitisFlower app Flower Counts")
+
+##plot vfextimates
+ggplot(chds, aes(days, vFest_mean, color=Var)) +
+  geom_point() +
+  facet_wrap(~Treat) +
+  geom_line() + labs(x = "Time (days)", y = "vitisFlower app Flower Estimates")
+
+
