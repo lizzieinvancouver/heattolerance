@@ -126,9 +126,7 @@ for(i in seq_along(unique.ind)){ # i = 1
   subby <- chambdats[which(chambdats$RowNumNumRep==indhere),]
   indhere <- unique.ind[i]
   # indhere <- "16.1.R3" # example of one with a couple values ...
+  stem1_leafnumd1 <- subby$stem1_leafnum[which(subby$days==min(subby$days))]
   
-  min.hereis <- chambdats$min.days[which(chambdats$RowNumNumRep==indhere)]
-  
-  chambdats$daysinchamb[which(chambdats$RowNumNumRep==indhere)] <- chambdats$days[which(chambdats$RowNumNumRep==indhere)]/min.hereis
 }
 
