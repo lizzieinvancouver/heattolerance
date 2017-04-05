@@ -129,6 +129,6 @@ for(i in seq_along(unique.ind)){ # i = 1
   
   min.hereis <- chambdats$min.days[which(chambdats$RowNumNumRep==indhere)]
   
-  chambdats$
+  chambdats$daysinchamb[which(chambdats$RowNumNumRep==indhere)] <- chambdats$days[which(chambdats$RowNumNumRep==indhere)]/min.hereis
 }
 
