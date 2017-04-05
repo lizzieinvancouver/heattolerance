@@ -38,14 +38,16 @@ chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="")] <- 0
 chambdater$stem1_bagbuds[which(chambdater$stem1_bagbuds=="-")] <- 0
 chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="")] <- 0
 chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="-")] <- 0
+chambdater$stem1_vFcount[which(chambdater$stem1_vFcount=="")] <- 0
+chambdater$stem1_vFcount[which(chambdater$stem1_vFcount=="c")] <- 0
 dater$EL_stem1[which(dater$EL_stem1=="0")] <- NA
 dater$EL_stem2[which(dater$EL_stem2=="0")] <- NA
 
 # delete a couple random rows of data after checking what's in them
 unique(chambdater$X)
 unique(chambdater$X.1)
-dater$X <- NULL
-dater$X.1 <- NULL
+chambdater$X <- NULL
+chambdater$X.1 <- NULL
 
 ## format date (see http://www.statmethods.net/input/dates.html)
 dater$Date <- as.Date(dater$Date, format="%m/%d/%Y")
