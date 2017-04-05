@@ -37,7 +37,7 @@ chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="")] <- 0
 chambdater$stem2_bagbuds[which(chambdater$stem2_bagbuds=="-")] <- 0
 chambdater$stem1_vFcount[which(chambdater$stem1_vFcount=="")] <- 0
 chambdater$stem1_vFcount[which(chambdater$stem1_vFcount=="c")] <- 0
-chambdats$stem1_vFcount <- as.numeric(chambdats$stem1_vFcount)
+chambdater$stem1_vFcount <- as.numeric(chambdater$stem1_vFcount)
 
 # delete a couple random rows of data after checking what's in them (straight from og flowgraphs)
 unique(chambdater$X)
@@ -96,15 +96,15 @@ chambdats$stem2_vFper <- NA
 for(i in seq_along(unique.ind)){ # i = 1
   indhere <- unique.ind[i]
   # indhere <- "16.1.R3" # example of one with a couple values ... 
-  max1.hereis <- datsummary$max.stem1_vFcount[which(datsummary$RowNumNumRep==indhere)]
+  max1.hereis <- chambdatsummary$max.stem1_vFcount[which(chambdatsummary$RowNumNumRep==indhere)]
   
-  dat$stem1_vFper[which(dat$RowNumNumRep==indhere)] <-
-    dat$stem1_vFcount[which(dat$RowNumNumRep==indhere)]/max1.hereis
+  chambdats$stem1_vFper[which(chambdats$RowNumNumRep==indhere)] <-
+    chambdats$stem1_vFcount[which(chambdats$RowNumNumRep==indhere)]/max1.hereis
   
-  max2.hereis <- datsummary$max.stem2_vFcount[which(datsummary$RowNumNumRep==indhere)]
+  max2.hereis <- chambdatsummary$max.stem2_vFcount[which(chambdatsummary$RowNumNumRep==indhere)]
   
-  dat$stem2_vFper[which(dat$RowNumNumRep==indhere)] <-
-    dat$stem2_vFcount[which(dat$RowNumNumRep==indhere)]/max2.hereis
+  chambdats$stem2_vFper[which(chambdats$RowNumNumRep==indhere)] <-
+    chambdats$stem2_vFcount[which(chambdats$RowNumNumRep==indhere)]/max2.hereis
 }
 
 
@@ -119,14 +119,25 @@ sapply(chambdats, is.numeric)
 unique.ind <- unique(chambdats$RowNumNumRep)
 
 chambdats$daysinchamb <- NA
-chambdats$daysinchamb <- NA
+chambdats$leafnumchange <- NA
+# need to add other stem for leaf num!
+chambdats$stem1change <- NA
+chambdats$stem2change <- NA
 
 
 for(i in seq_along(unique.ind)){ # i = 1
-  subby <- chambdats[which(chambdats$RowNumNumRep==indhere),]
-  indhere <- unique.ind[i]
-  # indhere <- "16.1.R3" # example of one with a couple values ...
-  stem1_leafnumd1 <- subby$stem1_leafnum[which(subby$days==min(subby$days))]
-  
+   # indhere <- "16.1.R3" # example of one with a couple values ...
+   indhere <- unique.ind[i]
+   subby <- chambdats[which(chambdats$RowNumNumRep==indhere),]
+   minhere <- subby$days[which(subby$days==min(subby$days))]
+   chambdats$daysinchamb[which(chambdats$RowNumNumRep==indhere)] <- subby$days-minhere
+   chambdats$leafnumchange[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_leafnum -
+       subby$stem1_leafnum[which(subby$days==min(subby$days))]
+    ## need another leafum!!
+   chambdats$stem1change[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_length -
+       subby$stem1_length[which(subby$days==min(subby$days))]
+   chambdats$stem2change[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_length -
+      subby$stem2_length[which(subby$days==min(subby$days))]
 }
 
+chambdats$stemlenchange <- rowMeans(chambdats[c("stem1change", "stem2change")], na.rm=TRUE)
