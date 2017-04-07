@@ -119,8 +119,8 @@ sapply(chambdats, is.numeric)
 unique.ind <- unique(chambdats$RowNumNumRep)
 
 chambdats$daysinchamb <- NA
-chambdats$leafnumchange <- NA
-# need to add other stem for leaf num!
+chambdats$stem1leafnum <- NA
+chambdats$stem2leafnum <- NA
 chambdats$stem1change <- NA
 chambdats$stem2change <- NA
 
@@ -131,9 +131,10 @@ for(i in seq_along(unique.ind)){ # i = 1
    subby <- chambdats[which(chambdats$RowNumNumRep==indhere),]
    minhere <- subby$days[which(subby$days==min(subby$days))]
    chambdats$daysinchamb[which(chambdats$RowNumNumRep==indhere)] <- subby$days-minhere
-   chambdats$leafnumchange[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_leafnum -
+   chambdats$stem1leafchange[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_leafnum -
        subby$stem1_leafnum[which(subby$days==min(subby$days))]
-    ## need another leafum!!
+   chambdats$stem2leafchange[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_leafnum -
+     subby$stem2_leafnum[which(subby$days==min(subby$days))]
    chambdats$stem1change[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_length -
        subby$stem1_length[which(subby$days==min(subby$days))]
    chambdats$stem2change[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_length -
