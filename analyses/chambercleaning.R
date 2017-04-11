@@ -150,5 +150,5 @@ for(i in seq_along(unique.ind)){ # i = 1
 
 chambdats$stemlenchange <- rowMeans(chambdats[c("stem1change", "stem2change")], na.rm=TRUE)
 
-write.csv(chambdats, "output/clchambdata.csv", row.names = FALSE)
+write.csv(chambdats, file="output/clchambdata.csv", row.names = FALSE)
 
