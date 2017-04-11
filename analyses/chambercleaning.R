@@ -119,10 +119,12 @@ sapply(chambdats, is.numeric)
 unique.ind <- unique(chambdats$RowNumNumRep)
 
 chambdats$daysinchamb <- NA
-chambdats$stem1leafnum <- NA
-chambdats$stem2leafnum <- NA
+chambdats$stem1lfchange <- NA
+chambdats$stem2lfchange <- NA
 chambdats$stem1change <- NA
 chambdats$stem2change <- NA
+chambdats$stem1vFestcount <- NA
+chambdats$stem2vFestcount <- NA
 
 
 for(i in seq_along(unique.ind)){ # i = 1
@@ -131,14 +133,22 @@ for(i in seq_along(unique.ind)){ # i = 1
    subby <- chambdats[which(chambdats$RowNumNumRep==indhere),]
    minhere <- subby$days[which(subby$days==min(subby$days))]
    chambdats$daysinchamb[which(chambdats$RowNumNumRep==indhere)] <- subby$days-minhere
-   chambdats$stem1leafchange[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_leafnum -
+   chambdats$stem1lfchange[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_leafnum -
        subby$stem1_leafnum[which(subby$days==min(subby$days))]
-   chambdats$stem2leafchange[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_leafnum -
+   chambdats$stem2lfchange[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_leafnum -
      subby$stem2_leafnum[which(subby$days==min(subby$days))]
    chambdats$stem1change[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_length -
        subby$stem1_length[which(subby$days==min(subby$days))]
    chambdats$stem2change[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_length -
       subby$stem2_length[which(subby$days==min(subby$days))]
+   chambdats$stem1vFestcount[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_vFexpec -
+     subby$stem1_vFexpec[which(subby$days==min(subby$days))]
+   chambdats$stem2vFestcount[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_vFexpec -
+     subby$stem2_vFexpec[which(subby$days==min(subby$days))]
 }
 
+
 chambdats$stemlenchange <- rowMeans(chambdats[c("stem1change", "stem2change")], na.rm=TRUE)
+
+write.csv(chambdats, "output/clchambdata.csv", row.names = FALSE)
+
