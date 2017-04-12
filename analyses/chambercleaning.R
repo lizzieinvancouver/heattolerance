@@ -52,6 +52,14 @@ chambdater$days <- as.numeric(format(chambdater$Date, "%j"))-228 # 245 is around
 ## join dfs
 chambdats <- join(chambdater, ids.sm, by=c("RowNum", "Num"))
 
+## categorize by soil moisture
+chambdats <- within(chambdats, {
+  sm_cat <- NA
+  sm_cat[sm_mean<=13.8]           <- "driest"
+  sm_cat[sm_mean>13.8 & sm_mean<=15.5] <- "dry"
+  sm_cat[sm_mean>15.5 & sm_mean<=17.2]           <- "moist"
+  sm_cat[sm_mean>17.2] <- "very moist"
+
 ## how well do values across stems compare?
 plot(stem1_percflow~stem2_percflow, chambdats)
 plot(stem1_caps~stem2_caps, chambdats)
