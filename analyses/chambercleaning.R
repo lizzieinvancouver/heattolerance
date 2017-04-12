@@ -52,6 +52,15 @@ chambdater$days <- as.numeric(format(chambdater$Date, "%j"))-228 # 245 is around
 ## join dfs
 chambdats <- join(chambdater, ids.sm, by=c("RowNum", "Num"))
 
+##get means
+chambdats$length_mean <- rowMeans(chambdats[,7:8], na.rm=TRUE)
+chambdats$lfnum_mean <- rowMeans(chambdats[,9:10], na.rm=TRUE)
+chambdats$sm_mean <- rowMeans(chambdats[15:17], na.rm=TRUE)
+chambdats$pf_mean <- rowMeans(chambdats[,11:12], na.rm=TRUE)
+chambdats$bfall_mean <- rowMeans(chambdats[,18:19], na.rm=TRUE)
+chambdats$vFcount_mean <- rowMeans(chambdats[,20:21], na.rm=TRUE)
+chambdats$vFest_mean <- rowMeans(chambdats[,22:23], na.rm=TRUE)
+
 ## categorize by soil moisture
 chambdats <- within(chambdats, {
   sm_cat <- NA
@@ -59,7 +68,7 @@ chambdats <- within(chambdats, {
   sm_cat[sm_mean>13.8 & sm_mean<=15.5] <- "dry"
   sm_cat[sm_mean>15.5 & sm_mean<=17.2]           <- "moist"
   sm_cat[sm_mean>17.2] <- "very moist"
-
+})
 ## how well do values across stems compare?
 plot(stem1_percflow~stem2_percflow, chambdats)
 plot(stem1_caps~stem2_caps, chambdats)
@@ -154,6 +163,7 @@ for(i in seq_along(unique.ind)){ # i = 1
    chambdats$stem2vFestcount[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_vFexpec -
      subby$stem2_vFexpec[which(subby$days==min(subby$days))]
 }
+
 
 
 chambdats$stemlenchange <- rowMeans(chambdats[c("stem1change", "stem2change")], na.rm=TRUE)

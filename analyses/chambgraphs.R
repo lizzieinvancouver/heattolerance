@@ -1,10 +1,10 @@
 ## Started 14 February 2017 ##
 ## By Lizzie ##
 
-dat <- read.csv ("input/chamberobservations_grapes2016.csv", header=TRUE)
+dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 
 ##subset
-chds <- subset(dats, select=c(
+chds <- subset(dat, select=c(
   "Date",
   "RowNumNumRep", 
   "Var", 
