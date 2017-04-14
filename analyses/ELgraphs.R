@@ -16,6 +16,9 @@ if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmi
 } else
 setwd("/Users/Nicole/Desktop/Wolkovich/analysis/")
 
+# get one f(x)
+source("source/estimatephen.R") # more notes in this file, check it out!
+
 ## get data
 nodespurdater <- read.csv("input/baselinespursize.csv", header=TRUE)
 dater <- read.csv("input/phenmoist_grapes2016.csv", header=TRUE)
@@ -116,8 +119,13 @@ ggplot(ds.om, aes(days, EL_mean, color=sm_cat)) +
 
 ##
 ## Working on getting estimates of day each ind reached a certain stage
-source("source/estimatephen.R") # more notes in this file, check it out!
 bbday <- get_pheno_est(ds.om, "budburst", 5, NA) # should double-check what we call budburst with EL paper
+
+# hmm, some weird Tempranillo data; how can EL go from 10 to 0?
+weird <- dat[which(dat$RowNumNumRep=="35.3.R5"),]
+
+# exclude for now
+bbday <- subset(bbday, RowNumNumRep != "35.3.R5")
 
 ## get mean bbday by var (this is not the most efficient way!)
 # and SD and SE (std deviation and error, respectively)
@@ -129,6 +137,7 @@ bb.mean <-
 
 # now merge this back in
 bbday.full <- merge(bb.mean, bbday, by="Var", all.y=TRUE)
+
 
 # We should figure out how to order this plot by the bbday of each var ... figure out how to suppress the legend
 pdf(file="graphs/bbday_byvar.pdf")
