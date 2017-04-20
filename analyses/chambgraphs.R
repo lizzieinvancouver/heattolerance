@@ -14,8 +14,13 @@ chds <- subset(dat, select=c(
   "lfnum_mean",
   "pf_mean",
   "bfall_mean",
+  "capfall_mean",
   "vFcount_mean",
   "vFest_mean",
+  "vFper_mean",
+  "pflowr_mean",
+  "stemlenchange",
+  "lfchange",
   "Treat"))
 
 ##super basic plot
@@ -24,48 +29,104 @@ ggplot(chds, aes(days, length_mean, color=Var, group=RowNumNumRep)) +
   geom_line() + 
   labs(x = "Time (days)", y = "Stem Length")
 
-##plots by var
+##plots stem length by days separated by variety
 ggplot(chds, aes(days, length_mean, color=Treat)) +
   geom_point() +
   facet_wrap(~Var) +
   geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
-##plots length by treat
+##plots change in stem length by days separated by variety
+ggplot(chds, aes(days, stemlenchange, color=Treat)) +
+  geom_point() +
+  facet_wrap(~Var) +
+  geom_line() + labs(x = "Time (days)", y = "Stem Length Change (mm)") ##not sure about this unit
+
+##plots length by days separated by treat
 ggplot(chds, aes(days, length_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
   geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
-##plots leafnum by treat
+##plots leafnum by days
 ggplot(chds, aes(days, lfnum_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
   geom_line() + labs(x = "Time (days)", y = "Leaf Number")
 
-##plots perflow by treat
+##plots change leafnum by days
+ggplot(chds, aes(days, lfchange, color=Var)) +
+  geom_point() +
+  facet_wrap(~Treat) +
+  geom_line() + labs(x = "Time (days)", y = "Leaf Number Change")
+
+##plots change in leaf num by days separated by variety
+ggplot(chds, aes(days, lfchange, color=Treat)) +
+  geom_point() +
+  facet_wrap(~Var) +
+  geom_line() + labs(x = "Time (days)", y = "Leaf Number Change")
+
+##plots perflow by days
 ggplot(chds, aes(days, pf_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
   geom_line() + labs(x = "Time (days)", y = "Percent Flowering")
 
-##plots budfall by treat
+##plots pflowr (from loop) by day - not much change
+ggplot(chds, aes(days, pflowr_mean, color=Var)) +
+  geom_point() +
+  facet_wrap(~Treat) +
+  geom_line() + labs(x = "Time (days)", y = "Percent Flowering")
+
+##plots budfall by day 
 ggplot(chds, aes(days, bfall_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
   geom_line() + labs(x = "Time (days)", y = "Number Buds Fallen")
 
-##plot vfcounts as well
+##plot capfall by day
+ggplot(chds, aes(days, capfall_mean, color=Var)) +
+  geom_point() +
+  facet_wrap(~Treat) +
+  geom_line() + labs(x = "Time (days)", y = "Caps Fallen in Bag")
+
+##plot vfcounts by day
 ggplot(chds, aes(days, vFcount_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
   geom_line() + labs(x = "Time (days)", y = "vitisFlower app Flower Counts")
 
-##plot vfextimates
+##plot vFper from loop by day
+ggplot(chds, aes(days, vFper_mean, color=Var)) +
+  geom_point() +
+  facet_wrap(~Treat) +
+  geom_line() + labs(x = "Time (days)", y = "vitisFlower app Flower Counts")
+
+##plot vfextimates by day
 ggplot(chds, aes(days, vFest_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
   geom_line() + labs(x = "Time (days)", y = "vitisFlower app Flower Estimates")
 
+##boxplot percent flowering by variety
+ggplot(chds, aes(Var, pf_mean, color=Var)) +
+  geom_boxplot() +
+  facet_wrap(~Treat) +
+  labs(x = "Variety", y = "Percent Flowering") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+##boxplot budfall by variety
+ggplot(chds, aes(Var, bfall_mean, color=Var)) +
+  geom_boxplot() +
+  facet_wrap(~Treat) +
+  labs(x = "Variety", y = "Buds Fallen into Bag") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+##boxplot capfall by variety
+ggplot(chds, aes(Var, capfall_mean, color=Var)) +
+  geom_boxplot() +
+  facet_wrap(~Treat) +
+  labs(x = "Variety", y = "Caps Fallen into Bag") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 # once we finish the above, we can summarize the data if we want
 datsummary <-

@@ -60,6 +60,7 @@ chambdats$pf_mean <- rowMeans(chambdats[,11:12], na.rm=TRUE)
 chambdats$bfall_mean <- rowMeans(chambdats[,18:19], na.rm=TRUE)
 chambdats$vFcount_mean <- rowMeans(chambdats[,20:21], na.rm=TRUE)
 chambdats$vFest_mean <- rowMeans(chambdats[,22:23], na.rm=TRUE)
+chambdats$capfall_mean <- rowMeans(chambdats[,13:14], na.rm=TRUE)
 
 ## categorize by soil moisture
 chambdats <- within(chambdats, {
@@ -142,6 +143,8 @@ chambdats$stem1change <- NA
 chambdats$stem2change <- NA
 chambdats$stem1vFestcount <- NA
 chambdats$stem2vFestcount <- NA
+chambdats$stem1pflowr <- NA
+chambdats$stem2pflowr <- NA
 
 
 for(i in seq_along(unique.ind)){ # i = 1
@@ -162,11 +165,18 @@ for(i in seq_along(unique.ind)){ # i = 1
      subby$stem1_vFexpec[which(subby$days==min(subby$days))]
    chambdats$stem2vFestcount[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_vFexpec -
      subby$stem2_vFexpec[which(subby$days==min(subby$days))]
+   chambdats$stem1pflowr[which(chambdats$RowNumNumRep==indhere)] <- subby$stem1_percflow -
+     subby$stem1_percflow[which(subby$days==min(subby$days))]
+   chambdats$stem2pflowr[which(chambdats$RowNumNumRep==indhere)] <- subby$stem2_percflow -
+     subby$stem2_percflow[which(subby$days==min(subby$days))]
 }
 
 
 
 chambdats$stemlenchange <- rowMeans(chambdats[c("stem1change", "stem2change")], na.rm=TRUE)
+chambdats$lfchange <- rowMeans(chambdats[c("stem1lfchange", "stem2lfchange")], na.rm=TRUE)
+chambdats$pflowr_mean <- rowMeans(chambdats[c("stem1pflowr", "stem2pflowr")], na.rm=TRUE)
+chambdats$vFper_mean <- rowMeans(chambdats[c("stem1_vFper", "stem2_vFper")], na.rm=TRUE)
 
 write.csv(chambdats, file="output/clchambdata.csv", row.names = FALSE)
 
