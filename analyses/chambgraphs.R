@@ -128,6 +128,12 @@ ggplot(chds, aes(Var, capfall_mean, color=Var)) +
   labs(x = "Variety", y = "Caps Fallen into Bag") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
+##boxplot capfall by treatment, see wiki (a)
+ggplot(chds, aes(Treat, capfall_mean, color=Var)) +
+  geom_point() +
+  labs(x = "Variety", y = "Caps Fallen into Bag") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
 # once we finish the above, we can summarize the data if we want
 datsummary <-
       ddply(dat, c("RowNum", "Num", "Rep", "RowNumNumRep", "Treatment", "Var"), summarise,
