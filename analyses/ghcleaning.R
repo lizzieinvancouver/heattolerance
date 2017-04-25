@@ -35,6 +35,22 @@ dater$EL_stem2[which(dater$EL_stem2=="0")] <- NA
 dater$Date <- as.Date(dater$Date, format="%m/%d/%Y")
 dater$days <- as.numeric(format(dater$Date, "%j"))-228 # 245 is around the start of September
 
+# this corrects for the fact that not all of the plants could be sampled in one day, so the code was calculating averages per day, and if the second day plants were not developing as quickly as the first day plants, it would look like the average was dropping
+d$sampleday <- d$days
+d$sampleday[d$sampleday == 8] <- 7
+d$sampleday[d$sampleday == 15] <- 14
+d$sampleday[d$sampleday == 18] <- 17
+d$sampleday[d$sampleday == 22] <- 21
+d$sampleday[d$sampleday == 25] <- 24
+d$sampleday[d$sampleday == 36] <- 35
+d$sampleday[d$sampleday == 66] <- 65
+d$sampleday[d$sampleday == 67] <- 65
+d$sampleday[d$sampleday == 74] <- 73
+d$sampleday[d$sampleday == 80] <- 79
+d$sampleday[d$sampleday == 87] <- 86
+d$sampleday[d$sampleday == 88] <- 86
+d$sampleday[d$sampleday == 94] <- 93
+
 ##remove plants that died
 datr<-dater[!(dater$RowNumNumRep=="13.3.R5" | 
               dater$RowNumNumRep=="17.3.R1" | 
