@@ -16,6 +16,8 @@ if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmi
 } else
   setwd("/Users/Nicole/GitHub/heattolerance/analyses/")
 
+source("source/estimatephen.R")
+
 # get data
 dater <- read.csv("input/phenmoist_grapes2016.csv", header=TRUE)
 ids <- read.csv("input/VitisExpReps2.csv", header=TRUE)
@@ -57,12 +59,18 @@ datr<-dater[!(dater$RowNumNumRep=="13.3.R5" |
               dater$RowNumNumRep=="34.7.R1" |
               dater$RowNumNumRep=="23.7.R2"), ]
 
-
+##get averages
+datr$EL_mean <- rowMeans(datr[,6:7], na.rm=TRUE)
+datr$sm_mean <- rowMeans(datr[,8:10], na.rm=TRUE)
 
 ## join dfs
 dats <- join(datr, ids.sm, by=c("RowNum", "Num"))
 
-write.csv(dats, file="output/clghdata.csv", row.names = FALSE)
+##estimatephen
+df <- get_pheno_est(dats,"50% flowering",21,NA)
+
+
+write.csv(df, file="output/clghdata.csv", row.names = FALSE)
 
 
 
