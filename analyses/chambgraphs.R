@@ -186,17 +186,18 @@ ggplot(chds, aes(Treat, capfall_mean, color=Var)) +
 
 ##
 ## Trying to figure out how to show treatment, variety, time and INDIVIDUAL ... a couple ideas
-##plots stem length by days separated by variety with shape for RowNumNumRep
-ggplot(chds, aes(days, length_mean, color=Treat, shape=RowNumNumRep)) +
+## plots stem length by days separated by variety with shape for RowNumNumRep
+ggplot(chds, aes(days, pflowr_mean, color=Treat, shape=RowNumNumRep)) + 
   geom_point() +
   facet_wrap(~Var) +
   geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
 ##plots stem length by days separated by variety with linetype, this meh... 
-ggplot(chds, aes(days, length_mean, color=Treat)) +
+ggplot(chds, aes(days, pflowr_mean, color=Treat)) +
   geom_point() +
   facet_wrap(~Var) +
   geom_line(aes(linetype=RowNumNumRep)) + labs(x = "Time (days)", y = "Stem Length")
+## Hmm, I think I will work on writing a longer graping script from base graphics for this. More to come!
 ## End of 'Trying to figure out how to show treatment, variety, time and INDIVIDUAL' section
 
 
