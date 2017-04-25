@@ -1,5 +1,13 @@
 ## Started 14 February 2017 ##
-## By Lizzie ##
+## By Lizzie and Nicole! ##
+
+# Set working directory: 
+if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
+} else
+  setwd("/Users/Nicole/GitHub/heattolerance/analyses/")
+
+# Get packages
+library(ggplot2)
 
 dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 
@@ -175,6 +183,22 @@ ggplot(chds, aes(Treat, capfall_mean, color=Var)) +
   geom_point() +
   labs(x = "Variety", y = "Caps Fallen into Bag") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+##
+## Trying to figure out how to show treatment, variety, time and INDIVIDUAL ... a couple ideas
+##plots stem length by days separated by variety with shape for RowNumNumRep
+ggplot(chds, aes(days, length_mean, color=Treat, shape=RowNumNumRep)) +
+  geom_point() +
+  facet_wrap(~Var) +
+  geom_line() + labs(x = "Time (days)", y = "Stem Length")
+
+##plots stem length by days separated by variety with linetype, this meh... 
+ggplot(chds, aes(days, length_mean, color=Treat)) +
+  geom_point() +
+  facet_wrap(~Var) +
+  geom_line(aes(linetype=RowNumNumRep)) + labs(x = "Time (days)", y = "Stem Length")
+## End of 'Trying to figure out how to show treatment, variety, time and INDIVIDUAL' section
+
 
 # once we finish the above, we can summarize the data if we want
 datsummary <-
