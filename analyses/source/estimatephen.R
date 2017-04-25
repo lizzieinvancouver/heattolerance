@@ -19,7 +19,7 @@
 ## requires a data frame with the following column names:
 # RowNumNumRep (plant ID)
 # Var (variety)
-# EL_mean (mean for individual plant)
+# EL_mean (mean for individual plant) ##change chamber data column names for perc flowering
 # days (days since start of experiment)
 
 ## You need to provide:
