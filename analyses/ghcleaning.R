@@ -36,26 +36,28 @@ dater$Date <- as.Date(dater$Date, format="%m/%d/%Y")
 dater$days <- as.numeric(format(dater$Date, "%j"))-228 # 245 is around the start of September
 
 # this corrects for the fact that not all of the plants could be sampled in one day, so the code was calculating averages per day, and if the second day plants were not developing as quickly as the first day plants, it would look like the average was dropping
-d$sampleday <- d$days
-d$sampleday[d$sampleday == 8] <- 7
-d$sampleday[d$sampleday == 15] <- 14
-d$sampleday[d$sampleday == 18] <- 17
-d$sampleday[d$sampleday == 22] <- 21
-d$sampleday[d$sampleday == 25] <- 24
-d$sampleday[d$sampleday == 36] <- 35
-d$sampleday[d$sampleday == 66] <- 65
-d$sampleday[d$sampleday == 67] <- 65
-d$sampleday[d$sampleday == 74] <- 73
-d$sampleday[d$sampleday == 80] <- 79
-d$sampleday[d$sampleday == 87] <- 86
-d$sampleday[d$sampleday == 88] <- 86
-d$sampleday[d$sampleday == 94] <- 93
+dater$sampleday <- dater$days
+dater$sampleday[dater$sampleday == 8] <- 7
+dater$sampleday[dater$sampleday == 15] <- 14
+dater$sampleday[dater$sampleday == 18] <- 17
+dater$sampleday[dater$sampleday == 22] <- 21
+dater$sampleday[dater$sampleday == 25] <- 24
+dater$sampleday[dater$sampleday == 36] <- 35
+dater$sampleday[dater$sampleday == 66] <- 65
+dater$sampleday[dater$sampleday == 67] <- 65
+dater$sampleday[dater$sampleday == 74] <- 73
+dater$sampleday[dater$sampleday == 80] <- 79
+dater$sampleday[dater$sampleday == 87] <- 86
+dater$sampleday[dater$sampleday == 88] <- 86
+dater$sampleday[dater$sampleday == 94] <- 93
 
 ##remove plants that died
 datr<-dater[!(dater$RowNumNumRep=="13.3.R5" | 
               dater$RowNumNumRep=="17.3.R1" | 
               dater$RowNumNumRep=="34.7.R1" |
               dater$RowNumNumRep=="23.7.R2"), ]
+
+
 
 ## join dfs
 dats <- join(datr, ids.sm, by=c("RowNum", "Num"))

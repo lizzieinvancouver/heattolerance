@@ -39,21 +39,7 @@ d$date <- as.Date(dat$Date, format="%m/%d/%Y")
 d$days <- as.numeric(format(d$date, "%j"))-228 # 228 is around 15 August
 
 # make a new column for days adjusted to sampling dateset
-# this corrects for the fact that not all of the plants could be sampled in one day, so the code was calculating averages per day, and if the second day plants were not developing as quickly as the first day plants, it would look like the average was dropping
-d$sampleday <- d$days
-d$sampleday[d$sampleday == 8] <- 7
-d$sampleday[d$sampleday == 15] <- 14
-d$sampleday[d$sampleday == 18] <- 17
-d$sampleday[d$sampleday == 22] <- 21
-d$sampleday[d$sampleday == 25] <- 24
-d$sampleday[d$sampleday == 36] <- 35
-d$sampleday[d$sampleday == 66] <- 65
-d$sampleday[d$sampleday == 67] <- 65
-d$sampleday[d$sampleday == 74] <- 73
-d$sampleday[d$sampleday == 80] <- 79
-d$sampleday[d$sampleday == 87] <- 86
-d$sampleday[d$sampleday == 88] <- 86
-d$sampleday[d$sampleday == 94] <- 93
+ 
 
 # for now add the same treatment code to all, change to real treatments someday
 d$treatcode <- rep("notreat", nrow(d))
