@@ -30,12 +30,19 @@ ids.sm <- subset(ids, select=c("RowNum", "Num", "Var"))
 dater$EL_stem1[which(dater$EL_stem1=="0")] <- NA
 dater$EL_stem2[which(dater$EL_stem2=="0")] <- NA
 
+
 ## format date (see http://www.statmethods.net/input/dates.html)
 dater$Date <- as.Date(dater$Date, format="%m/%d/%Y")
 dater$days <- as.numeric(format(dater$Date, "%j"))-228 # 245 is around the start of September
 
+##remove plants that died
+datr<-dater[!(dater$RowNumNumRep=="13.3.R5" | 
+              dater$RowNumNumRep=="17.3.R1" | 
+              dater$RowNumNumRep=="34.7.R1" |
+              dater$RowNumNumRep=="23.7.R2"), ]
+
 ## join dfs
-dats <- join(dater, ids.sm, by=c("RowNum", "Num"))
+dats <- join(datr, ids.sm, by=c("RowNum", "Num"))
 
 write.csv(dats, file="output/clghdata.csv", row.names = FALSE)
 
