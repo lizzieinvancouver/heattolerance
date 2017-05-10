@@ -43,6 +43,12 @@ ggplot(chds, aes(days, length_mean, color=Treat)) +
   facet_wrap(~Var) +
   geom_line() + labs(x = "Time (days)", y = "Stem Length")
 
+## ALT: Alternative version of above plot that shows each rep, plots stem length by days separated by variety
+ggplot(chds, aes(days, length_mean, color=RowNumNumRep, shape=Treat)) +
+  geom_point() +
+  facet_wrap(~Var) +
+  geom_line() + labs(x = "Time (days)", y = "Stem Length")
+
 ##plots change in stem length by days separated by variety
 ggplot(chds, aes(days, stemlenchange, color=Treat)) +
   geom_point() +
