@@ -197,6 +197,7 @@ ggplot(dat50, aes(RowNumNumRep, days, color=Var)) +
   labs(x = "Time (days)", y = "Plant ID") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
+## plots 50% flowering estiamtephen by variety
 ggplot(dat50, aes(Var, days)) +
   geom_boxplot() +
   labs(x = "Time (days)", y = "Variety") +
