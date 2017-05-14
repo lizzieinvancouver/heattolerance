@@ -10,6 +10,7 @@ if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmi
 library(ggplot2)
 
 dat <- read.csv ("output/clchambdata.csv", header=TRUE)
+dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
 
 ##subset
 chds <- subset(dat, select=c(
@@ -26,7 +27,7 @@ chds <- subset(dat, select=c(
   "vFcount_mean",
   "vFest_mean",
   "vFper_mean",
-  "pflowr_mean",
+  "EL_mean",
   "stemlenchange",
   "lfchange",
   "Treat"))
@@ -188,6 +189,17 @@ ggplot(chds, aes(Var, capfall_mean, color=Var)) +
 ggplot(chds, aes(Treat, capfall_mean, color=Var)) +
   geom_point() +
   labs(x = "Variety", y = "Caps Fallen into Bag") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+##plot 50% flowering estimate phen by individ
+ggplot(dat50, aes(RowNumNumRep, days, color=Var)) +
+  geom_point() +
+  labs(x = "Time (days)", y = "Plant ID") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+ggplot(dat50, aes(Var, days)) +
+  geom_boxplot() +
+  labs(x = "Time (days)", y = "Variety") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 ##

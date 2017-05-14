@@ -54,7 +54,7 @@ dater$sampleday[dater$sampleday == 88] <- 86
 dater$sampleday[dater$sampleday == 94] <- 93
 
 ##remove plants that died
-datr<-dater[!(dater$RowNumNumRep=="13.3.R5" | 
+datr <- dater[!(dater$RowNumNumRep=="13.3.R5" | 
               dater$RowNumNumRep=="17.3.R1" | 
               dater$RowNumNumRep=="34.7.R1" |
               dater$RowNumNumRep=="23.7.R2"), ]

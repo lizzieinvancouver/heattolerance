@@ -20,6 +20,8 @@ if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmi
 chambdater <- read.csv("input/chamberobservations_grapes2016.csv", header=TRUE)
 ids <- read.csv("input/VitisExpReps2.csv", header=TRUE)
 
+source("source/estimatephen.R")
+
 ## change header names here
 names(ids)[names(ids)=="Row"] <- "RowNum"
 names(ids)[names(ids)=="Plant"] <- "Num"
@@ -172,11 +174,20 @@ for(i in seq_along(unique.ind)){ # i = 1
 }
 
 
-
+## taking some means
 chambdats$stemlenchange <- rowMeans(chambdats[c("stem1change", "stem2change")], na.rm=TRUE)
 chambdats$lfchange <- rowMeans(chambdats[c("stem1lfchange", "stem2lfchange")], na.rm=TRUE)
 chambdats$pflowr_mean <- rowMeans(chambdats[c("stem1pflowr", "stem2pflowr")], na.rm=TRUE)
 chambdats$vFper_mean <- rowMeans(chambdats[c("stem1_vFper", "stem2_vFper")], na.rm=TRUE)
 
+
+## renaming pflowr_mean so it works with estiamtephen
+colnames(chambdats)[which(names(chambdats) == "pflowr_mean")] <- "EL_mean"
+
+##estimatephen
+cdf <- get_pheno_est(chambdats,"50% flowering",50,NA)
+
+
 write.csv(chambdats, file="output/clchambdata.csv", row.names = FALSE)
+write.csv(cdf, file="output/chamb50fl.csv", row.names = FALSE)
 
