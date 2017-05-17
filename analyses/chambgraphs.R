@@ -203,6 +203,12 @@ ggplot(dat50, aes(Var, days)) +
   labs(x = "Variety", y = "Days to 50% flowering") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
+##plot 50% flowering estiamte phen by treat
+ggplot(dat50, aes(Treat, days, color=Var)) +
+  geom_point() +
+  labs(x = "Treatment", y = "Days to 50% Flowering") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
 ##
 ## Trying to figure out how to show treatment, variety, time and INDIVIDUAL ... a couple ideas
 ## plots stem length by days separated by variety with shape for RowNumNumRep

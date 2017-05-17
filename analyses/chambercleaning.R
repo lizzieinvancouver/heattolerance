@@ -193,7 +193,12 @@ colnames(chambdats)[which(names(chambdats) == "pflowr_mean")] <- "EL_mean"
 ##estimatephen
 cdf <- get_pheno_est(chambdats,"50% flowering",50,NA)
 
+##sub chambdats for estiamtephen
+subchdt <- subset(chambdats, select=c("RowNumNumRep", "Treat"))
+
+##
+cd <- join(cdf, subchdt, by=c("RowNumNumRep"))
 
 write.csv(chambdats, file="output/clchambdata.csv", row.names = FALSE)
-write.csv(cdf, file="output/chamb50fl.csv", row.names = FALSE)
+write.csv(cd, file="output/chamb50fl.csv", row.names = FALSE)
 
