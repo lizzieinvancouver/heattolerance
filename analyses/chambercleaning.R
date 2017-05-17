@@ -41,6 +41,12 @@ chambdater$stem1_vFcount[which(chambdater$stem1_vFcount=="")] <- 0
 chambdater$stem1_vFcount[which(chambdater$stem1_vFcount=="c")] <- 0
 chambdater$stem1_vFcount <- as.numeric(chambdater$stem1_vFcount)
 
+## fix incorrect leaf numbers
+chambdater[229, ][which(chambdater[229, ]=="7")] <- 10
+chambdater[146, ][which(chambdater[146, ]=="11")] <- 10
+
+
+
 # delete a couple random rows of data after checking what's in them (straight from og flowgraphs)
 unique(chambdater$X)
 unique(chambdater$X.1)

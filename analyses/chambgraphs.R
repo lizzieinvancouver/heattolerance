@@ -111,7 +111,7 @@ ggplot(chds, aes(days, pf_mean, color=Var)) +
   geom_line() + labs(x = "Time (days)", y = "Percent Flowering")
 
 ##plots pflowr (from loop) by day - not much change
-ggplot(chds, aes(days, pflowr_mean, color=Var)) +
+ggplot(chds, aes(days, EL_mean, color=Var)) +
   geom_point() +
   facet_wrap(~Treat) +
   geom_line() + labs(x = "Time (days)", y = "Percent Flowering")
@@ -185,7 +185,7 @@ ggplot(chds, aes(Var, capfall_mean, color=Var)) +
   labs(x = "Variety", y = "Caps Fallen into Bag") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
-##boxplot capfall by treatment, see wiki (a)
+##plot capfall by treatment, see wiki (a)
 ggplot(chds, aes(Treat, capfall_mean, color=Var)) +
   geom_point() +
   labs(x = "Variety", y = "Caps Fallen into Bag") +
@@ -194,28 +194,28 @@ ggplot(chds, aes(Treat, capfall_mean, color=Var)) +
 ##plot 50% flowering estimate phen by individ
 ggplot(dat50, aes(RowNumNumRep, days, color=Var)) +
   geom_point() +
-  labs(x = "Time (days)", y = "Plant ID") +
+  labs(x = "Plant ID", y = "Days to 50% Flowering") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
-## plots 50% flowering estiamtephen by variety
+##boxplot 50% flowering estiamtephen by variety
 ggplot(dat50, aes(Var, days)) +
   geom_boxplot() +
-  labs(x = "Time (days)", y = "Variety") +
+  labs(x = "Variety", y = "Days to 50% flowering") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 ##
 ## Trying to figure out how to show treatment, variety, time and INDIVIDUAL ... a couple ideas
 ## plots stem length by days separated by variety with shape for RowNumNumRep
-ggplot(chds, aes(days, pflowr_mean, color=Treat, shape=RowNumNumRep)) + 
+ggplot(chds, aes(days, EL_mean, color=Treat, shape=RowNumNumRep)) + 
   geom_point() +
   facet_wrap(~Var) +
-  geom_line() + labs(x = "Time (days)", y = "Stem Length")
+  geom_line() + labs(x = "Time (days)", y = "Percent Flowering")
 
 ##plots stem length by days separated by variety with linetype, this meh... 
-ggplot(chds, aes(days, pflowr_mean, color=Treat)) +
+ggplot(chds, aes(days, EL_mean, color=Treat)) +
   geom_point() +
   facet_wrap(~Var) +
-  geom_line(aes(linetype=RowNumNumRep)) + labs(x = "Time (days)", y = "Stem Length")
+  geom_line(aes(linetype=RowNumNumRep)) + labs(x = "Time (days)", y = "Percent FLowering")
 ## Hmm, I think I will work on writing a longer graping script from base graphics for this. More to come!
 ## End of 'Trying to figure out how to show treatment, variety, time and INDIVIDUAL' section
 
