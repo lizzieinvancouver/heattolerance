@@ -53,7 +53,8 @@ plot(mod.perflow$coef~as.factor(c(1:5)), ylim=c(-10, 20))
 arrows(c(1:5), confint(mod.perflow)[1:5], c(1:5), confint(mod.perflow)[1:5,2], length = 0)
 points(dat$EL_mean~as.factor(Treat), data=dat)
 
-plot(mod.bagbuds$coef~as.factor(c(1:5)), ylim=c(-10, 70))
+plot(mod.bagbuds$coef~as.factor(c(1:5)), ylim=c(-50, 100))
+arrows(c(1:5), confint(mod.bagbuds)[1:5], c(1:5), confint(mod.bagbuds)[1:5,2], length = 0)
 points(dat$bfall_mean~as.factor(Treat), data=dat)
 
 
