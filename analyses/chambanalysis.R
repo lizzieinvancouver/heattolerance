@@ -12,6 +12,7 @@ library(car)
 
 dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
+sumdat <- read.csv ("output/chdatsum.csv", header=TRUE)
 
 # alert! This is wrong because we don't have 203 obs
 mod.days50 <- lm(days~as.factor(Treat), data=dat50)
@@ -28,14 +29,33 @@ anova(mod.perflow)
 
 # Try anova (on data where each RowNumNumRep has one row of data):
 # max(perflow)
+mod.maxperflo <- lm(max.pf_mean~as.factor(Treat), data=chdatsum)
+Anova(mod.maxperflo)
+anova(mod.maxperflo)
 # days to 50% (corr. for only those that made it that far (and do some spot-checking on those data)
 # sum of all bag buds (taking mean across stems, if two stems) so basically sum of one cluster
+mod.bagbuds <- lm(sum.bfall_mean~as.factor(Treat), data=chdatsum)
+Anova(mod.bagbuds)
+anova(mod.bagbuds)
 # sum of all capfall (taking mean across stems, if two stems) so basically sum of one cluster
+mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=chdatsum)
+Anova(mod.capfall)
+anova(mod.capfall)
 # change in length
 # change in leafnum
 # anova on mean soil moisture (mean per pot across time in chamber)
+mod.smoist <- lm(mean.smoist~as.factor(Treat), data=chdatsum)
+Anova(mod.smoist)
+anova(mod.smoist)
 
 # Also! Try plotting some of your estimates from the models and compare to your raw data graphs. 
 plot(mod.perflow$coef~as.factor(c(1:5)), ylim=c(-10, 20))
 arrows(c(1:5), confint(mod.perflow)[1:5], c(1:5), confint(mod.perflow)[1:5,2], length = 0)
 points(dat$EL_mean~as.factor(Treat), data=dat)
+
+plot(mod.bagbuds$coef~as.factor(c(1:5)), ylim=c(-10, 70))
+points(dat$bfall_mean~as.factor(Treat), data=dat)
+
+
+
+

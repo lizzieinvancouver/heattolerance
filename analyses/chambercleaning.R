@@ -190,15 +190,31 @@ chambdats$vFper_mean <- rowMeans(chambdats[c("stem1_vFper", "stem2_vFper")], na.
 ## renaming pflowr_mean so it works with estiamtephen
 colnames(chambdats)[which(names(chambdats) == "pflowr_mean")] <- "EL_mean"
 
-##estimatephen
-cdf <- get_pheno_est(chambdats,"50% flowering",50,NA)
+##subset for etimatephen 50%
+eplist <- c("16.1.R1", "16.1.R3", "16.1.R4", "18.5.R7", "18.5.R8", "20.5.R3", "38.7.R2")
+epdats <- chambdats [which(!chambdats$RowNumNumRep %in% eplist),]
 
-##sub chambdats for estiamtephen
-subchdt <- subset(chambdats, select=c("RowNumNumRep", "Treat"))
+##estimatephen 50% flowering
+chdat <- get_pheno_est(epdats,"50% flowering",50,NA)
 
-##
-cd <- join(cdf, subchdt, by=c("RowNumNumRep"))
+##remove duplicates
+cdf <- unique(chdat)
+
+##subset for Treat
+cdftreat <- subset(chambdats, select=c("RowNumNumRep", "Treat"))
+cdft <- unique(cdftreat)
+cd <- join(cdf,cdft, by=c("RowNumNumRep"))
+
+chdatsum <-
+  ddply(chambdats, c("RowNumNumRep", "Treat", "Var"), summarise,
+        max.pf_mean = max(pf_mean, na.rm=TRUE),
+        sum.bfall_mean = sum(bfall_mean, na.rm=TRUE),
+        sum.capfall_mean = sum(capfall_mean, na.rm=TRUE),
+        mean.smoist = mean(sm_mean, na.rm=TRUE))
+
+
 
 write.csv(chambdats, file="output/clchambdata.csv", row.names = FALSE)
 write.csv(cd, file="output/chamb50fl.csv", row.names = FALSE)
+write.csv(chdatsum, file="output/chdatsum.csv", row.names = FALSE)
 
