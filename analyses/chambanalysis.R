@@ -29,22 +29,22 @@ anova(mod.perflow)
 
 # Try anova (on data where each RowNumNumRep has one row of data):
 # max(perflow)
-mod.maxperflo <- lm(max.pf_mean~as.factor(Treat), data=chdatsum)
+mod.maxperflo <- lm(max.pf_mean~as.factor(Treat), data=sumdat)
 Anova(mod.maxperflo)
 anova(mod.maxperflo)
 # days to 50% (corr. for only those that made it that far (and do some spot-checking on those data)
 # sum of all bag buds (taking mean across stems, if two stems) so basically sum of one cluster
-mod.bagbuds <- lm(sum.bfall_mean~as.factor(Treat), data=chdatsum)
+mod.bagbuds <- lm(sum.bfall_mean~as.factor(Treat), data=sumdat)
 Anova(mod.bagbuds)
 anova(mod.bagbuds)
 # sum of all capfall (taking mean across stems, if two stems) so basically sum of one cluster
-mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=chdatsum)
+mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=sumdat)
 Anova(mod.capfall)
 anova(mod.capfall)
 # change in length
 # change in leafnum
 # anova on mean soil moisture (mean per pot across time in chamber)
-mod.smoist <- lm(mean.smoist~as.factor(Treat), data=chdatsum)
+mod.smoist <- lm(mean.smoist~as.factor(Treat), data=sumdat)
 Anova(mod.smoist)
 anova(mod.smoist)
 
