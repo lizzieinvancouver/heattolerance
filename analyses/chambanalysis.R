@@ -14,7 +14,7 @@ dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
 sumdat <- read.csv ("output/chdatsum.csv", header=TRUE)
 
-# alert! This is wrong because we don't have 203 obs
+# 50% flowering
 mod.days50 <- lm(days~as.factor(Treat), data=dat50)
 Anova(mod.days50)
 anova(mod.days50) # Type I Sums of Squares is the same here, so okay to use default anova in R here!
@@ -37,6 +37,9 @@ anova(mod.maxperflo)
 mod.bagbuds <- lm(sum.bfall_mean~as.factor(Treat), data=sumdat)
 Anova(mod.bagbuds)
 anova(mod.bagbuds)
+hist(sumdat$sum.bfall_mean)
+hist(log10(sumdat$sum.bfall_mean))
+
 # sum of all capfall (taking mean across stems, if two stems) so basically sum of one cluster
 mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=sumdat)
 Anova(mod.capfall)
@@ -53,10 +56,35 @@ plot(mod.perflow$coef~as.factor(c(1:5)), ylim=c(-10, 20))
 arrows(c(1:5), confint(mod.perflow)[1:5], c(1:5), confint(mod.perflow)[1:5,2], length = 0)
 points(dat$EL_mean~as.factor(Treat), data=dat)
 
-plot(mod.bagbuds$coef~as.factor(c(1:5)), ylim=c(-50, 100))
+# Bagged buds (sad buds)
+# first, change the values so they are all absolute...
+abs.coeff.bagbuds <- mod.bagbuds$coef
+abs.coeff.bagbuds[2:5] <- abs.coeff.bagbuds[2:5] + abs.coeff.bagbuds[1]
+# now plot
+range(sumdat$sum.bfall_mean) # make sure ylim is big enough
+plot(abs.coeff.bagbuds~as.factor(c(1:5)), ylim=c(-50, 170))
 arrows(c(1:5), confint(mod.bagbuds)[1:5], c(1:5), confint(mod.bagbuds)[1:5,2], length = 0)
-points(dat$bfall_mean~as.factor(Treat), data=dat)
+points(sum.bfall_mean~as.factor(Treat), data=sumdat) # use the data used for the model!
 
+# abs.confint.bagbuds <-  confint(mod.bagbuds)
+# abs.confint.bagbuds[2:5,1] <- abs.coeff.bagbuds[2:5] + abs.confint.bagbuds[2:5,1]
+# abs.confint.bagbuds[2:5,2] <- abs.coeff.bagbuds[2:5] + abs.confint.bagbuds[2:5,2]
+# arrows(c(1:5), abs.confint.bagbuds[1:5,1], c(1:5), abs.confint.bagbuds[1:5,2], length = 0)
+
+
+# 50% flowering
+# correct coefs (since they are relative to the intercept!)
+abs.coeff.mod50 <- mod.days50$coef
+abs.coeff.mod50[2:5] <- abs.coeff.mod50[2:5] + abs.coeff.mod50[1]
+# For some reason the confint here seem relative also (this seems odd to me)
+abs.confint.mod50 <-  confint(mod.days50)
+abs.confint.mod50[2:5,1] <- abs.coeff.mod50[2:5] + abs.confint.mod50[2:5,1]
+abs.confint.mod50[2:5,2] <- abs.coeff.mod50[2:5] + abs.confint.mod50[2:5,2]
+# now back to plotting
+range(dat50$days) # make sure ylim is big enough
+plot(abs.coeff.mod50~as.factor(c(1:5)), ylim=c(30, 65))
+arrows(c(1:5), abs.confint.mod50[1:5,1], c(1:5), abs.confint.mod50[1:5,2], length = 0)
+points(days~as.factor(Treat), data=dat50)
 
 
 
