@@ -14,10 +14,16 @@ dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
 sumdat <- read.csv ("output/chdatsum.csv", header=TRUE)
 
+##############
+### Models ###
+##############
+
 # 50% flowering
 mod.days50 <- lm(days~as.factor(Treat), data=dat50)
 Anova(mod.days50)
 anova(mod.days50) # Type I Sums of Squares is the same here, so okay to use default anova in R here!
+mod.ni.days50 <- lm(days ~ -1 + as.factor(Treat), data=dat50)
+
 
 # note to selves! EL_mean is percent flowering, but this is also replicated too much, best to do anova on data where each RowNumNumRep has one row of data
 mod.perflow <- lm(EL_mean~as.factor(Treat), data=dat)
@@ -37,7 +43,9 @@ anova(mod.maxperflo)
 mod.bagbuds <- lm(sum.bfall_mean~as.factor(Treat), data=sumdat)
 Anova(mod.bagbuds)
 anova(mod.bagbuds)
-hist(sumdat$sum.bfall_mean)
+mod.ni.bagbuds <- lm(sum.bfall_mean ~ -1 + as.factor(Treat), data=sumdat)
+
+hist(sumdat$sum.bfall_mean) # These data are pretty skewed, might be worth transforming, we can discuss later
 hist(log10(sumdat$sum.bfall_mean))
 
 # sum of all capfall (taking mean across stems, if two stems) so basically sum of one cluster
@@ -51,40 +59,63 @@ mod.smoist <- lm(mean.smoist~as.factor(Treat), data=sumdat)
 Anova(mod.smoist)
 anova(mod.smoist)
 
-# Also! Try plotting some of your estimates from the models and compare to your raw data graphs. 
+
+#################
+### Plotting ###
+#################
+
+# A few things to remember:
+# a model like this:
+mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=sumdat)
+# will report coefficients (coef command) as Chamber 1, then EVERY other values as relative to Chamber 1
+# so you will need to adjust them to absolute values before you plot them, like this:
+abs.coeff.capfall <- mod.capfall$coef
+abs.coeff.capfall[2:5] <- abs.coeff.capfall[2:5] + abs.coeff.capfall[1]
+# the above just adds the intercept to rows 2-5
+# and you need to adjust the confint (the current ones are the confint around the relative values)
+# ... by adding the intercept again to each (I am pretty sure I have this right)
+abs.confint.capfall <-  confint(mod.capfall)
+abs.confint.capfall[2:5,1] <- confint(mod.capfall)[2:5,1] + mod.capfall$coef[1]
+abs.confint.capfall[2:5,2] <- confint(mod.capfall)[2:5,2] + mod.capfall$coef[1]
+# Phew! Now, you can try plotting:
+range(sumdat$sum.capfall_mean) # make sure ylim is big enough
+plot(abs.coeff.capfall~as.factor(c(1:5)), ylim=c(-30, 120))
+arrows(c(1:5), abs.confint.capfall[1:5,1], c(1:5), abs.confint.capfall[1:5,2], length = 0)
+points(sum.capfall_mean~as.factor(Treat), data=sumdat)
+
+# A slightly easier way to do this for just plotting is to write the model without an intercept
+mod.ni.capfall <- lm(sum.capfall_mean~ - 1 + as.factor(Treat), data=sumdat) # that -1 says 'no intercept' 
+# then things are absolute, not all relative ...
+plot(coef(mod.ni.capfall)~as.factor(c(1:5)), ylim=c(-30, 120))
+arrows(c(1:5), confint(mod.ni.capfall)[1:5,1], c(1:5), confint(mod.ni.capfall)[1:5,2], length = 0)
+points(sum.capfall_mean~as.factor(Treat), data=sumdat)
+# You might notice the confidence intervals (confint) change a little, ...
+# there are lots of ways to calculate confint so this is not terribly surprising
+# we'll just want to be careful about how we do it for publication
+# and think more before using the no intercept model for publication, but is fine at this stage!
+
+# Bagged buds (sad buds)
+range(sumdat$sum.bfall_mean) # make sure ylim is big enough
+plot(coef(mod.ni.bagbuds)~as.factor(c(1:5)), ylim=c(-50, 170))
+arrows(c(1:5), confint(mod.ni.bagbuds)[1:5,1] , c(1:5), confint(mod.ni.bagbuds)[1:5,2], length = 0)
+points(sum.bfall_mean~as.factor(Treat), data=sumdat) # use the data used for the model!
+
+# 50% flowering (I also show here nicer axes and colored by variety)
+range(dat50$days) # make sure ylim is big enough
+plot(coef(mod.ni.days50)~as.factor(c(1:5)), ylim=c(30, 70), ylab="days to 50% flowering", xlab="treatment")
+arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:5,2], length = 0)
+points(days~as.factor(Treat), data=dat50, col=dat50$Var)
+legend("topright", legend=unique(dat50$Var), col=1:length(dat50$Var), pch=1) # you can tweak this many ways, try:
+?legend # to see the options
+
+
+##
+## Older code below ... may need to be updated!
 plot(mod.perflow$coef~as.factor(c(1:5)), ylim=c(-10, 20))
 arrows(c(1:5), confint(mod.perflow)[1:5], c(1:5), confint(mod.perflow)[1:5,2], length = 0)
 points(dat$EL_mean~as.factor(Treat), data=dat)
 
-# Bagged buds (sad buds)
-# first, change the values so they are all absolute...
-abs.coeff.bagbuds <- mod.bagbuds$coef
-abs.coeff.bagbuds[2:5] <- abs.coeff.bagbuds[2:5] + abs.coeff.bagbuds[1]
-# now plot
-range(sumdat$sum.bfall_mean) # make sure ylim is big enough
-plot(abs.coeff.bagbuds~as.factor(c(1:5)), ylim=c(-50, 170))
-arrows(c(1:5), confint(mod.bagbuds)[1:5], c(1:5), confint(mod.bagbuds)[1:5,2], length = 0)
-points(sum.bfall_mean~as.factor(Treat), data=sumdat) # use the data used for the model!
 
-# abs.confint.bagbuds <-  confint(mod.bagbuds)
-# abs.confint.bagbuds[2:5,1] <- abs.coeff.bagbuds[2:5] + abs.confint.bagbuds[2:5,1]
-# abs.confint.bagbuds[2:5,2] <- abs.coeff.bagbuds[2:5] + abs.confint.bagbuds[2:5,2]
-# arrows(c(1:5), abs.confint.bagbuds[1:5,1], c(1:5), abs.confint.bagbuds[1:5,2], length = 0)
-
-
-# 50% flowering
-# correct coefs (since they are relative to the intercept!)
-abs.coeff.mod50 <- mod.days50$coef
-abs.coeff.mod50[2:5] <- abs.coeff.mod50[2:5] + abs.coeff.mod50[1]
-# For some reason the confint here seem relative also (this seems odd to me)
-abs.confint.mod50 <-  confint(mod.days50)
-abs.confint.mod50[2:5,1] <- abs.coeff.mod50[2:5] + abs.confint.mod50[2:5,1]
-abs.confint.mod50[2:5,2] <- abs.coeff.mod50[2:5] + abs.confint.mod50[2:5,2]
-# now back to plotting
-range(dat50$days) # make sure ylim is big enough
-plot(abs.coeff.mod50~as.factor(c(1:5)), ylim=c(30, 65))
-arrows(c(1:5), abs.confint.mod50[1:5,1], c(1:5), abs.confint.mod50[1:5,2], length = 0)
-points(days~as.factor(Treat), data=dat50)
 
 
 
