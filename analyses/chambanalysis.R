@@ -53,7 +53,17 @@ mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=sumdat)
 Anova(mod.capfall)
 anova(mod.capfall)
 # change in length
+mod.lengthchange <- lm(max.lengthchange~as.factor(Treat), data=sumdat)
+Anova(mod.lengthchange)
+anova(mod.lengthchange)
+mod.ni.lengthchange <- lm(max.lengthchange ~ -1 + as.factor(Treat), data=sumdat)
+
 # change in leafnum
+mod.lfchange <- lm(max.lfchange~as.factor(Treat), data=sumdat)
+Anova(mod.lfchange)
+anova(mod.lfchange)
+mod.ni.lfchange <- lm(max.lfchange ~ -1 + as.factor(Treat), data=sumdat)
+
 # anova on mean soil moisture (mean per pot across time in chamber)
 mod.smoist <- lm(mean.smoist~as.factor(Treat), data=sumdat)
 Anova(mod.smoist)
@@ -108,6 +118,17 @@ points(days~as.factor(Treat), data=dat50, col=dat50$Var)
 legend("topright", legend=unique(dat50$Var), col=1:length(dat50$Var), pch=1) # you can tweak this many ways, try:
 ?legend # to see the options
 
+## change in length
+range(sumdat$max.lengthchange) # make sure ylim is big enough
+plot(coef(mod.ni.lengthchange)~as.factor(c(1:5)), ylim=c(0, 200))
+arrows(c(1:5), confint(mod.ni.lengthchange)[1:5,1] , c(1:5), confint(mod.ni.lengthchange)[1:5,2], length = 0)
+points(max.lengthchange~as.factor(Treat), data=sumdat)
+
+## change in leaf number
+range(sumdat$max.lfchange) # make sure ylim is big enough
+plot(coef(mod.ni.lfchange)~as.factor(c(1:5)), ylim=c(0, 10))
+arrows(c(1:5), confint(mod.ni.lfchange)[1:5,1] , c(1:5), confint(mod.ni.lfchange)[1:5,2], length = 0)
+points(max.lfchange~as.factor(Treat), data=sumdat)
 
 ##
 ## Older code below ... may need to be updated!

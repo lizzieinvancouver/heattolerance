@@ -45,7 +45,11 @@ chambdater$stem1_vFcount <- as.numeric(chambdater$stem1_vFcount)
 chambdater[229, ][which(chambdater[229, ]=="7")] <- 10
 chambdater[146, ][which(chambdater[146, ]=="11")] <- 10
 
-
+## remove sad stem 1s
+sadstemlist <- c("13.3.R4", "16.1.R7", "18.5.R5", "19.9.R3", "20.2.R4", "20.5.R3")
+chambdater$stem1_percflow[which(chambdater$RowNumNumRep %in% sadstemlist)] <- NA
+chambdater$stem1_length[which(chambdater$RowNumNumRep %in% sadstemlist)] <- NA
+chambdater$stem1_leafnum[which(chambdater$RowNumNumRep %in% sadstemlist)] <- NA
 
 # delete a couple random rows of data after checking what's in them (straight from og flowgraphs)
 unique(chambdater$X)
@@ -210,7 +214,9 @@ chdatsum <-
         max.pf_mean = max(pf_mean, na.rm=TRUE),
         sum.bfall_mean = sum(bfall_mean, na.rm=TRUE),
         sum.capfall_mean = sum(capfall_mean, na.rm=TRUE),
-        mean.smoist = mean(sm_mean, na.rm=TRUE))
+        mean.smoist = mean(sm_mean, na.rm=TRUE),
+        max.lfchange = max(lfchange, ra.rm=TRUE),
+        max.lengthchange = max(stemlenchange, ra.rm=TRUE))
 
 
 
