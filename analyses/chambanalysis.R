@@ -9,6 +9,7 @@ if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmi
 # Get packages
 library(ggplot2)
 library(car)
+library(colorspace)
 
 dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
@@ -38,6 +39,7 @@ anova(mod.perflow)
 mod.maxperflo <- lm(max.pf_mean~as.factor(Treat), data=sumdat)
 Anova(mod.maxperflo)
 anova(mod.maxperflo)
+
 # days to 50% (corr. for only those that made it that far (and do some spot-checking on those data)
 # sum of all bag buds (taking mean across stems, if two stems) so basically sum of one cluster
 mod.bagbuds <- lm(sum.bfall_mean~as.factor(Treat), data=sumdat)
@@ -52,6 +54,7 @@ hist(log10(sumdat$sum.bfall_mean))
 mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=sumdat)
 Anova(mod.capfall)
 anova(mod.capfall)
+
 # change in length
 mod.lengthchange <- lm(max.lengthchange~as.factor(Treat), data=sumdat)
 Anova(mod.lengthchange)
@@ -117,6 +120,19 @@ arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:
 points(days~as.factor(Treat), data=dat50, col=dat50$Var)
 legend("topright", legend=unique(dat50$Var), col=1:length(dat50$Var), pch=1) # you can tweak this many ways, try:
 ?legend # to see the options
+
+##working on setting our own color palette
+my.col <- c("darkred", "dodgerblue", "darkseagreen", "burlywood",
+            "darkslateblue", "gray9", "gray30", "gray90")
+dat50$color <- factor(dat50$Var,
+            levels=c("Pinot gris", "Durif1", "Syrah", "Valdepenas", "Verdelho", "Cabernet Sauvignon", "Sauvignon blanc", "Tempranillo", "Durif2"),
+            labels=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6"))
+
+plot(coef(mod.ni.days50)~as.factor(c(1:5)), ylim=c(30, 70), ylab="days to 50% flowering", xlab="treatment")
+arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:5,2], length = 0)
+points(days~as.factor(Treat), data=dat50, col=as.character(dat50$color))
+legend("topright", legend=unique(dat50$Var), color=, pch=1) # I can't figure out how to get the colors ot be show in the legend
+
 
 ## change in length
 range(sumdat$max.lengthchange) # make sure ylim is big enough
