@@ -121,17 +121,15 @@ points(days~as.factor(Treat), data=dat50, col=dat50$Var)
 legend("topright", legend=unique(dat50$Var), col=1:length(dat50$Var), pch=1) # you can tweak this many ways, try:
 ?legend # to see the options
 
-##working on setting our own color palette
-my.col <- c("darkred", "dodgerblue", "darkseagreen", "burlywood",
-            "darkslateblue", "gray9", "gray30", "gray90")
-dat50$color <- factor(dat50$Var,
-            levels=c("Pinot gris", "Durif1", "Syrah", "Valdepenas", "Verdelho", "Cabernet Sauvignon", "Sauvignon blanc", "Tempranillo", "Durif2"),
-            labels=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6"))
-
+## Working on setting our own color palette
+dat50$color <- factor(dat50$Var, levels=c("Pinot gris", "Durif1", "Syrah", "Valdepenas", "Verdelho",
+    "Cabernet Sauvignon", "Sauvignon blanc", "Tempranillo", "Durif2"),
+     labels=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6"))
 plot(coef(mod.ni.days50)~as.factor(c(1:5)), ylim=c(30, 70), ylab="days to 50% flowering", xlab="treatment")
 arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:5,2], length = 0)
-points(days~as.factor(Treat), data=dat50, col=as.character(dat50$color))
-legend("topright", legend=unique(dat50$Var), color=, pch=1) # I can't figure out how to get the colors ot be show in the legend
+points(days~as.factor(Treat), data=dat50, col=dat50$color) # careful, the as.character() for color seemed to be screwing it up
+legend("topright", legend=unique(dat50$Var), col=unique(dat50$color), pch=1, bty="n")
+    # Note for above: color -> col and a couple small tweaks made it run! Also, bty=n removes the box around the legend
 
 
 ## change in length
