@@ -25,12 +25,18 @@ Anova(mod.days50)
 anova(mod.days50) # Type I Sums of Squares is the same here, so okay to use default anova in R here!
 mod.ni.days50 <- lm(days ~ -1 + as.factor(Treat), data=dat50)
 
+hist(dat50$days)
+hist(log10(dat50$days))
+
 
 # note to selves! EL_mean is percent flowering, but this is also replicated too much, best to do anova on data where each RowNumNumRep has one row of data
 mod.perflow <- lm(EL_mean~as.factor(Treat), data=dat)
 mod.perflow # shows means of each chamber
 Anova(mod.perflow)
 anova(mod.perflow)
+
+hist(dat$EL_mean)
+hist(log10(dat$EL_mean))
 
 # mod.perflow <- lme(EL_mean~as.factor(Treat), random=~1|RowNumNumRep, data=dat)
 
@@ -39,6 +45,10 @@ anova(mod.perflow)
 mod.maxperflo <- lm(max.pf_mean~as.factor(Treat), data=sumdat)
 Anova(mod.maxperflo)
 anova(mod.maxperflo)
+
+hist(sumdat$max.pf_mean)
+hist(log10(sumdat$max.pf_mean))
+
 
 # days to 50% (corr. for only those that made it that far (and do some spot-checking on those data)
 # sum of all bag buds (taking mean across stems, if two stems) so basically sum of one cluster
@@ -52,8 +62,11 @@ hist(log10(sumdat$sum.bfall_mean))
 
 # sum of all capfall (taking mean across stems, if two stems) so basically sum of one cluster
 mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=sumdat)
-Anova(mod.capfall)
+An.cf <- Anova(mod.capfall)
 anova(mod.capfall)
+
+hist(sumdat$sum.capfall_mean)
+hist(log10(sumdat$sum.capfall_mean))
 
 # change in length
 mod.lengthchange <- lm(max.lengthchange~as.factor(Treat), data=sumdat)
@@ -127,8 +140,8 @@ dat50$color <- factor(dat50$Var, levels=c("Pinot gris", "Durif1", "Syrah", "Vald
      labels=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6"))
 plot(coef(mod.ni.days50)~as.factor(c(1:5)), ylim=c(30, 70), ylab="days to 50% flowering", xlab="treatment")
 arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:5,2], length = 0)
-points(days~as.factor(Treat), data=dat50, col=dat50$color) # careful, the as.character() for color seemed to be screwing it up
-legend("topright", legend=unique(dat50$Var), col=unique(dat50$color), pch=1, bty="n")
+points(days~as.factor(Treat), data=dat50, col=as.character(dat50$color)) # careful, the as.character() for color seemed to be screwing it up
+legend("topright", legend=unique(dat50$Var), col=unique(as.character(dat50$color)), pch=1, bty="n")
     # Note for above: color -> col and a couple small tweaks made it run! Also, bty=n removes the box around the legend
 
 
