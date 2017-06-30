@@ -30,7 +30,8 @@ chds <- subset(dat, select=c(
   "EL_mean",
   "stemlenchange",
   "lfchange",
-  "Treat"))
+  "Treat",
+  "temp"))
 
 ##super basic plot
 ggplot(chds, aes(days, length_mean, color=Var, group=RowNumNumRep)) + 

@@ -45,6 +45,14 @@ chambdater$stem1_vFcount <- as.numeric(chambdater$stem1_vFcount)
 chambdater[229, ][which(chambdater[229, ]=="7")] <- 10
 chambdater[146, ][which(chambdater[146, ]=="11")] <- 10
 
+##mean temp for each chamber
+chambdater$temp <- NA
+chambdater$temp[which(chambdater$Treat=="Chamber 1")] <- 20
+chambdater$temp[which(chambdater$Treat=="Chamber 2")] <- 26
+chambdater$temp[which(chambdater$Treat=="Chamber 3")] <- 30
+chambdater$temp[which(chambdater$Treat=="Chamber 4")] <- 34
+chambdater$temp[which(chambdater$Treat=="Chamber 5")] <- 37
+
 ## remove sad stem 1s
 sadstemlist <- c("13.3.R4", "16.1.R7", "18.5.R5", "19.9.R3", "20.2.R4", "20.5.R3")
 chambdater$stem1_percflow[which(chambdater$RowNumNumRep %in% sadstemlist)] <- NA
@@ -205,12 +213,12 @@ chdat <- get_pheno_est(epdats,"50% flowering",50,NA)
 cdf <- unique(chdat)
 
 ##subset for Treat
-cdftreat <- subset(chambdats, select=c("RowNumNumRep", "Treat"))
+cdftreat <- subset(chambdats, select=c("RowNumNumRep", "Treat", "temp"))
 cdft <- unique(cdftreat)
 cd <- join(cdf,cdft, by=c("RowNumNumRep"))
 
 chdatsum <-
-  ddply(chambdats, c("RowNumNumRep", "Treat", "Var"), summarise,
+  ddply(chambdats, c("RowNumNumRep", "Treat", "Var", "temp"), summarise,
         max.pf_mean = max(pf_mean, na.rm=TRUE),
         sum.bfall_mean = sum(bfall_mean, na.rm=TRUE),
         sum.capfall_mean = sum(capfall_mean, na.rm=TRUE),
