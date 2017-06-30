@@ -140,8 +140,8 @@ dat50$color <- factor(dat50$Var, levels=c("Pinot gris", "Durif1", "Syrah", "Vald
      labels=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6"))
 plot(coef(mod.ni.days50)~as.factor(c(1:5)), ylim=c(30, 70), ylab="days to 50% flowering", xlab="treatment")
 arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:5,2], length = 0)
-points(days~as.factor(Treat), data=dat50, col=as.character(dat50$color)) # careful, the as.character() for color seemed to be screwing it up
-legend("topright", legend=unique(dat50$Var), col=unique(as.character(dat50$color)), pch=1, bty="n")
+points(days~as.factor(Treat), data=dat50, col=as.character(dat50$color), pch=20, cex=1.25) # careful, the as.character() for color seemed to be screwing it up
+legend("topright", legend=unique(dat50$Var), col=unique(as.character(dat50$color)), pch=20, bty="n", pt.cex=c(1.25))
     # Note for above: color -> col and a couple small tweaks made it run! Also, bty=n removes the box around the legend
 
 
