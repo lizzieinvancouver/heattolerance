@@ -118,6 +118,8 @@ anova(cont.lfchange)
 mod.smoist <- lm(mean.smoist~as.factor(Treat), data=sumdat)
 Anova(mod.smoist)
 anova(mod.smoist)
+mod.ni.smoist <- lm(mean.smoist ~ -1 + as.factor(Treat), data=sumdat)
+
 
 hist(sumdat$mean.smoist)
 hist(log10(sumdat$mean.smoist))
@@ -201,6 +203,12 @@ arrows(c(1:5), confint(mod.ni.lfchange)[1:5,1] , c(1:5), confint(mod.ni.lfchange
 points(max.lfchange~as.factor(Treat), data=sumdat)
 stat_summary(fun.data = plantsfun, geom=text)
 
+## change in soimoisture # mod.smoist <- lm(mean.smoist~as.factor(Treat), data=sumdat)
+
+range(sumdat$mean.smoist) # make sure ylim is big enough
+plot(coef(mod.ni.smoist)~as.factor(c(1:5)), ylim=c(9, 22))
+arrows(c(1:5), confint(mod.ni.smoist)[1:5,1] , c(1:5), confint(mod.ni.smoist)[1:5,2], length = 0)
+points(mean.smoist~as.factor(Treat), data=sumdat)
 
 
 ##
