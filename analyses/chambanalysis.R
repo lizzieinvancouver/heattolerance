@@ -74,21 +74,34 @@ Anova(mod.lengthchange)
 anova(mod.lengthchange)
 mod.ni.lengthchange <- lm(max.lengthchange ~ -1 + as.factor(Treat), data=sumdat)
 
+hist(sumdat$max.lengthchange)
+hist(log10(sumdat$max.lengthchange))
+
 # change in leafnum
 mod.lfchange <- lm(max.lfchange~as.factor(Treat), data=sumdat)
 Anova(mod.lfchange)
 anova(mod.lfchange)
 mod.ni.lfchange <- lm(max.lfchange ~ -1 + as.factor(Treat), data=sumdat)
 
+hist(sumdat$max.lfchange)
+hist(log10(sumdat$max.lfchange))
+
 # anova on mean soil moisture (mean per pot across time in chamber)
 mod.smoist <- lm(mean.smoist~as.factor(Treat), data=sumdat)
 Anova(mod.smoist)
 anova(mod.smoist)
 
+hist(sumdat$mean.smoist)
+hist(log10(sumdat$mean.smoist))
+
+
 
 #################
 ### Plotting ###
 #################
+
+plantsfun <- function(y)
+  c(label=length(y), y=median(y))
 
 # A few things to remember:
 # a model like this:
@@ -153,9 +166,12 @@ points(max.lengthchange~as.factor(Treat), data=sumdat)
 
 ## change in leaf number
 range(sumdat$max.lfchange) # make sure ylim is big enough
-plot(coef(mod.ni.lfchange)~as.factor(c(1:5)), ylim=c(0, 10))
+plot(coef(mod.ni.lfchange)~as.factor(c(1:5)), ylim=c(-1, 10))
 arrows(c(1:5), confint(mod.ni.lfchange)[1:5,1] , c(1:5), confint(mod.ni.lfchange)[1:5,2], length = 0)
 points(max.lfchange~as.factor(Treat), data=sumdat)
+stat_summary(fun.data = plantsfun, geom=text)
+
+
 
 ##
 ## Older code below ... may need to be updated!
