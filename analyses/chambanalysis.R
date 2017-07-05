@@ -132,9 +132,6 @@ anova(cont.smoist)
 ### Plotting ###
 #################
 
-plantsfun <- function(y)
-  c(label=length(y), y=median(y))
-
 # A few things to remember:
 # a model like this:
 mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=sumdat)
@@ -160,6 +157,8 @@ mod.ni.capfall <- lm(sum.capfall_mean~ - 1 + as.factor(Treat), data=sumdat) # th
 plot(coef(mod.ni.capfall)~as.factor(c(1:5)), ylim=c(-30, 120))
 arrows(c(1:5), confint(mod.ni.capfall)[1:5,1], c(1:5), confint(mod.ni.capfall)[1:5,2], length = 0)
 points(sum.capfall_mean~as.factor(Treat), data=sumdat)
+nhere <- tapply(sumdat$sum.capfall_mean, sumdat$Treat, length)
+text(x = as.factor(row.names(nhere)), y = confint(mod.ni.capfall)[1:5,2]+8, label = nhere, pos = 3, cex = 0.8, col = "black")
 # You might notice the confidence intervals (confint) change a little, ...
 # there are lots of ways to calculate confint so this is not terribly surprising
 # we'll just want to be careful about how we do it for publication
@@ -170,6 +169,9 @@ range(sumdat$sum.bfall_mean) # make sure ylim is big enough
 plot(coef(mod.ni.bagbuds)~as.factor(c(1:5)), ylim=c(-50, 170))
 arrows(c(1:5), confint(mod.ni.bagbuds)[1:5,1] , c(1:5), confint(mod.ni.bagbuds)[1:5,2], length = 0)
 points(sum.bfall_mean~as.factor(Treat), data=sumdat) # use the data used for the model!
+nhere <- tapply(sumdat$sum.bfall_mean, sumdat$Treat, length)
+text(x = as.factor(row.names(nhere)), y = confint(mod.ni.bagbuds)[1:5,2]+8, label = nhere, pos = 3, cex = 0.8, col = "black")
+
 
 # 50% flowering (I also show here nicer axes and colored by variety)
 range(dat50$days) # make sure ylim is big enough
@@ -178,6 +180,8 @@ arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:
 points(days~as.factor(Treat), data=dat50, col=dat50$Var)
 legend("topright", legend=unique(dat50$Var), col=1:length(dat50$Var), pch=1) # you can tweak this many ways, try:
 ?legend # to see the options
+nhere <- tapply(dat50$days,dat50$Treat,length)
+text(x = as.factor(row.names(nhere)), y = confint(mod.ni.days50)[1:5,2]+2, label = nhere, pos = 3, cex = 0.8, col = "black")
 
 ## Working on setting our own color palette
 dat50$color <- factor(dat50$Var, levels=c("Pinot gris", "Durif1", "Syrah", "Valdepenas", "Verdelho",
@@ -192,16 +196,19 @@ legend("topright", legend=unique(dat50$Var), col=unique(as.character(dat50$color
 
 ## change in length
 range(sumdat$max.lengthchange) # make sure ylim is big enough
-plot(coef(mod.ni.lengthchange)~as.factor(c(1:5)), ylim=c(0, 200))
+plot(coef(mod.ni.lengthchange)~as.factor(c(1:5)), ylim=c(0, 220))
 arrows(c(1:5), confint(mod.ni.lengthchange)[1:5,1] , c(1:5), confint(mod.ni.lengthchange)[1:5,2], length = 0)
 points(max.lengthchange~as.factor(Treat), data=sumdat)
+nhere <- tapply(sumdat$max.lengthchange, sumdat$Treat, length)
+text(x = as.factor(row.names(nhere)), y = confint(mod.ni.lengthchange)[1:5,2]+20, label = nhere, pos = 3, cex = 0.8, col = "black")
 
 ## change in leaf number
 range(sumdat$max.lfchange) # make sure ylim is big enough
 plot(coef(mod.ni.lfchange)~as.factor(c(1:5)), ylim=c(-1, 10))
 arrows(c(1:5), confint(mod.ni.lfchange)[1:5,1] , c(1:5), confint(mod.ni.lfchange)[1:5,2], length = 0)
 points(max.lfchange~as.factor(Treat), data=sumdat)
-stat_summary(fun.data = plantsfun, geom=text)
+nhere <- tapply(sumdat$max.lfchange, sumdat$Treat, length)
+text(x = as.factor(row.names(nhere)), y = confint(mod.ni.lfchange)[1:5,2]+1, label = nhere, pos = 3, cex = 0.8, col = "black")
 
 ## change in soimoisture # mod.smoist <- lm(mean.smoist~as.factor(Treat), data=sumdat)
 
