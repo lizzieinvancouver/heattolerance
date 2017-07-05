@@ -28,6 +28,11 @@ mod.ni.days50 <- lm(days ~ -1 + as.factor(Treat), data=dat50)
 hist(dat50$days)
 hist(log10(dat50$days))
 
+  ##cont
+cont.days50 <- lm(days~temp, data=dat50)
+Anova(cont.days50)
+anova(cont.days50)
+
 
 # note to selves! EL_mean is percent flowering, but this is also replicated too much, best to do anova on data where each RowNumNumRep has one row of data
 mod.perflow <- lm(EL_mean~as.factor(Treat), data=dat)
@@ -49,6 +54,10 @@ anova(mod.maxperflo)
 hist(sumdat$max.pf_mean)
 hist(log10(sumdat$max.pf_mean))
 
+cont.maxperflo <- lm(max.pf_mean~temp, data=sumdat)
+Anova(cont.maxperflo)
+anova(cont.maxperflo)
+
 
 # days to 50% (corr. for only those that made it that far (and do some spot-checking on those data)
 # sum of all bag buds (taking mean across stems, if two stems) so basically sum of one cluster
@@ -60,6 +69,11 @@ mod.ni.bagbuds <- lm(sum.bfall_mean ~ -1 + as.factor(Treat), data=sumdat)
 hist(sumdat$sum.bfall_mean) # These data are pretty skewed, might be worth transforming, we can discuss later
 hist(log10(sumdat$sum.bfall_mean))
 
+cont.bagbuds <- lm(sum.bfall_mean~temp, data=sumdat)
+Anova(cont.bagbuds)
+anova(cont.bagbuds)
+
+
 # sum of all capfall (taking mean across stems, if two stems) so basically sum of one cluster
 mod.capfall <- lm(sum.capfall_mean~as.factor(Treat), data=sumdat)
 An.cf <- Anova(mod.capfall)
@@ -67,6 +81,10 @@ anova(mod.capfall)
 
 hist(sumdat$sum.capfall_mean)
 hist(log10(sumdat$sum.capfall_mean))
+
+cont.capfall <- lm(sum.capfall_mean~temp, data=sumdat)
+Anova(cont.capfall)
+anova(cont.capfall)
 
 # change in length
 mod.lengthchange <- lm(max.lengthchange~as.factor(Treat), data=sumdat)
@@ -77,6 +95,11 @@ mod.ni.lengthchange <- lm(max.lengthchange ~ -1 + as.factor(Treat), data=sumdat)
 hist(sumdat$max.lengthchange)
 hist(log10(sumdat$max.lengthchange))
 
+cont.lengthchange <- lm(max.lengthchange~temp, data=sumdat)
+Anova(cont.lengthchange)
+anova(cont.lengthchange)
+
+
 # change in leafnum
 mod.lfchange <- lm(max.lfchange~as.factor(Treat), data=sumdat)
 Anova(mod.lfchange)
@@ -86,6 +109,11 @@ mod.ni.lfchange <- lm(max.lfchange ~ -1 + as.factor(Treat), data=sumdat)
 hist(sumdat$max.lfchange)
 hist(log10(sumdat$max.lfchange))
 
+cont.lfchange <- lm(max.lfchange~temp, data=sumdat)
+Anova(cont.lfchange)
+anova(cont.lfchange)
+
+
 # anova on mean soil moisture (mean per pot across time in chamber)
 mod.smoist <- lm(mean.smoist~as.factor(Treat), data=sumdat)
 Anova(mod.smoist)
@@ -94,7 +122,9 @@ anova(mod.smoist)
 hist(sumdat$mean.smoist)
 hist(log10(sumdat$mean.smoist))
 
-
+cont.smoist <- lm(mean.smoist~temp, data=sumdat)
+Anova(cont.smoist)
+anova(cont.smoist)
 
 #################
 ### Plotting ###
