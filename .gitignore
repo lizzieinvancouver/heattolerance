@@ -1,12 +1,8 @@
+
 *.Rhistory
 *.DS_Store
 * .Rapp.history
 zarchive/
 emails/
-<<<<<<< HEAD
-
-
-analyses/.Rhistory
-=======
 analyses/.Rapp.history
->>>>>>> origin/master
+notposting/
