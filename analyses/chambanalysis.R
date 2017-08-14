@@ -15,6 +15,16 @@ dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
 sumdat <- read.csv ("output/chdatsum.csv", header=TRUE)
 
+###################
+## Some clean up ##
+###################
+
+dat$Var_corr <- dat$Var
+dat$Var_corr[which(dat$Var_corr=="Durif1")] <- "Durif"
+dat$Var_corr[which(dat$Var_corr=="Durif2")] <- "Durif"
+dat$Var_corr[which(dat$Var_corr=="Valdepenas")] <- "Tempranillo"
+unique(dat$Var_corr)
+
 ##############
 ### Models ###
 ##############
@@ -219,12 +229,45 @@ points(mean.smoist~as.factor(Treat), data=sumdat)
 
 
 ##
-## Older code below ... may need to be updated!
-plot(mod.perflow$coef~as.factor(c(1:5)), ylim=c(-10, 20))
-arrows(c(1:5), confint(mod.perflow)[1:5], c(1:5), confint(mod.perflow)[1:5,2], length = 0)
-points(dat$EL_mean~as.factor(Treat), data=dat)
+## Playing around with making percent flowering figures ..
+##
 
+# Set up plotting colors and symbols
+treatcol <- heat.colors(5, alpha = 1)
+varsym <- c(0, 1, 3, 4, 6, 7, 15, 16, 18)
 
+# First, summarize the data: Here bty Treatment and variety
+pfvarsummary <-
+      ddply(dat, c("Treat", "Var_corr", "days"), summarise,
+      mean = mean(pf_mean),
+      sd = sd(pf_mean),
+      sem = sd(pf_mean)/sqrt(length(pf_mean)))
 
+# Next, make an empty plot
+plot(mean~days, data=pfvarsummary, type="n")
+# Now add lines -- each color is a treatment
+# And each symbol is a variety
+for (treatnum in c(1:length(unique(pfvarsummary$Treat)))){
+    subtreat <- subset(pfvarsummary, Treat==unique(pfvarsummary$Treat)[treatnum])
+    subtreat$Var_corr <- as.factor(subtreat$Var_corr)
+    points(mean~days, data=subtreat, col=treatcol[treatnum],
+        pch=varsym[subtreat$Var_corr])
+    lines(mean~days, data=subtreat, col=treatcol[treatnum])
+    }
 
+# Maybe easier to just show treatments and skip varieties...
+pfsummary <-
+      ddply(dat, c("Treat", "days"), summarise,
+      mean = mean(pf_mean),
+      sd = sd(pf_mean),
+      sem = sd(pf_mean)/sqrt(length(pf_mean)))
+   
+plot(mean~days, data=pfsummary, type="n")
 
+for (treatnum in c(1:length(unique(pfsummary$Treat)))){
+    subtreat <- subset(pfsummary, Treat==unique(pfsummary$Treat)[treatnum])
+    points(mean~days, data=subtreat, col=treatcol[treatnum])
+    lines(mean~days, data=subtreat, col=treatcol[treatnum])
+    }
+
+        
