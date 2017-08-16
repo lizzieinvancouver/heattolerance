@@ -1,6 +1,10 @@
 ## Started 17 May 2017 ##
 ## By Lizzie and Nicole! ##
 
+## housekeeping
+rm(list=ls())
+options(stringsAsFactors = FALSE)
+
 # Set working directory: 
 if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses") 
 } else
@@ -10,6 +14,8 @@ if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmi
 library(ggplot2)
 library(car)
 library(colorspace)
+library(plyr)
+library(dplyr)
 
 dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
@@ -24,6 +30,13 @@ dat$Var_corr[which(dat$Var_corr=="Durif1")] <- "Durif"
 dat$Var_corr[which(dat$Var_corr=="Durif2")] <- "Durif"
 dat$Var_corr[which(dat$Var_corr=="Valdepenas")] <- "Tempranillo"
 unique(dat$Var_corr)
+
+sumdat$Var_corr <- sumdat$Var
+sumdat$Var_corr[which(sumdat$Var_corr=="Durif1")] <- "Durif"
+sumdat$Var_corr[which(sumdat$Var_corr=="Durif2")] <- "Durif"
+sumdat$Var_corr[which(sumdat$Var_corr=="Valdepenas")] <- "Tempranillo"
+unique(sumdat$Var_corr)
+
 
 ##############
 ### Models ###
@@ -227,16 +240,21 @@ plot(coef(mod.ni.smoist)~as.factor(c(1:5)), ylim=c(9, 22))
 arrows(c(1:5), confint(mod.ni.smoist)[1:5,1] , c(1:5), confint(mod.ni.smoist)[1:5,2], length = 0)
 points(mean.smoist~as.factor(Treat), data=sumdat)
 
-
 ##
-## Playing around with making percent flowering figures ..
+##
+## Playing around with making percent flowering figures ... and bagged buds
+##
 ##
 
 # Set up plotting colors and symbols
-treatcol <- heat.colors(5, alpha = 1)
+treatcol <- rev(heat.colors(5, alpha = 1))
 varsym <- c(0, 1, 3, 4, 6, 7, 15, 16, 18)
 
-# First, summarize the data: Here bty Treatment and variety
+##############################
+## A few plots through time ##
+##############################
+
+# First, summarize the data: Here by Treatment and variety
 pfvarsummary <-
       ddply(dat, c("Treat", "Var_corr", "days"), summarise,
       mean = mean(pf_mean),
@@ -255,7 +273,7 @@ for (treatnum in c(1:length(unique(pfvarsummary$Treat)))){
     lines(mean~days, data=subtreat, col=treatcol[treatnum])
     }
 
-# Maybe easier to just show treatments and skip varieties...
+# Easier to just show treatments and skip varieties...
 pfsummary <-
       ddply(dat, c("Treat", "days"), summarise,
       mean = mean(pf_mean),
@@ -269,5 +287,54 @@ for (treatnum in c(1:length(unique(pfsummary$Treat)))){
     points(mean~days, data=subtreat, col=treatcol[treatnum])
     lines(mean~days, data=subtreat, col=treatcol[treatnum])
     }
+legend("topleft", legend=unique(pfsummary$Treat), lty=1, 
+    col=treatcol,  bty="n")
 
-        
+# Repeat above for bagged buds...
+bbudssummary <-
+      ddply(dat, c("Treat", "days"), summarise,
+      mean = mean(bagbuds),
+      sd = sd(bagbuds),
+      sem = sd(bagbuds)/sqrt(length(bagbuds)))
+   
+plot(mean~days, data=bbudssummary, type="n")
+
+for (treatnum in c(1:length(unique(bbudssummary$Treat)))){
+    subtreat <- subset(bbudssummary, Treat==unique(bbudssummary$Treat)[treatnum])
+    points(mean~days, data=subtreat, col=treatcol[treatnum])
+    lines(mean~days, data=subtreat, col=treatcol[treatnum])
+    }
+legend("topleft", legend=unique(bbudssummary$Treat), lty=1, 
+    col=treatcol,  bty="n")
+
+########################################
+## Showing means and raw data overall ##
+########################################
+
+# First, summarize the data, without days: Here by Treatment and variety
+# We should do this also with 25% flowering
+bbudsvarmeans <-
+      ddply(sumdat, c("Treat", "temp", "Var_corr"), summarise,
+      mean = mean(sum.bfall_mean),
+      sd = sd(sum.bfall_mean),
+      sem = sd(sum.bfall_mean)/sqrt(length(sum.bfall_mean)))
+
+bbudsmeans <-
+      ddply(sumdat, c("Treat", "temp"), summarise,
+      mean = mean(sum.bfall_mean),
+      sd = sd(sum.bfall_mean),
+      sem = sd(sum.bfall_mean)/sqrt(length(sum.bfall_mean)))
+
+# Set up the blank plot, then do each data point; then plot the means and errors
+plot(mean~temp, data=bbudsmeans, ylim=c(-5, 180), type="n")
+
+for (treatnum in c(1:length(unique(sumdat$temp)))){
+    subtreat <- subset(sumdat, temp==unique(sumdat$temp)[treatnum])
+    points(sum.bfall_mean~temp, data=subtreat, col=treatcol[treatnum])
+    }
+legend("topleft", legend=unique(sumdat$Treat), pch=16, 
+    col=treatcol,  bty="n")
+
+points(mean~temp, data=bbudsmeans, ylim=c(-5, 180), lwd=2)
+arrows(bbudsmeans$temp, bbudsmeans$mean-bbudsmeans$sem,  bbudsmeans$temp,
+    bbudsmeans$mean+bbudsmeans$sem, length = 0, lwd=2)
