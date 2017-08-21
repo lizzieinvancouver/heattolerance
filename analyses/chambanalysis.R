@@ -14,6 +14,7 @@ if(length(grep("Lizzie", getwd())>0)) {    setwd("~/Documents/git/projects/vinmi
 library(ggplot2)
 library(car)
 library(colorspace)
+library(RColorBrewer) # makes nice colors
 library(plyr)
 library(dplyr)
 
@@ -246,10 +247,17 @@ points(mean.smoist~as.factor(Treat), data=sumdat)
 ##
 ##
 
-# Set up plotting colors and symbols
-treatcol <- rev(heat.colors(5, alpha = 1))
+# Set up plotting colors, symbols and treatment labels
+display.brewer.all() # these are all the RColorBrewer palettes
+treatcol <- rev(brewer.pal(10, "Spectral")[1:5])
 varsym <- c(0, 1, 3, 4, 6, 7, 15, 16, 18)
+daynightemp <- c(expression(paste("17/23",degree,"C")),
+    expression(paste("23/29",degree,"C")),
+    expression(paste("27/33",degree,"C")),
+    expression(paste("31/37",degree,"C")),
+    expression(paste("34/40",degree,"C")))
 
+# 
 ##############################
 ## A few plots through time ##
 ##############################
@@ -326,13 +334,16 @@ bbudsmeans <-
       sem = sd(sum.bfall_mean)/sqrt(length(sum.bfall_mean)))
 
 # Set up the blank plot, then do each data point; then plot the means and errors
-plot(mean~temp, data=bbudsmeans, ylim=c(-5, 180), type="n")
+plot(mean~temp, data=bbudsmeans, ylim=c(-5, 180), type="n", xaxt="n",
+    xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
+    ylab="Flower buds lost")
+axis(1, at=bbudsmeans$temp, labels=bbudsmeans$temp)
 
 for (treatnum in c(1:length(unique(sumdat$temp)))){
-    subtreat <- subset(sumdat, temp==unique(sumdat$temp)[treatnum])
-    points(sum.bfall_mean~temp, data=subtreat, col=treatcol[treatnum])
+    subtreat <- subset(sumdat, temp==sort(unique(sumdat$temp))[treatnum])
+    points(sum.bfall_mean~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
     }
-legend("topleft", legend=unique(sumdat$Treat), pch=16, 
+legend("topleft", legend=daynightemp, pch=16, 
     col=treatcol,  bty="n")
 
 points(mean~temp, data=bbudsmeans, ylim=c(-5, 180), lwd=2)

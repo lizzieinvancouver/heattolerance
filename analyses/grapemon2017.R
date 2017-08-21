@@ -21,6 +21,7 @@ sort(unique(fruit$RowNumNumRep)) # 6
 
 # buds but no flowers?
 unique(flowbuds$RowNumNumRep)[which(!unique(flowbuds$RowNumNumRep) %in% unique(flow$RowNumNumRep))]
+# I checked the plants with buds but no flowers; I saw a super tiny aborted cluster on 19.9.R2 and a dried up aborted cluster on 38.7.R4; the other plants I imagine aborted but no evidence remained (that I could see)
 
 # was flowering with Nicole:
 # 19.9.R3
