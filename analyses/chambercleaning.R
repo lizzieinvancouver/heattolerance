@@ -167,6 +167,7 @@ chambdats$stem1pflowr <- NA
 chambdats$stem2pflowr <- NA
 
 
+
 for(i in seq_along(unique.ind)){ # i = 1
    # indhere <- "16.1.R3" # example of one with a couple values ...
    indhere <- unique.ind[i]
@@ -192,6 +193,7 @@ for(i in seq_along(unique.ind)){ # i = 1
 }
 
 
+
 ## taking some means
 chambdats$stemlenchange <- rowMeans(chambdats[c("stem1change", "stem2change")], na.rm=TRUE)
 chambdats$lfchange <- rowMeans(chambdats[c("stem1lfchange", "stem2lfchange")], na.rm=TRUE)
@@ -208,14 +210,26 @@ epdats <- chambdats [which(!chambdats$RowNumNumRep %in% eplist),]
 
 ##estimatephen 50% flowering
 chdat <- get_pheno_est(epdats,"50% flowering",50,NA)
+chdat25 <- get_pheno_est(epdats,"25% flowering",25,NA)
+chdat20 <- get_pheno_est(epdats,"20% flowering",20,NA)
+chdat10 <- get_pheno_est(epdats,"10% flowering",10,NA)
+chdat05 <- get_pheno_est(epdats,"5% flowering",5,NA)
 
 ##remove duplicates
 cdf <- unique(chdat)
+cdf25 <- unique(chdat25)
+cdf20 <- unique(chdat20)
+cdf10 <- unique(chdat10)
+cdf05 <- unique(chdat05)
 
 ##subset for Treat
 cdftreat <- subset(chambdats, select=c("RowNumNumRep", "Treat", "temp"))
 cdft <- unique(cdftreat)
 cd <- join(cdf,cdft, by=c("RowNumNumRep"))
+cd25 <- join(cdf25,cdft, by=c("RowNumNumRep"))
+cd20 <- join(cdf20,cdft, by=c("RowNumNumRep"))
+cd10 <- join(cdf10,cdft, by=c("RowNumNumRep"))
+cd05 <- join(cdf05,cdft, by=c("RowNumNumRep"))
 
 chdatsum <-
   ddply(chambdats, c("RowNumNumRep", "Treat", "Var", "temp"), summarise,
@@ -225,10 +239,15 @@ chdatsum <-
         mean.smoist = mean(sm_mean, na.rm=TRUE),
         max.lfchange = max(lfchange, ra.rm=TRUE),
         max.lengthchange = max(stemlenchange, ra.rm=TRUE))
+        
 
 
 
 write.csv(chambdats, file="output/clchambdata.csv", row.names = FALSE)
 write.csv(cd, file="output/chamb50fl.csv", row.names = FALSE)
+write.csv(cd25, file="output/chamb25fl.csv", row.names = FALSE)
+write.csv(cd20, file="output/chamb20fl.csv", row.names = FALSE)
+write.csv(cd10, file="output/chamb10fl.csv", row.names = FALSE)
+write.csv(cd05, file="output/chamb05fl.csv", row.names = FALSE)
 write.csv(chdatsum, file="output/chdatsum.csv", row.names = FALSE)
 

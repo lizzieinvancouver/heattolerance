@@ -67,10 +67,16 @@ datr$sm_mean <- rowMeans(datr[,8:10], na.rm=TRUE)
 dats <- join(datr, ids.sm, by=c("RowNum", "Num"))
 
 ##estimatephen
-df <- get_pheno_est(dats,"50% flowering",21,NA)
+df <- get_pheno_est(dats,"50% flowering",21,NA) ##I don't think this is working
+udf <- unique(df, na.rm = TRUE)
+subdats <- subset(dats, select=c("RowNumNumRep", "Var"))
+sdt <- unique(subdats)
+dt <- join(udf, sdt, by=c("RowNumNumRep"))
 
 
-write.csv(df, file="output/clghdata.csv", row.names = FALSE)
+
+
+write.csv(dt, file="output/clghdata.csv", row.names = FALSE)
 
 
 
