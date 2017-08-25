@@ -38,6 +38,8 @@ unique(dat$Var_corr) ##should we remove the NAs?
 hist(dat$days)
 hist(log10(dat$days))
 plot(dat$days)
+ggplot(dat, aes(days, Var_corr, color=Var_corr)) + 
+ geom_point()
 
 varsum <-
   ddply(dat, c("Var_corr", "days"), summarise)
