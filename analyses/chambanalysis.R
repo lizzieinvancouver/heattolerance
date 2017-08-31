@@ -325,12 +325,16 @@ bbudsvarmeans <-
       ddply(sumdat, c("Treat", "temp", "Var_corr"), summarise,
       mean = mean(sum.bfall_mean),
       sd = sd(sum.bfall_mean),
+      n = length(sum.bfall_mean),
       sem = sd(sum.bfall_mean)/sqrt(length(sum.bfall_mean)))
+# This shows we only have reps of Durif and Tempranillo within a treatment
 
 bbudsmeans <-
       ddply(sumdat, c("Treat", "temp"), summarise,
       mean = mean(sum.bfall_mean),
+      max = max(sum.bfall_mean), # used to plot the sample number values
       sd = sd(sum.bfall_mean),
+      n = length(sum.bfall_mean),
       sem = sd(sum.bfall_mean)/sqrt(length(sum.bfall_mean)))
 
 # Set up the blank plot, then do each data point; then plot the means and errors
@@ -349,3 +353,36 @@ legend("topleft", legend=daynightemp, pch=16,
 points(mean~temp, data=bbudsmeans, ylim=c(-5, 180), lwd=2)
 arrows(bbudsmeans$temp, bbudsmeans$mean-bbudsmeans$sem,  bbudsmeans$temp,
     bbudsmeans$mean+bbudsmeans$sem, length = 0, lwd=2)
+nhere <- tapply(sumdat$sum.capfall_mean, sumdat$Treat, length)
+text(x = bbudsmeans$temp, y = bbudsmeans$max+5,
+     label = bbudsmeans$n, pos = 3, cex = 0.8, col = "black")
+
+## and stem length change
+lenmeans <-
+      ddply(sumdat, c("Treat", "temp"), summarise,
+      mean = mean(max.lengthchange),
+      max = max(max.lengthchange),
+      sd = sd(max.lengthchange),
+      n = length(max.lengthchange),
+      sem = sd(max.lengthchange)/sqrt(length(max.lengthchange)))
+
+# Set up the blank plot, then do each data point; then plot the means and errors
+plot(mean~temp, data=lenmeans, ylim=c(-5, 250), type="n", xaxt="n",
+    xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
+    ylab="Flower buds lost")
+axis(1, at=lenmeans$temp, labels=lenmeans$temp)
+
+for (treatnum in c(1:length(unique(sumdat$temp)))){
+    subtreat <- subset(sumdat, temp==sort(unique(sumdat$temp))[treatnum])
+    points(max.lengthchange~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
+    }
+legend("topleft", legend=daynightemp, pch=16, 
+    col=treatcol,  bty="n")
+
+points(mean~temp, data=lenmeans, ylim=c(-5, 250), lwd=2)
+arrows(lenmeans$temp, lenmeans$mean-lenmeans$sem,  lenmeans$temp,
+    lenmeans$mean+lenmeans$sem, length = 0, lwd=2)
+text(x = lenmeans$temp, y = lenmeans$max+10,
+     label = lenmeans$n, pos = 3, cex = 0.8, col = "black")
+
+
