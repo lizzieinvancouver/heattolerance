@@ -35,7 +35,7 @@ dat$Var_corr[which(dat$Var_corr=="Alicante Bouchet")] <- "Alicante Bouschet"
 dat$Var_corr[which(dat$Var_corr=="Pinot  Meunier")] <- "Pinot Meunier"
 dat$Var_corr[which(dat$Var_corr=="Gewurtztraminer")] <- "Gewurztraminer"
 
-unique(dat$Var_corr) ##should we remove the NAs?
+unique(dat$Var_corr) 
 
 rmidat$variety[which(rmidat$variety=="Ungni blanc/Trebbiano")] <- "Ugni blanc/Trebbiano"
 rmi <- rmidat[which(rmidat$variety %in% c(unique(dat$Var_corr), "Valdepenas")),]
@@ -47,6 +47,7 @@ setdiff(unique(dat$Var_corr),unique(rmi$variety))
 ## Plotting ##
 ##############
 
+##50% flowering
 hist(dat$days)
 hist(log10(dat$days))
 plot(dat$days)
@@ -68,3 +69,21 @@ ggplot(rmi, aes(doy.2015, var.ord, color=var.ord)) +
 varsum <-
   ddply(dat, c("Var_corr", "days"), summarise)
 
+
+##budburst
+
+ggplot(dat, aes(days.to.bb, Var_corr, color=Var_corr)) + 
+  geom_point()
+
+dat$var.ord <- factor(dat$Var_corr, levels = dat$Var_corr[order(dat$days.to.bb)])
+ggplot(dat, aes(days.to.bb, var.ord, color=var.ord)) + 
+  geom_point()
+
+##leafout
+
+ggplot(dat, aes(days.to.lo, Var_corr, color=Var_corr)) + 
+  geom_point()
+
+dat$var.ord <- factor(dat$Var_corr, levels = dat$Var_corr[order(dat$days.to.lo)])
+ggplot(dat, aes(days.to.lo, var.ord, color=var.ord)) + 
+  geom_point()

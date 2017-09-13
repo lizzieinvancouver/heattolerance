@@ -66,13 +66,28 @@ datr$sm_mean <- rowMeans(datr[,8:10], na.rm=TRUE)
 ## join dfs
 dats <- join(datr, ids.sm, by=c("RowNum", "Num"))
 
-##estimatephen
-df <- get_pheno_est(dats,"50% flowering",21,NA) ##I don't think this is working
-udf <- unique(df, na.rm = TRUE)
+##estimatephen 4 and 7
+bbdf <- get_pheno_est(dats,"budbreak",4,NA) 
+ubb <- unique(bbdf, na.rm=TRUE)
 subdats <- subset(dats, select=c("RowNumNumRep", "Var"))
 sdt <- unique(subdats)
-dt <- join(udf, sdt, by=c("RowNumNumRep"))
+subb <- join(ubb, sdt, by=c("RowNumNumRep"))
+names(subb)[names(subb)=="days"] <- "days.to.bb"
+lodf <- get_pheno_est(dats,"leafout",7,NA) 
+ulo <- unique(lodf, na.rm = TRUE)
+sulo <- join(ulo, sdt, by=c("RowNumNumRep"))
+names(sulo)[names(sulo)=="days"] <- "days.to.lo"
+dat <- join(subb, sulo, by=c("RowNumNumRep"))
 
+##estimatephen 50%
+ffdf <- get_pheno_est(dats,"50% flowering",21,NA) 
+uff <- unique(ffdf, na.rm = TRUE)
+suff <- join(uff, sdt, by=c("RowNumNumRep"))
+
+##join estimatephens
+dt <- join(dat,suff, by=c("RowNumNumRep"))
+
+dts <- subset(dt, select=c("RowNumNumRep", "Var", "days.to.bb", "days.to.lo", "days"))
 
 
 
