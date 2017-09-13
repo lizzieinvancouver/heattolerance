@@ -204,11 +204,11 @@ chambdats$vFper_mean <- rowMeans(chambdats[c("stem1_vFper", "stem2_vFper")], na.
 ## renaming pflowr_mean so it works with estiamtephen
 colnames(chambdats)[which(names(chambdats) == "pflowr_mean")] <- "EL_mean"
 
-##subset for etimatephen 50%
-eplist <- c("16.1.R1", "16.1.R3", "16.1.R4", "18.5.R7", "18.5.R8", "20.5.R3", "38.7.R2")
+##subset for etimatephen 10%
+eplist <- c("16.1.R1", "16.1.R4", "24.9.R7")
 epdats <- chambdats [which(!chambdats$RowNumNumRep %in% eplist),]
 
-##estimatephen 50% flowering
+##estimatephen flowering
 chdat <- get_pheno_est(epdats,"50% flowering",50,NA)
 chdat25 <- get_pheno_est(epdats,"25% flowering",25,NA)
 chdat20 <- get_pheno_est(epdats,"20% flowering",20,NA)
@@ -248,6 +248,5 @@ write.csv(cd, file="output/chamb50fl.csv", row.names = FALSE)
 write.csv(cd25, file="output/chamb25fl.csv", row.names = FALSE)
 write.csv(cd20, file="output/chamb20fl.csv", row.names = FALSE)
 write.csv(cd10, file="output/chamb10fl.csv", row.names = FALSE)
-write.csv(cd05, file="output/chamb05fl.csv", row.names = FALSE)
 write.csv(chdatsum, file="output/chdatsum.csv", row.names = FALSE)
 

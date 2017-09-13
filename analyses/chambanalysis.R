@@ -19,6 +19,7 @@ library(plyr)
 library(dplyr)
 
 dat <- read.csv ("output/clchambdata.csv", header=TRUE)
+dat10 <- read.csv("output/chamb10fl.csv", header=TRUE)
 dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
 sumdat <- read.csv ("output/chdatsum.csv", header=TRUE)
 
@@ -31,6 +32,18 @@ dat$Var_corr[which(dat$Var_corr=="Durif1")] <- "Durif"
 dat$Var_corr[which(dat$Var_corr=="Durif2")] <- "Durif"
 dat$Var_corr[which(dat$Var_corr=="Valdepenas")] <- "Tempranillo"
 unique(dat$Var_corr)
+
+dat10$Var_corr <- dat10$Var
+dat10$Var_corr[which(dat10$Var_corr=="Durif1")] <- "Durif"
+dat10$Var_corr[which(dat10$Var_corr=="Durif2")] <- "Durif"
+dat10$Var_corr[which(dat10$Var_corr=="Valdepenas")] <- "Tempranillo"
+unique(dat10$Var_corr)
+
+dat50$Var_corr <- dat50$Var
+dat50$Var_corr[which(dat50$Var_corr=="Durif1")] <- "Durif"
+dat50$Var_corr[which(dat50$Var_corr=="Durif2")] <- "Durif"
+dat50$Var_corr[which(dat50$Var_corr=="Valdepenas")] <- "Tempranillo"
+unique(dat50$Var_corr)
 
 sumdat$Var_corr <- sumdat$Var
 sumdat$Var_corr[which(sumdat$Var_corr=="Durif1")] <- "Durif"
@@ -56,6 +69,13 @@ hist(log10(dat50$days))
 cont.days50 <- lm(days~temp, data=dat50)
 Anova(cont.days50)
 anova(cont.days50)
+
+
+## 10 flowering
+mod.days10 <- lm(days~as.factor(Treat), data=dat10)
+Anova(mod.days10)
+anova(mod.days10) # Type I Sums of Squares is the same here, so okay to use default anova in R here!
+mod.ni.days10 <- lm(days ~ -1 + as.factor(Treat), data=dat10)
 
 
 # note to selves! EL_mean is percent flowering, but this is also replicated too much, best to do anova on data where each RowNumNumRep has one row of data
@@ -216,7 +236,6 @@ arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:
 points(days~as.factor(Treat), data=dat50, col=as.character(dat50$color), pch=20, cex=1.25) # careful, the as.character() for color seemed to be screwing it up
 legend("topright", legend=unique(dat50$Var), col=unique(as.character(dat50$color)), pch=20, bty="n", pt.cex=c(1.25))
     # Note for above: color -> col and a couple small tweaks made it run! Also, bty=n removes the box around the legend
-
 
 ## change in length
 range(sumdat$max.lengthchange) # make sure ylim is big enough
