@@ -64,7 +64,10 @@ datr$EL_mean <- rowMeans(datr[,6:7], na.rm=TRUE)
 datr$sm_mean <- rowMeans(datr[,8:10], na.rm=TRUE)
 
 ## join dfs
-dats <- join(datr, ids.sm, by=c("RowNum", "Num"))
+datss <- join(datr, ids.sm, by=c("RowNum", "Num"))
+
+##remove unkown varieties
+dats <- datss[!(is.na(datss$Var)), ]
 
 ##estimatephen 4 and 7
 bbdf <- get_pheno_est(dats,"budbreak",4,NA) 
