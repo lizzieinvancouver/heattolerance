@@ -20,8 +20,7 @@ library(plyr)
 library(dplyr)
 
 dat <- read.csv(file="output/clghdata.csv", header = TRUE)
-rmidat <- read.csv(file="input/bblo_2014to2015.csv", header=TRUE) # this file is created in the vin repo in davis/analyses/davisphen_analysis.R; I just copied it and put it here
-rmidat <- subset(rmidat, select=c("variety",  "n.2015", "sd.2015",  "doy.2015", "se.2015")) # we should only use the 2015 data
+rmidat <- read.csv(file="output/bblo_2015syn.csv", header=TRUE) # see data/README_rmi.txt
 
 ###################
 ## Some clean up ##
