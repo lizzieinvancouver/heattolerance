@@ -69,6 +69,28 @@ datss <- join(datr, ids.sm, by=c("RowNum", "Num"))
 ##remove unkown varieties
 dats <- datss[!(is.na(datss$Var)), ]
 
+##
+## START CODE by Lizzie to figure out which plants made it to which stage ...
+## Hypothetical example: figure out which plants made it to EL 14 ....
+
+## summarizing data 
+maxstage <-
+      ddply(dats, c("RowNumNumRep"), summarise,
+      minEL = min(EL_mean),
+      maxEL = max(EL_mean))
+
+# Now subset to correct level and reduce the original dataframe ..
+stage15ind <- subset(maxstage, maxEL>13.999)
+datsEL14 <- dats[which(dats$RowNumNumRep %in% stage15ind$RowNumNumRep),]
+
+# quick check
+sort(unique(datsEL14$RowNumNumRep))
+sort(unique(stage15ind$RowNumNumRep))
+
+##
+## END CODE by Lizzie to figure out which plants made it to which stage
+##
+
 ##estimatephen 4 and 7
 bbdf <- get_pheno_est(dats,"budbreak",4,NA) 
 ubb <- unique(bbdf, na.rm=TRUE)
