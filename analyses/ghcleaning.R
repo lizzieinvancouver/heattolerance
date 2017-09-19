@@ -21,6 +21,7 @@ source("source/estimatephen.R")
 # get data
 dater <- read.csv("input/phenmoist_grapes2016.csv", header=TRUE)
 ids <- read.csv("input/VitisExpReps2.csv", header=TRUE)
+nsdater <- read.csv("output/clnodespursize.csv", header=TRUE)
 
 ## change header names here
 names(ids)[names(ids)=="Row"] <- "RowNum"
@@ -62,12 +63,18 @@ datr <- dater[!(dater$RowNumNumRep=="13.3.R5" |
 ##get averages
 datr$EL_mean <- rowMeans(datr[,6:7], na.rm=TRUE)
 datr$sm_mean <- rowMeans(datr[,8:10], na.rm=TRUE)
+nsdater$nodesize_mean <- rowMeans(nsdater[,6:9], na.rm=TRUE)
+nsdater$spurdiam_mean <- rowMeans(nsdater[,10:11], na.rm=TRUE)
+
+##subset nsdater
+nsdat <- subset(nsdater, select=c("RowNumNumRep", "nodesize_mean", "spurdiam_mean"))
 
 ## join dfs
 datss <- join(datr, ids.sm, by=c("RowNum", "Num"))
+datsss <- join(datss, nsdat, by=c("RowNumNumRep"))
 
 ##remove unkown varieties
-dats <- datss[!(is.na(datss$Var)), ]
+dats <- datsss[!(is.na(datsss$Var)), ]
 
 ##
 ## START CODE by Lizzie to figure out which plants made it to which stage ...
@@ -87,9 +94,23 @@ datsEL14 <- dats[which(dats$RowNumNumRep %in% stage15ind$RowNumNumRep),]
 sort(unique(datsEL14$RowNumNumRep))
 sort(unique(stage15ind$RowNumNumRep))
 
+
+
 ##
 ## END CODE by Lizzie to figure out which plants made it to which stage
 ##
+
+##which plants flowered (50% flowering = EL 23)
+
+submaxst23 <- subset(maxstage, maxEL>22.999)
+datsEL23 <- dats[which(dats$RowNumNumRep %in% submaxst23$RowNumNumRep),]
+
+sort(unique(datsEL23$RowNumNumRep))
+sort(unique(submaxst$RowNumNumRep))
+
+submaxst21 <- subset(maxstage, maxEL>20.999)
+datsEL21 <- dats[which(dats$RowNumNumRep %in% submaxst21$RowNumNumRep),]
+
 
 ##estimatephen 4 and 7
 bbdf <- get_pheno_est(dats,"budbreak",4,NA) 
@@ -105,18 +126,29 @@ names(sulo)[names(sulo)=="days"] <- "days.to.lo"
 dat <- join(subb, sulo, by=c("RowNumNumRep"))
 
 ##estimatephen 50%
-ffdf <- get_pheno_est(dats,"50% flowering",21,NA) 
+ffdf <- get_pheno_est(datsEL23,"50% flowering",23,NA) 
 uff <- unique(ffdf, na.rm = TRUE)
 suff <- join(uff, sdt, by=c("RowNumNumRep"))
+names(suff)[names(suff)=="days"] <- "days.to.50"
+
+##estimatephen 30%
+tfdf <- get_pheno_est(datsEL21,"30% flowering",21,NA) 
+utf <- unique(tfdf, na.rm = TRUE)
+sutf <- join(utf, sdt, by=c("RowNumNumRep"))
+names(sutf)[names(sutf)=="days"] <- "days.to.30"
 
 ##join estimatephens
-dt <- join(dat,suff, by=c("RowNumNumRep"))
+dt <- join(sutf,suff, by=c("RowNumNumRep"))
 
-dts <- subset(dt, select=c("RowNumNumRep", "Var", "days.to.bb", "days.to.lo", "days"))
+sdt <- subset(dt, select=c("RowNumNumRep", "Var", "days.to.50", "days.to.30"))
+
+dts <- subset(dat, select=c("RowNumNumRep", "Var", "days.to.bb", "days.to.lo"))
 
 
 
-write.csv(dt, file="output/clghdata.csv", row.names = FALSE)
+write.csv(dt, file="output/ghestphen4_7.csv", row.names = FALSE)
+write.csv(dats, file="output/clghdata.csv", row.names = FALSE)
+write.csv(sdt, file="output/ghestphen30_50.csv", row.names = FALSE)
 
 
 

@@ -205,31 +205,27 @@ chambdats$vFper_mean <- rowMeans(chambdats[c("stem1_vFper", "stem2_vFper")], na.
 colnames(chambdats)[which(names(chambdats) == "pflowr_mean")] <- "EL_mean"
 
 ##subset for etimatephen 10%
-eplist <- c("16.1.R1", "16.1.R4", "24.9.R7")
-epdats <- chambdats [which(!chambdats$RowNumNumRep %in% eplist),]
+ep10list <- c("16.1.R1", "16.1.R4", "24.9.R7")
+ep10dats <- chambdats [which(!chambdats$RowNumNumRep %in% ep10list),]
+
+##subset for estimatephen 50%
+ep50list <- c("16.1.R1", "16.1.R4", "24.9.R7", "16.1.R3", "18.5.R7", "18.5.R8", "20.5.R3", "38.7.R2")
+ep50dats <- chambdats [which(!chambdats$RowNumNumRep %in% ep50list),]
 
 ##estimatephen flowering
-chdat <- get_pheno_est(epdats,"50% flowering",50,NA)
-chdat25 <- get_pheno_est(epdats,"25% flowering",25,NA)
-chdat20 <- get_pheno_est(epdats,"20% flowering",20,NA)
-chdat10 <- get_pheno_est(epdats,"10% flowering",10,NA)
-chdat05 <- get_pheno_est(epdats,"5% flowering",5,NA)
+chdat <- get_pheno_est(ep50dats,"50% flowering",50,NA)
+chdat10 <- get_pheno_est(ep10dats,"10% flowering",10,NA)
+
 
 ##remove duplicates
 cdf <- unique(chdat)
-cdf25 <- unique(chdat25)
-cdf20 <- unique(chdat20)
 cdf10 <- unique(chdat10)
-cdf05 <- unique(chdat05)
 
 ##subset for Treat
 cdftreat <- subset(chambdats, select=c("RowNumNumRep", "Treat", "temp"))
 cdft <- unique(cdftreat)
 cd <- join(cdf,cdft, by=c("RowNumNumRep"))
-cd25 <- join(cdf25,cdft, by=c("RowNumNumRep"))
-cd20 <- join(cdf20,cdft, by=c("RowNumNumRep"))
 cd10 <- join(cdf10,cdft, by=c("RowNumNumRep"))
-cd05 <- join(cdf05,cdft, by=c("RowNumNumRep"))
 
 chdatsum <-
   ddply(chambdats, c("RowNumNumRep", "Treat", "Var", "temp"), summarise,
@@ -245,8 +241,6 @@ chdatsum <-
 
 write.csv(chambdats, file="output/clchambdata.csv", row.names = FALSE)
 write.csv(cd, file="output/chamb50fl.csv", row.names = FALSE)
-write.csv(cd25, file="output/chamb25fl.csv", row.names = FALSE)
-write.csv(cd20, file="output/chamb20fl.csv", row.names = FALSE)
 write.csv(cd10, file="output/chamb10fl.csv", row.names = FALSE)
 write.csv(chdatsum, file="output/chdatsum.csv", row.names = FALSE)
 

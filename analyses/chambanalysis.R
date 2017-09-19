@@ -77,6 +77,11 @@ Anova(mod.days10)
 anova(mod.days10) # Type I Sums of Squares is the same here, so okay to use default anova in R here!
 mod.ni.days10 <- lm(days ~ -1 + as.factor(Treat), data=dat10)
 
+hist(dat10$days)
+
+cont.days10 <- lm(days~temp, data=dat10)
+Anova(cont.days10)
+anova(cont.days10)
 
 # note to selves! EL_mean is percent flowering, but this is also replicated too much, best to do anova on data where each RowNumNumRep has one row of data
 mod.perflow <- lm(EL_mean~as.factor(Treat), data=dat)
@@ -102,8 +107,6 @@ cont.maxperflo <- lm(max.pf_mean~temp, data=sumdat)
 Anova(cont.maxperflo)
 anova(cont.maxperflo)
 
-
-# days to 50% (corr. for only those that made it that far (and do some spot-checking on those data)
 # sum of all bag buds (taking mean across stems, if two stems) so basically sum of one cluster
 mod.bagbuds <- lm(sum.bfall_mean~as.factor(Treat), data=sumdat)
 Anova(mod.bagbuds)
@@ -228,13 +231,22 @@ nhere <- tapply(dat50$days,dat50$Treat,length)
 text(x = as.factor(row.names(nhere)), y = confint(mod.ni.days50)[1:5,2]+2, label = nhere, pos = 3, cex = 0.8, col = "black")
 
 ## Working on setting our own color palette
-dat50$color <- factor(dat50$Var, levels=c("Pinot gris", "Durif1", "Syrah", "Valdepenas", "Verdelho",
-    "Cabernet Sauvignon", "Sauvignon blanc", "Tempranillo", "Durif2"),
-     labels=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6"))
+dat50$color <- factor(dat50$Var_corr, levels=c("Pinot gris", "Durif", "Syrah", "Verdelho",
+    "Cabernet Sauvignon", "Sauvignon blanc", "Tempranillo"),
+     labels=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f"))
 plot(coef(mod.ni.days50)~as.factor(c(1:5)), ylim=c(30, 70), ylab="days to 50% flowering", xlab="treatment")
 arrows(c(1:5), confint(mod.ni.days50)[1:5,1] , c(1:5), confint(mod.ni.days50)[1:5,2], length = 0)
 points(days~as.factor(Treat), data=dat50, col=as.character(dat50$color), pch=20, cex=1.25) # careful, the as.character() for color seemed to be screwing it up
-legend("topright", legend=unique(dat50$Var), col=unique(as.character(dat50$color)), pch=20, bty="n", pt.cex=c(1.25))
+legend("topright", legend=unique(dat50$Var_corr), col=unique(as.character(dat50$color)), pch=20, bty="n", pt.cex=c(1.25))
+
+##Copy of above for 10% flowering for kicks
+dat10$color <- factor(dat10$Var_corr, levels=c("Pinot gris", "Durif", "Syrah", "Verdelho",
+    "Cabernet Sauvignon", "Sauvignon blanc", "Tempranillo", "Gewurtztraminer"),
+     labels=c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00"))
+plot(coef(mod.ni.days10)~as.factor(c(1:5)), ylim=c(30, 70), ylab="days to 10% flowering", xlab="treatment")
+arrows(c(1:5), confint(mod.ni.days10)[1:5,1] , c(1:5), confint(mod.ni.days10)[1:5,2], length = 0)
+points(days~as.factor(Treat), data=dat10, col=as.character(dat10$color), pch=20, cex=1.25) # careful, the as.character() for color seemed to be screwing it up
+legend("topright", legend=unique(dat10$Var_corr), col=unique(as.character(dat10$color)), pch=20, bty="n", pt.cex=c(1.25))
     # Note for above: color -> col and a couple small tweaks made it run! Also, bty=n removes the box around the legend
 
 ## change in length
@@ -388,7 +400,7 @@ lenmeans <-
 # Set up the blank plot, then do each data point; then plot the means and errors
 plot(mean~temp, data=lenmeans, ylim=c(-5, 250), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
-    ylab="Flower buds lost")
+    ylab="Change in stem length")
 axis(1, at=lenmeans$temp, labels=lenmeans$temp)
 
 for (treatnum in c(1:length(unique(sumdat$temp)))){
@@ -403,5 +415,7 @@ arrows(lenmeans$temp, lenmeans$mean-lenmeans$sem,  lenmeans$temp,
     lenmeans$mean+lenmeans$sem, length = 0, lwd=2)
 text(x = lenmeans$temp, y = lenmeans$max+10,
      label = lenmeans$n, pos = 3, cex = 0.8, col = "black")
+     
+##     
 
 

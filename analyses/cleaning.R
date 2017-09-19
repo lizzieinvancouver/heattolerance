@@ -64,3 +64,5 @@ chambdats <- join(chambdater, ids.sm, by=c("RowNum", "Num"))
 dats <- join(dater, ids.sm, by=c("RowNum", "Num"))
 nsdats <- join(nodespurdater, ids.sm, by=c("RowNum", "Num"))
 
+write.csv(nsdats, file = "output/clnodespursize.csv", row.names = FALSE)
+
