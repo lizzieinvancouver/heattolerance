@@ -82,6 +82,11 @@ ggplot(rmi, aes(doy.2015, variety, color=variety)) +
 datep$var.ord <- factor(datep$Var_corr, levels = datep$Var_corr[order(datep$days.to.50)])
 ggplot(datep, aes(days.to.50, var.ord, color=var.ord)) + 
     geom_point()
+    
+##10% flowering
+datep$var.ord <- factor(datep$Var_corr, levels = datep$Var_corr[order(datep$days.to.10)])
+ggplot(datep, aes(days.to.10, var.ord, color=var.ord)) + 
+    geom_point()
 
 rmi$var.ord <- factor(rmi$variety, levels = rmi$variety[order(rmi$doy.2015)])
 ggplot(rmi, aes(doy.2015, var.ord, color=var.ord)) +

@@ -71,10 +71,10 @@ nsdat <- subset(nsdater, select=c("RowNumNumRep", "nodesize_mean", "spurdiam_mea
 
 ## join dfs
 datss <- join(datr, ids.sm, by=c("RowNum", "Num"))
-datsss <- join(datss, nsdat, by=c("RowNumNumRep"))
 
 ##remove unkown varieties
-dats <- datsss[!(is.na(datsss$Var)), ]
+dats <- datss[!(is.na(datss$Var)), ]
+
 
 ##
 ## START CODE by Lizzie to figure out which plants made it to which stage ...
@@ -108,9 +108,21 @@ datsEL23 <- dats[which(dats$RowNumNumRep %in% submaxst23$RowNumNumRep),]
 sort(unique(datsEL23$RowNumNumRep))
 sort(unique(submaxst$RowNumNumRep))
 
-submaxst21 <- subset(maxstage, maxEL>20.999)
-datsEL21 <- dats[which(dats$RowNumNumRep %in% submaxst21$RowNumNumRep),]
+## 10% flowering
+submaxst20 <- subset(maxstage, maxEL>19.999)
+datsEL20 <- dats[which(dats$RowNumNumRep %in% submaxst20$RowNumNumRep),]
 
+## develop inflor
+submaxst12 <- subset(maxstage, maxEL>11.999)
+datsEL12 <- dats[which(dats$RowNumNumRep %in% submaxst12$RowNumNumRep),]
+
+##EL 7
+submaxst7 <- subset(maxstage, maxEL>6.999)
+datsEL7 <- dats[which(dats$RowNumNumRep %in% submaxst7$RowNumNumRep),]
+
+##EL 4
+submaxst4 <- subset(maxstage, maxEL>3.999)
+datsEL4 <- dats[which(dats$RowNumNumRep %in% submaxst4$RowNumNumRep),]
 
 ##estimatephen 4 and 7
 bbdf <- get_pheno_est(dats,"budbreak",4,NA) 
@@ -131,24 +143,52 @@ uff <- unique(ffdf, na.rm = TRUE)
 suff <- join(uff, sdt, by=c("RowNumNumRep"))
 names(suff)[names(suff)=="days"] <- "days.to.50"
 
-##estimatephen 30%
-tfdf <- get_pheno_est(datsEL21,"30% flowering",21,NA) 
+##estimatephen 10%
+tfdf <- get_pheno_est(datsEL20,"10% flowering",20,NA) 
 utf <- unique(tfdf, na.rm = TRUE)
 sutf <- join(utf, sdt, by=c("RowNumNumRep"))
-names(sutf)[names(sutf)=="days"] <- "days.to.30"
+names(sutf)[names(sutf)=="days"] <- "days.to.10"
 
 ##join estimatephens
 dt <- join(sutf,suff, by=c("RowNumNumRep"))
 
-sdt <- subset(dt, select=c("RowNumNumRep", "Var", "days.to.50", "days.to.30"))
+ssdt <- subset(dt, select=c("RowNumNumRep", "Var", "days.to.50", "days.to.10"))
 
 dts <- subset(dat, select=c("RowNumNumRep", "Var", "days.to.bb", "days.to.lo"))
 
+epdt <- join(ssdt,dts, by=c("RowNumNumRep"))
 
+##flowering yes/no column
+##50% flowering
+sdt$flowering23yn <- NA
+sdt$flowering23yn[which(sdt$RowNumNumRep %in% submaxst23$RowNumNumRep)] <- 1
+sdt$flowering23yn[which(!sdt$RowNumNumRep %in% submaxst23$RowNumNumRep)] <- 0
 
-write.csv(dt, file="output/ghestphen4_7.csv", row.names = FALSE)
+##inflorescence
+sdt$flowering12yn <- NA
+sdt$flowering12yn[which(sdt$RowNumNumRep %in% submaxst12$RowNumNumRep)] <- 1
+sdt$flowering12yn[which(!sdt$RowNumNumRep %in% submaxst12$RowNumNumRep)] <- 0
+
+##7
+sdt$flowering7yn <- NA
+sdt$flowering7yn[which(sdt$RowNumNumRep %in% submaxst7$RowNumNumRep)] <- 1
+sdt$flowering7yn[which(!sdt$RowNumNumRep %in% submaxst7$RowNumNumRep)] <- 0
+
+##4
+sdt$flowering4yn <- NA
+sdt$flowering4yn[which(sdt$RowNumNumRep %in% submaxst4$RowNumNumRep)] <- 1
+sdt$flowering4yn[which(!sdt$RowNumNumRep %in% submaxst4$RowNumNumRep)] <- 0
+
+##subset
+yndt <- subset(sdt, select=c("RowNumNumRep", "Var", "flowering23yn", "flowering12yn", "flowering7yn", "flowering4yn"))
+
+##join wiht nsdat
+
+nddt <- join(yndt, nsdat, by=c("RowNumNumRep"))
+
+write.csv(epdt, file="output/clghestphen.csv", row.names = FALSE)
 write.csv(dats, file="output/clghdata.csv", row.names = FALSE)
-write.csv(sdt, file="output/ghestphen30_50.csv", row.names = FALSE)
+write.csv(nddt, file="output/cldiam_node.csv", row.names = FALSE)
 
 
 
