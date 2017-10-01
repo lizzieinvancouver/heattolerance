@@ -83,8 +83,8 @@ dats <- datss[!(is.na(datss$Var)), ]
 ## summarizing data 
 maxstage <-
       ddply(dats, c("RowNumNumRep"), summarise,
-      minEL = min(EL_mean),
-      maxEL = max(EL_mean))
+      minEL = min(EL_mean, na.rm=TRUE),
+      maxEL = max(EL_mean, na.rm=TRUE))
 
 # Now subset to correct level and reduce the original dataframe ..
 stage15ind <- subset(maxstage, maxEL>13.999)
@@ -93,8 +93,6 @@ datsEL14 <- dats[which(dats$RowNumNumRep %in% stage15ind$RowNumNumRep),]
 # quick check
 sort(unique(datsEL14$RowNumNumRep))
 sort(unique(stage15ind$RowNumNumRep))
-
-
 
 ##
 ## END CODE by Lizzie to figure out which plants made it to which stage
@@ -123,6 +121,8 @@ datsEL7 <- dats[which(dats$RowNumNumRep %in% submaxst7$RowNumNumRep),]
 ##EL 4
 submaxst4 <- subset(maxstage, maxEL>3.999)
 datsEL4 <- dats[which(dats$RowNumNumRep %in% submaxst4$RowNumNumRep),]
+# checking by Lizzie
+setdiff(unique(maxstage$RowNumNumRep), unique(datsEL4$RowNumNumRep))
 
 ##estimatephen 4 and 7
 bbdf <- get_pheno_est(dats,"budbreak",4,NA) 
