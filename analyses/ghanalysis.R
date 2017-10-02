@@ -1,7 +1,6 @@
 ## Started 22 August 2017 ##
 ## By Lizzie and Nicole ##
 
-
 ## housekeeping
 rm(list=ls())
 options(stringsAsFactors = FALSE)
@@ -35,8 +34,6 @@ datep$Var_corr[which(datep$Var_corr=="Valdepenas")] <- "Tempranillo"
 datep$Var_corr[which(datep$Var_corr=="Alicante Bouchet")] <- "Alicante Bouschet"
 datep$Var_corr[which(datep$Var_corr=="Pinot  Meunier")] <- "Pinot Meunier"
 datep$Var_corr[which(datep$Var_corr=="Gewurtztraminer")] <- "Gewurztraminer"
-
-
 
 datnd$Var_corr <- datnd$Var
 datnd$Var_corr[which(datnd$Var_corr=="Durif1")] <- "Durif"
@@ -186,3 +183,42 @@ summary(mod.7node)
 mod.4node <- glm(flowering4yn~nodesize_mean, data=datnd, family = binomial(link="logit"))
 
 summary(mod.4node)
+
+#######################################
+## Plotting RMI and GH data together ##
+######################################
+
+dat1 <- rmi[order(rmi$doy.bb),]
+dat2 <- datep
+dat2 <- dat2[order(match(dat2$Var, dat1$variety)),]
+
+# set up some plot parameters
+# need to fix the outer margins, see: https://www.r-bloggers.com/mastering-r-plot-part-3-outer-margins/ and http://research.stowers.org/mcm/efg/R/Graphics/Basics/mar-oma/index.htm
+y <-c(1:nrow(dat1))
+ytxt <- c(-30) # need to move further negative once we fix margins
+wtpch <- c(16, 18)
+yrangeusemod <- c(1,nrow(dat1))
+prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
+
+# open a blank plot
+quartz("Quartz", width=4, height=8, pointsize=12)
+par(mfrow=c(1,1), cex=0.7, xpd=TRUE, yaxt="n")
+plot(c(-10,85), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
+        xlab="day of event",
+        ylab="")
+text(ytxt, c(1:nrow(dat1)), as.vector(dat1$variety), adj=0, cex=1)
+# leg.txt<- c("greenhouse", "vineyard")
+# legend(0.75, 8, leg.txt,pch=wtpch, pt.bg=c("black","white"), bty="n")
+
+# plot the RMI data 
+x<-as.vector(dat1$doy.bb)
+xsem<-as.vector(dat1$se.bb)
+points(x,y,pch=wtpch[1], bg='white', col=prettycol, cex=1.2)
+arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
+
+# plot the greenhouse data 
+y1 <- c(1:nrow(dat2))
+x1 <-as.vector(dat2$days.to.bb)
+# xsem<-as.vector(dat2$se.bb)
+points(x1,y1,pch=wtpch[2], bg='white', col=prettycol, cex=1.2)
+# arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
