@@ -60,6 +60,8 @@ rmi <- rmidat[which(rmidat$variety %in% c(unique(gendat$Var_corr), "Valdepenas")
 rmi$variety[which(rmi$variety=="Valdepenas")] <- "Tempranillo"
 
 setdiff(unique(gendat$Var_corr),unique(rmi$variety))
+setdiff(unique(datep$Var_corr),unique(rmi$variety))
+
 
 ##############
 ## Plotting ##
@@ -188,37 +190,96 @@ summary(mod.4node)
 ## Plotting RMI and GH data together ##
 ######################################
 
-dat1 <- rmi[order(rmi$doy.bb),]
-dat2 <- datep
-dat2 <- dat2[order(match(dat2$Var, dat1$variety)),]
+# Step 1: Get the datep into mean and SE per var (did just for BB and LO, could add flo)
+ghsum <-
+      ddply(datep, c("Var_corr"), summarise,
+      mean.bb = mean(days.to.bb),
+      sd.bb = sd(days.to.bb),
+      sem.bb = sd(days.to.bb)/sqrt(length(days.to.bb)),
+      mean.lo = mean(days.to.lo),
+      sd.lo = sd(days.to.lo),
+      sem.lo = sd(days.to.lo)/sqrt(length(days.to.lo)))
 
-# set up some plot parameters
+
+dat1 <- ghsum[order(ghsum$mean.bb),]
+dat2 <- rmi
+dat2 <- dat2[order(match(dat2$variety, dat2$Var_corr)),]
+
+
+##
+## Step 2-4: First option: Plot on same plot
+##
+
+# Step 2: set up some plot parameters
 # need to fix the outer margins, see: https://www.r-bloggers.com/mastering-r-plot-part-3-outer-margins/ and http://research.stowers.org/mcm/efg/R/Graphics/Basics/mar-oma/index.htm
 y <-c(1:nrow(dat1))
-ytxt <- c(-30) # need to move further negative once we fix margins
+ytxt <- c(-37) # push the text way over left
 wtpch <- c(16, 18)
-yrangeusemod <- c(1,nrow(dat1))
+yrangeusemod <- c(1, nrow(dat1))
 prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
 
-# open a blank plot
+# Step 3: open a blank plot
 quartz("Quartz", width=4, height=8, pointsize=12)
+par(mar=c(8.5, 9, 1.1, 2.1))
 par(mfrow=c(1,1), cex=0.7, xpd=TRUE, yaxt="n")
-plot(c(-10,85), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
+plot(c(5,80), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
         xlab="day of event",
         ylab="")
-text(ytxt, c(1:nrow(dat1)), as.vector(dat1$variety), adj=0, cex=1)
-# leg.txt<- c("greenhouse", "vineyard")
-# legend(0.75, 8, leg.txt,pch=wtpch, pt.bg=c("black","white"), bty="n")
+text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1)
+leg.txt<- c("greenhouse", "vineyard")
+# legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
+
+# Step 4: Now plot each set of data
+# plot the greenhouse data 
+x<-as.vector(dat1$mean.bb)
+xsem<-as.vector(dat1$sem.bb)
+arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
+points(x,y,pch=wtpch[1], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
 
 # plot the RMI data 
-x<-as.vector(dat1$doy.bb)
-xsem<-as.vector(dat1$se.bb)
-points(x,y,pch=wtpch[1], bg='white', col=prettycol, cex=1.2)
-arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
-
-# plot the greenhouse data 
 y1 <- c(1:nrow(dat2))
-x1 <-as.vector(dat2$days.to.bb)
-# xsem<-as.vector(dat2$se.bb)
-points(x1,y1,pch=wtpch[2], bg='white', col=prettycol, cex=1.2)
-# arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
+x1 <-as.vector(dat2$doy.bb)
+xsem1 <-as.vector(dat2$se.bb)
+arrows(x1-xsem1,y1,x1+xsem1,y1,code=3,angle=90,length=0.0)
+points(x1,y1,pch=wtpch[2], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
+
+
+##
+## Step 2-4: Alternative version of above plot
+## Note: I think this one may be better as it highlights the two different data sources 
+##
+
+y <-c(1:nrow(dat1))
+ytxt <- c(-30) # push the text way over left
+wtpch <- c(16, 18)
+yrangeusemod <- c(1, nrow(dat1))
+prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
+
+# Step 3: open a blank plot
+quartz("Quartz", width=4, height=8, pointsize=12)
+par(mar=c(8.5, 9, 1.1, 0))
+par(mfrow=c(1,2), cex=0.7, xpd=TRUE, yaxt="n")
+plot(c(5,25), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
+        xlab="day of event",
+        ylab="")
+text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1)
+# leg.txt<- c("greenhouse", "vineyard")
+# legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
+
+# Step 4: Now plot each set of data
+# plot the greenhouse data 
+x<-as.vector(dat1$mean.bb)
+xsem<-as.vector(dat1$sem.bb)
+arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
+points(x,y,pch=wtpch[1], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
+
+# plot the RMI data
+par(mar=c(8.5, 1.1, 1.1, 2.1))
+plot(c(40,80), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
+        xlab="day of event",
+        ylab="")
+y1 <- c(1:nrow(dat2))
+x1 <-as.vector(dat2$doy.bb)
+xsem1 <-as.vector(dat2$se.bb)
+arrows(x1-xsem1,y1,x1+xsem1,y1,code=3,angle=90,length=0.0)
+points(x1,y1,pch=wtpch[2], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
