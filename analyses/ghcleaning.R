@@ -156,7 +156,9 @@ ssdt <- subset(dt, select=c("RowNumNumRep", "Var", "days.to.50", "days.to.10"))
 
 dts <- subset(dat, select=c("RowNumNumRep", "Var", "days.to.bb", "days.to.lo"))
 
-epdt <- join(ssdt,dts, by=c("RowNumNumRep"))
+epdtt <- join(dts, ssdt, by=c("RowNumNumRep"))
+
+epdt <- subset(epdtt, select=c("RowNumNumRep", "Var", "days.to.bb", "days.to.lo", "days.to.50", "days.to.10"))
 
 ##flowering yes/no column
 ##50% flowering
