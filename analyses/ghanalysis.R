@@ -63,6 +63,25 @@ setdiff(unique(gendat$Var_corr),unique(rmi$variety))
 setdiff(unique(datep$Var_corr),unique(rmi$variety))
 
 
+####################
+## Making a Table ##
+####################
+
+expttable1 <- 
+  ddply(datnd, c("Var_corr"), summarise,
+        n = length(Var_corr),
+        numflow = sum(flowering12yn, na.rm = TRUE))
+
+expttable2 <- 
+  ddply(datep, c("Var_corr"), summarise,
+        meanbb = mean(days.to.bb, na.rm = TRUE))
+
+expttable <- join(expttable1, expttable2, by=c("Var_corr"))
+
+##export as csv
+
+write.csv(expttable, file = "output/expttable.csv", row.names = FALSE)
+
 ##############
 ## Plotting ##
 ##############
@@ -212,6 +231,8 @@ dat2 <- dat2[order(match(dat2$variety, dat2$Var_corr)),]
 
 # Step 2: set up some plot parameters
 # need to fix the outer margins, see: https://www.r-bloggers.com/mastering-r-plot-part-3-outer-margins/ and http://research.stowers.org/mcm/efg/R/Graphics/Basics/mar-oma/index.htm
+
+
 y <-c(1:nrow(dat1))
 ytxt <- c(-37) # push the text way over left
 wtpch <- c(16, 18)
@@ -225,7 +246,7 @@ par(mfrow=c(1,1), cex=0.7, xpd=TRUE, yaxt="n")
 plot(c(5,80), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
         xlab="day of event",
         ylab="")
-text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1)
+text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1, outer=TRUE)
 leg.txt<- c("greenhouse", "vineyard")
 # legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
 
@@ -257,7 +278,8 @@ prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
 
 # Step 3: open a blank plot
 quartz("Quartz", width=4, height=8, pointsize=12)
-par(mar=c(8.5, 9, 1.1, 0))
+par(oma=c(8.5, 9, 1.1, 0))
+par(mar=c(0, 2, 0, 1))
 par(mfrow=c(1,2), cex=0.7, xpd=TRUE, yaxt="n")
 plot(c(5,25), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
         xlab="day of event",
@@ -274,7 +296,7 @@ arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
 points(x,y,pch=wtpch[1], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
 
 # plot the RMI data
-par(mar=c(8.5, 1.1, 1.1, 2.1))
+par(mar=c(0, 1, 0, 2))
 plot(c(40,80), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
         xlab="day of event",
         ylab="")

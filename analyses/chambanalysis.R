@@ -416,6 +416,156 @@ arrows(lenmeans$temp, lenmeans$mean-lenmeans$sem,  lenmeans$temp,
 text(x = lenmeans$temp, y = lenmeans$max+10,
      label = lenmeans$n, pos = 3, cex = 0.8, col = "black")
      
+     
+## change in leaf number
+
+lfmeans <-
+      ddply(sumdat, c("Treat", "temp"), summarise,
+      mean = mean(max.lfchange),
+      max = max(max.lfchange),
+      sd = sd(max.lfchange),
+      n = length(max.lfchange),
+      sem = sd(max.lfchange)/sqrt(length(max.lfchange)))
+
+# Set up the blank plot, then do each data point; then plot the means and errors
+plot(mean~temp, data=lfmeans, ylim=c(-5, 15), type="n", xaxt="n",
+    xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
+    ylab="Change in leaf number")
+axis(1, at=lfmeans$temp, labels=lfmeans$temp)
+
+for (treatnum in c(1:length(unique(sumdat$temp)))){
+    subtreat <- subset(sumdat, temp==sort(unique(sumdat$temp))[treatnum])
+    points(max.lfchange~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
+    }
+legend("topleft", legend=daynightemp, pch=16, 
+    col=treatcol,  bty="n")
+
+points(mean~temp, data=lfmeans, ylim=c(-5, 15), lwd=2)
+arrows(lfmeans$temp, lfmeans$mean-lfmeans$sem,  lfmeans$temp,
+    lfmeans$mean+lfmeans$sem, length = 0, lwd=2)
+text(x = lfmeans$temp, y = lfmeans$max+1.5,
+     label = lfmeans$n, pos = 3, cex = 0.8, col = "black")
+
+
+## mean soil moisture
+
+smmeans <-
+      ddply(sumdat, c("Treat", "temp"), summarise,
+      mean = mean(mean.smoist),
+      max = max(mean.smoist),
+      sd = sd(mean.smoist),
+      n = length(mean.smoist),
+      sem = sd(mean.smoist)/sqrt(length(mean.smoist)))
+
+# Set up the blank plot, then do each data point; then plot the means and errors
+plot(mean~temp, data=smmeans, ylim=c(10,25), type="n", xaxt="n",
+    xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
+    ylab="Mean soil moisture")
+axis(1, at=smmeans$temp, labels=smmeans$temp)
+
+for (treatnum in c(1:length(unique(sumdat$temp)))){
+    subtreat <- subset(sumdat, temp==sort(unique(sumdat$temp))[treatnum])
+    points(mean.smoist~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
+    }
+legend("topleft", legend=daynightemp, pch=16, 
+    col=treatcol,  bty="n")
+
+points(mean~temp, data=smmeans, ylim=c(10, 25), lwd=2)
+arrows(smmeans$temp, smmeans$mean-smmeans$sem,  smmeans$temp,
+    smmeans$mean+smmeans$sem, length = 0, lwd=2)
+text(x = smmeans$temp, y = smmeans$max+1.5,
+     label = smmeans$n, pos = 3, cex = 0.8, col = "black")
+
+
+## max percent flowering
+
+pfmeans <-
+      ddply(sumdat, c("Treat", "temp"), summarise,
+      mean = mean(max.pf_mean),
+      max = max(max.pf_mean),
+      sd = sd(max.pf_mean),
+      n = length(max.pf_mean),
+      sem = sd(max.pf_mean)/sqrt(length(max.pf_mean)))
+
+plot(mean~temp, data=pfmeans, ylim=c(-5, 150), type="n", xaxt="n",
+    xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
+    ylab="Maximum percent flowering")
+axis(1, at=pfmeans$temp, labels=pfmeans$temp)
+
+for (treatnum in c(1:length(unique(sumdat$temp)))){
+    subtreat <- subset(sumdat, temp==sort(unique(sumdat$temp))[treatnum])
+    points(max.pf_mean~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
+    }
+legend("topleft", legend=daynightemp, pch=16, 
+    col=treatcol,  bty="n")
+
+points(mean~temp, data=pfmeans, ylim=c(-5, 150), lwd=2)
+arrows(pfmeans$temp, pfmeans$mean-pfmeans$sem,  pfmeans$temp,
+    pfmeans$mean+pfmeans$sem, length = 0, lwd=2)
+text(x = pfmeans$temp, y = pfmeans$max+8,
+     label = pfmeans$n, pos = 3, cex = 0.8, col = "black")
+
+
+## days to 10% flowering
+
+tfmeans <-
+      ddply(dat10, c("Treat", "temp"), summarise,
+      mean = mean(days),
+      max = max(days),
+      sd = sd(days),
+      n = length(days),
+      sem = sd(days)/sqrt(length(days)))
+
+plot(mean~temp, data=tfmeans, ylim=c(30, 70), type="n", xaxt="n",
+    xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
+    ylab="Days to 10% flowering")
+axis(1, at=tfmeans$temp, labels=tfmeans$temp)
+
+for (treatnum in c(1:length(unique(dat10$temp)))){
+    subtreat <- subset(dat10, temp==sort(unique(dat10$temp))[treatnum])
+    points(days~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
+    }
+legend("topleft", legend=daynightemp, pch=16, 
+    col=treatcol,  bty="n")
+
+points(mean~temp, data=tfmeans, ylim=c(30, 70), lwd=2)
+arrows(tfmeans$temp, tfmeans$mean-tfmeans$sem,  tfmeans$temp,
+    tfmeans$mean+tfmeans$sem, length = 0, lwd=2)
+text(x = tfmeans$temp, y = tfmeans$max+5,
+     label = tfmeans$n, pos = 3, cex = 0.8, col = "black")
+     
+##days to 50% flowering     
+ffmeans <-
+      ddply(dat50, c("Treat", "temp"), summarise,
+      mean = mean(days),
+      max = max(days),
+      sd = sd(days),
+      n = length(days),
+      sem = sd(days)/sqrt(length(days)))
+
+plot(mean~temp, data=ffmeans, ylim=c(30, 70), type="n", xaxt="n",
+    xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
+    ylab="Days to 50% flowering")
+axis(1, at=ffmeans$temp, labels=ffmeans$temp)
+
+for (treatnum in c(1:length(unique(dat50$temp)))){
+    subtreat <- subset(dat50, temp==sort(unique(dat50$temp))[treatnum])
+    points(days~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
+    }
+legend("topleft", legend=daynightemp, pch=16, 
+    col=treatcol,  bty="n")
+
+points(mean~temp, data=ffmeans, ylim=c(30, 70), lwd=2)
+arrows(ffmeans$temp, ffmeans$mean-ffmeans$sem,  ffmeans$temp,
+    ffmeans$mean+ffmeans$sem, length = 0, lwd=2)
+text(x = ffmeans$temp, y = ffmeans$max+5,
+     label = ffmeans$n, pos = 3, cex = 0.8, col = "black")
+          
 ##     
 
+write.csv(tfmeans, file="output/tenpercentstat.csv", row.names = FALSE)
+write.csv(ffmeans, file="output/fiftypercentstat.csv", row.names = FALSE)
+write.csv(lenmeans, file="output/stemlengthstat.csv", row.names = FALSE)
+write.csv(lfmeans, file="output/leafnumstat.csv", row.names = FALSE)
+write.csv(bbudsmeans, file="output/bagbudstat.csv", row.names = FALSE)
 
