@@ -281,10 +281,11 @@ prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
 quartz("Quartz", width=4, height=8, pointsize=12)
 par(oma=c(8.5, 9, 1.1, 0))
 par(mar=c(0, 2, 0, 1))
-par(mfrow=c(1,2), cex=0.7, xpd=TRUE, yaxt="n")
+par(mfrow=c(1,3), cex=0.7, xpd=NA, yaxt="n")
 plot(c(5,25), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
         xlab="day of event",
         ylab="")
+# mtext(ytxt, side=2, 0, outer=TRUE)
 text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1)
 # leg.txt<- c("greenhouse", "vineyard")
 # legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
