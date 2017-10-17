@@ -449,28 +449,35 @@ text(x = lfmeans$temp, y = lfmeans$max+1.5,
 
 ## mean soil moisture
 
+sumdat$corr_mean.smoist <- NA
+sumdat$corr_mean.smoist <- 44.474+1.836*(sumdat$mean.smoist)
+
+
 smmeans <-
       ddply(sumdat, c("Treat", "temp"), summarise,
-      mean = mean(mean.smoist),
-      max = max(mean.smoist),
-      sd = sd(mean.smoist),
-      n = length(mean.smoist),
-      sem = sd(mean.smoist)/sqrt(length(mean.smoist)))
+      mean = mean(corr_mean.smoist),
+      max = max(corr_mean.smoist),
+      sd = sd(corr_mean.smoist),
+      n = length(corr_mean.smoist),
+      sem = sd(corr_mean.smoist)/sqrt(length(corr_mean.smoist)))
+
+
+
 
 # Set up the blank plot, then do each data point; then plot the means and errors
-plot(mean~temp, data=smmeans, ylim=c(10,25), type="n", xaxt="n",
+plot(mean~temp, data=smmeans, ylim=c(60,90), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Mean soil moisture")
 axis(1, at=smmeans$temp, labels=smmeans$temp)
 
 for (treatnum in c(1:length(unique(sumdat$temp)))){
     subtreat <- subset(sumdat, temp==sort(unique(sumdat$temp))[treatnum])
-    points(mean.smoist~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
+    points(corr_mean.smoist~temp, data=subtreat, col=treatcol[treatnum], lwd=1.5)
     }
 legend("topleft", legend=daynightemp, pch=16, 
     col=treatcol,  bty="n")
 
-points(mean~temp, data=smmeans, ylim=c(10, 25), lwd=2)
+points(mean~temp, data=smmeans, ylim=c(60, 90), lwd=2)
 arrows(smmeans$temp, smmeans$mean-smmeans$sem,  smmeans$temp,
     smmeans$mean+smmeans$sem, length = 0, lwd=2)
 text(x = smmeans$temp, y = smmeans$max+1.5,

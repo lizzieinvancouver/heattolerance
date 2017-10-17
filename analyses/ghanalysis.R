@@ -70,7 +70,8 @@ setdiff(unique(datep$Var_corr),unique(rmi$variety))
 expttable1 <- 
   ddply(datnd, c("Var_corr"), summarise,
         n = length(Var_corr),
-        numflow = sum(flowering12yn, na.rm = TRUE))
+        numflow = sum(flowering12yn, na.rm = TRUE),
+        nodemean = mean(nodesize_mean, na.rm = TRUE))
 
 expttable2 <- 
   ddply(datep, c("Var_corr"), summarise,
