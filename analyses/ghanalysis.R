@@ -228,7 +228,7 @@ ghsum <-
 
 rmimean <-
       ddply(rmi.indbb, c("variety"), summarise,
-      mean.bb = mean(doy))
+      mean.bb = mean(doy, na.rm=TRUE))
 
 dat1 <- ghsum[order(ghsum$mean.bb),]
 dat2 <- rmi
@@ -236,6 +236,14 @@ dat2 <- dat2[order(match(dat2$variety, dat1$Var_corr)),]
 dat3 <- rmi.indbb
 dat4 <- rmimean[order(match(rmimean$variety, dat1$Var_corr)),]
 
+# While we're here make a list of vars with the order from each added ...
+rmiorder <- dat4[order(dat4$mean.bb),]
+rmiorder$rmiorder <- c(1:nrow(rmiorder))
+rmiorder <- subset(rmiorder, select=c("variety", "rmiorder"))
+ghorder <- merge(rmiorder, dat1, by.x="variety", by.y="Var_corr")
+ghorder <- ghorder[order(ghorder$mean.bb),]
+vartxt <- paste(ghorder$variety, " (", c(1:nrow(ghorder)), ", ", ghorder$rmiorder, ")", sep="")
+    
 ##
 ## Step 2-4: First option: Plot on same plot
 ##
@@ -257,7 +265,7 @@ par(mfrow=c(1,1), cex=0.7, xpd=TRUE, yaxt="n")
 plot(c(5,80), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
         xlab="day of event",
         ylab="")
-text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1, outer=TRUE)
+text(ytxt, c(1:nrow(dat1)), vartxt, adj=0, cex=1, outer=TRUE)
 leg.txt<- c("greenhouse", "vineyard")
 # legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
 
@@ -323,7 +331,7 @@ points(x1,y1,pch=wtpch[2], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
 
 ## Alternative versions of Steps 3-4 to plot ALL datapoints with means on top
 
-ytxt <- -75
+ytxt <- -115
 # Step 3 (alterative): open a blank plot
 quartz("Quartz", width=4, height=8, pointsize=12)
 par(oma=c(8.5, 9, 1.1, 0))
@@ -332,7 +340,7 @@ par(mfrow=c(1,3), cex=0.7, xpd=NA, yaxt="n")
 plot(c(-5,30), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
         xlab="day of event",
         ylab="")
-text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1)
+text(ytxt, c(1:nrow(dat1)), vartxt, adj=0, cex=1)
 # leg.txt<- c("greenhouse", "vineyard")
 # legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
 
