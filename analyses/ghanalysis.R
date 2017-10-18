@@ -22,6 +22,7 @@ datep <- read.csv(file="output/clghestphen.csv", header = TRUE)
 datnd <- read.csv(file="output/cldiam_node.csv", header = TRUE)
 gendat <- read.csv(file="output/clghdata.csv", header = TRUE)
 rmidat <- read.csv(file="output/bblo_2015syn.csv", header=TRUE) # see data/README_rmi.txt
+rmibb <- read.csv(file="input/budburst_est_2015.csv", header=TRUE)
 
 ###################
 ## Some clean up ##
@@ -59,8 +60,13 @@ rmidat$variety[which(rmidat$variety=="Ungni blanc/Trebbiano")] <- "Ugni blanc/Tr
 rmi <- rmidat[which(rmidat$variety %in% c(unique(gendat$Var_corr), "Valdepenas")),]
 rmi$variety[which(rmi$variety=="Valdepenas")] <- "Tempranillo"
 
+rmibb$variety[which(rmibb$variety=="Ungni blanc/Trebbiano")] <- "Ugni blanc/Trebbiano"
+rmi.indbb <- rmibb[which(rmibb$variety %in% c(unique(gendat$Var_corr), "Valdepenas")),]
+rmi.indbb$variety[which(rmi.indbb$variety=="Valdepenas")] <- "Tempranillo"
+
 setdiff(unique(gendat$Var_corr),unique(rmi$variety))
 setdiff(unique(datep$Var_corr),unique(rmi$variety))
+setdiff(unique(datep$Var_corr),unique(rmi.indbb$variety))
 
 
 ####################
@@ -220,11 +226,15 @@ ghsum <-
       sd.lo = sd(days.to.lo),
       sem.lo = sd(days.to.lo)/sqrt(length(days.to.lo)))
 
+rmimean <-
+      ddply(rmi.indbb, c("variety"), summarise,
+      mean.bb = mean(doy))
 
 dat1 <- ghsum[order(ghsum$mean.bb),]
 dat2 <- rmi
-dat2 <- dat2[order(match(dat2$variety, dat2$Var_corr)),]
-
+dat2 <- dat2[order(match(dat2$variety, dat1$Var_corr)),]
+dat3 <- rmi.indbb
+dat4 <- rmimean[order(match(rmimean$variety, dat1$Var_corr)),]
 
 ##
 ## Step 2-4: First option: Plot on same plot
@@ -236,7 +246,7 @@ dat2 <- dat2[order(match(dat2$variety, dat2$Var_corr)),]
 
 y <-c(1:nrow(dat1))
 ytxt <- c(-37) # push the text way over left
-wtpch <- c(16, 18)
+wtpch <- c(16, 18, 1, 5)
 yrangeusemod <- c(1, nrow(dat1))
 prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
 
@@ -307,3 +317,51 @@ x1 <-as.vector(dat2$doy.bb)
 xsem1 <-as.vector(dat2$se.bb)
 arrows(x1-xsem1,y1,x1+xsem1,y1,code=3,angle=90,length=0.0)
 points(x1,y1,pch=wtpch[2], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
+
+
+## START alternative versions ##
+
+## Alternative versions of Steps 3-4 to plot ALL datapoints with means on top
+
+ytxt <- -75
+# Step 3 (alterative): open a blank plot
+quartz("Quartz", width=4, height=8, pointsize=12)
+par(oma=c(8.5, 9, 1.1, 0))
+par(mar=c(0, 2, 0, 1))
+par(mfrow=c(1,3), cex=0.7, xpd=NA, yaxt="n")
+plot(c(-5,30), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
+        xlab="day of event",
+        ylab="")
+text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1)
+# leg.txt<- c("greenhouse", "vineyard")
+# legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
+
+# Step 4 (alterative): Now plot each set of data
+# plot the greenhouse data
+
+for (i in c(1:length(dat1$Var_corr))){
+    subby <- subset(datep, Var_corr==dat1$Var_corr[i])
+    x<-as.vector(subby$days.to.bb)
+    points(x,rep(y[i], length(x)),pch=wtpch[1], bg='white',
+        col=alpha(prettycol[i], 0.75), cex=1.2)
+}
+x<-as.vector(dat1$mean.bb)
+points(x,y, pch=wtpch[3], bg='white', col="black", cex=1.2)
+
+# plot the RMI data (alterative)
+par(mar=c(0, 1, 0, 2))
+plot(c(40,90), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
+        xlab="day of event",
+        ylab="")
+y1 <- c(1:nrow(dat2))
+
+for (i in c(1:length(dat1$Var_corr))){
+    subby <- subset(dat3, variety==dat1$Var_corr[i])
+    x<-as.vector(subby$doy)
+    points(x,rep(y[i], length(x)),pch=wtpch[2], bg='white',
+        col=alpha(prettycol[i], 0.75), cex=1.2)
+}
+x1<-as.vector(dat4$mean.bb)
+points(x1,y1, pch=wtpch[4], bg='white', col="black", cex=1)
+
+## END alternative versions ##
