@@ -331,6 +331,12 @@ points(x1,y1,pch=wtpch[2], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
 
 ## Alternative versions of Steps 3-4 to plot ALL datapoints with means on top
 
+y <-c(1:nrow(dat1))
+ytxt <- c(-37) # push the text way over left
+wtpch <- c(16, 18, 1, 5)
+yrangeusemod <- c(1, nrow(dat1))
+prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
+
 ytxt <- -115
 # Step 3 (alterative): open a blank plot
 quartz("Quartz", width=4, height=8, pointsize=12)
