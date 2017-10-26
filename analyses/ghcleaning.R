@@ -160,6 +160,25 @@ epdtt <- join(dts, ssdt, by=c("RowNumNumRep"))
 
 epdt <- subset(epdtt, select=c("RowNumNumRep", "Var", "days.to.bb", "days.to.lo", "days.to.50", "days.to.10"))
 
+#get min, max, mean buburst and leafout dates
+bblosum <- dts
+bblosum$minbb <- NA
+bblosum$maxbb <- NA
+bblosum$minlo <- NA
+bblosum$maxlo <- NA
+bblosum$meanbb <- NA
+bblosum$meanlo <- NA
+
+
+bblosum$minbb <- min(bblosum$days.to.bb, na.rm = TRUE)
+bblosum$maxbb <- max(bblosum$days.to.bb, na.rm = TRUE)
+bblosum$minlo <- min(bblosum$days.to.lo, na.rm = TRUE)
+bblosum$maxlo <- max(bblosum$days.to.lo, na.rm = TRUE)
+bblosum$meanbb <- mean(bblosum$days.to.bb, na.rm = TRUE)
+bblosum$meanlo <- mean(bblosum$days.to.lo, na.rm = TRUE)
+
+        
+
 ##flowering yes/no column
 ##50% flowering
 sdt$flowering23yn <- NA
