@@ -77,7 +77,7 @@ expttable1 <-
   ddply(datnd, c("Var_corr"), summarise,
         n = length(Var_corr),
         numflow = sum(flowering12yn, na.rm = TRUE),
-        nodemean = mean(nodesize_mean, na.rm = TRUE))
+        diamean = mean(spurdiam_mean, na.rm = TRUE))
 
 expttable2 <- 
   ddply(datep, c("Var_corr"), summarise,
@@ -211,6 +211,15 @@ summary(mod.7node)
 mod.4node <- glm(flowering4yn~nodesize_mean, data=datnd, family = binomial(link="logit"))
 
 summary(mod.4node)
+
+##Plotting logistic
+
+quartz(title="diam v. flowering") # creates a quartz window with title
+
+plot(datnd$spurdiam_mean,datnd$flowering23yn,xlab="Spur diameter",ylab="Chance of flowering") 
+
+curve(predict(mod.23diam,data.frame(spurdiam_mean=x),type="resp"),add=TRUE)
+
 
 #######################################
 ## Plotting RMI and GH data together ##
