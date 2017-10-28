@@ -329,6 +329,6 @@ points(mean.bbrmi~mean.bb.gh, data=varmeans, col=prettycol, pch=16)
 abline(lm(c(varmeans$mean.bbrmi, varmeans$mean.lormi)~c(varmeans$mean.bb.gh,
     varmeans$mean.lo.gh)))
 par(xpd=TRUE)
-legend("topleft", legend=c("budburst", "beafout"), bty="n",  pch=c(16, 17))
+legend("topleft", legend=c("budburst", "leafout"), bty="n",  pch=c(16, 17))
 legend(24.75, 86, varmeans$Var_corr, col=prettycol, bty="n", pch=16, cex=0.6)
 dev.off()
