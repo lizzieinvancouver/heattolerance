@@ -23,6 +23,7 @@ datnd <- read.csv(file="output/cldiam_node.csv", header = TRUE)
 gendat <- read.csv(file="output/clghdata.csv", header = TRUE)
 rmidat <- read.csv(file="output/bblo_2015syn.csv", header=TRUE) # see data/README_rmi.txt
 rmibb <- read.csv(file="input/budburst_est_2015.csv", header=TRUE)
+rmilo <- read.csv(file="input/leafout_est_2015.csv", header=TRUE)
 
 ###################
 ## Some clean up ##
@@ -64,9 +65,14 @@ rmibb$variety[which(rmibb$variety=="Ungni blanc/Trebbiano")] <- "Ugni blanc/Treb
 rmi.indbb <- rmibb[which(rmibb$variety %in% c(unique(gendat$Var_corr), "Valdepenas")),]
 rmi.indbb$variety[which(rmi.indbb$variety=="Valdepenas")] <- "Tempranillo"
 
+rmilo$variety[which(rmilo$variety=="Ungni blanc/Trebbiano")] <- "Ugni blanc/Trebbiano"
+rmi.indlo <- rmilo[which(rmilo$variety %in% c(unique(gendat$Var_corr), "Valdepenas")),]
+rmi.indlo$variety[which(rmi.indlo$variety=="Valdepenas")] <- "Tempranillo"
+
 setdiff(unique(gendat$Var_corr),unique(rmi$variety))
 setdiff(unique(datep$Var_corr),unique(rmi$variety))
 setdiff(unique(datep$Var_corr),unique(rmi.indbb$variety))
+setdiff(unique(datep$Var_corr),unique(rmi.indlo$variety))
 
 
 ####################
@@ -225,7 +231,8 @@ curve(predict(mod.23diam,data.frame(spurdiam_mean=x),type="resp"),add=TRUE)
 ## Plotting RMI and GH data together ##
 ######################################
 
-# Step 1: Get the datep into mean and SE per var (did just for BB and LO, could add flo)
+
+# Step 1: Get the data into mean and SE per var (did just for BB and LO, could add flo)
 ghsum <-
       ddply(datep, c("Var_corr"), summarise,
       mean.bb = mean(days.to.bb),
@@ -235,156 +242,87 @@ ghsum <-
       sd.lo = sd(days.to.lo),
       sem.lo = sd(days.to.lo)/sqrt(length(days.to.lo)))
 
-rmimean <-
+rmimean.bb <-
       ddply(rmi.indbb, c("variety"), summarise,
-      mean.bb = mean(doy, na.rm=TRUE))
+      mean.bb = mean(doy, na.rm=TRUE),
+      sd.bb = sd(doy),
+      sem.bb = sd(doy)/sqrt(length(doy)))
 
-dat1 <- ghsum[order(ghsum$mean.bb),]
-dat2 <- rmi
-dat2 <- dat2[order(match(dat2$variety, dat1$Var_corr)),]
-dat3 <- rmi.indbb
-dat4 <- rmimean[order(match(rmimean$variety, dat1$Var_corr)),]
+rmimean.lo <-
+      ddply(rmi.indlo, c("variety"), summarise,
+      mean.lo = mean(doy, na.rm=TRUE),
+      sd.lo = sd(doy),
+      sem.lo = sd(doy)/sqrt(length(doy)))
 
-# While we're here make a list of vars with the order from each added ...
-rmiorder <- dat4[order(dat4$mean.bb),]
-rmiorder$rmiorder <- c(1:nrow(rmiorder))
-rmiorder <- subset(rmiorder, select=c("variety", "rmiorder"))
-ghorder <- merge(rmiorder, dat1, by.x="variety", by.y="Var_corr")
-ghorder <- ghorder[order(ghorder$mean.bb),]
-vartxt <- paste(ghorder$variety, " (", c(1:nrow(ghorder)), ", ", ghorder$rmiorder, ")", sep="")
-    
-##
-## Step 2-4: First option: Plot on same plot
-##
+# Step 2: Merge the data for ease
+rmimeans <- merge(rmimean.bb, rmimean.lo, by="variety")
+varmeans <- merge(ghsum, rmimeans, by.x="Var_corr", by.y="variety",
+    suffixes=c(".gh", "rmi"))
 
-# Step 2: set up some plot parameters
-# need to fix the outer margins, see: https://www.r-bloggers.com/mastering-r-plot-part-3-outer-margins/ and http://research.stowers.org/mcm/efg/R/Graphics/Basics/mar-oma/index.htm
+varmeans <- varmeans[order(varmeans$mean.bb.gh),]
 
+# Step 3: Plotting parameters
+prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(varmeans))
+pch=16
+arrowalpha <- 0.25
+cextext <- 0.6
 
-y <-c(1:nrow(dat1))
-ytxt <- c(-37) # push the text way over left
-wtpch <- c(16, 18, 1, 5)
-yrangeusemod <- c(1, nrow(dat1))
-prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
+# Step 4: Plot!
+pdf(file.path("graphs/ghrmi_vars.pdf"), width = 8, height = 14)
+par(mfrow=c(2,1))
 
-# Step 3: open a blank plot
-quartz("Quartz", width=4, height=8, pointsize=12)
-par(mar=c(8.5, 9, 1.1, 2.1))
-par(mfrow=c(1,1), cex=0.7, xpd=TRUE, yaxt="n")
-plot(c(5,80), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
-        xlab="day of event",
-        ylab="")
-text(ytxt, c(1:nrow(dat1)), vartxt, adj=0, cex=1, outer=TRUE)
-leg.txt<- c("greenhouse", "vineyard")
-# legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
+# burburst
+plot(mean.bbrmi~mean.bb.gh, data=varmeans, col=prettycol, pch=pch,
+    xlim=c(10, 19), ylim=c(58, 76),
+    xlab="Day of budburst in greenhouse (day since forcing)",
+    ylab="Day of budburst in field (day of year)")
+# Add error arrows?
+x1 <-as.vector(varmeans$mean.bb.gh)
+xsem1 <-as.vector(varmeans$sem.bb.gh)
+y1 <- as.vector(varmeans$mean.bbrmi)
+ysem1 <-as.vector(varmeans$sem.bbrmi)
+arrows(x1,y1-ysem1,x1,y1+ysem1,code=3,angle=90,length=0.0, col=alpha(prettycol, arrowalpha))
+arrows(x1-xsem1,y1,x1+xsem1,y1,code=3,angle=90,length=0.0, col=alpha(prettycol, arrowalpha))
+# add linear fit
+abline(lm(mean.bbrmi~mean.bb.gh, data=varmeans))
+# label varieties
+text(varmeans$mean.bb.gh, varmeans$mean.bbrmi, 
+    varmeans$Var_corr,
+    cex = cextext, 
+    pos = 3)
+legend(21, 76, legend=varmeans$Var_corr, pch=16, col=alpha(prettycol, arrowalpha))
 
-# Step 4: Now plot each set of data
-# plot the greenhouse data 
-x<-as.vector(dat1$mean.bb)
-xsem<-as.vector(dat1$sem.bb)
-arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
-points(x,y,pch=wtpch[1], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
+# leafout
+plot(mean.lormi~mean.lo.gh, data=varmeans, col=prettycol, pch=pch,
+    xlim=c(14, 24), ylim=c(63, 84),
+    xlab="Day of leafout in greenhouse (day since forcing)",
+    ylab="Day of leafout in field (day of year)")
+# Add error arrows?
+x1 <-as.vector(varmeans$mean.lo.gh)
+xsem1 <-as.vector(varmeans$sem.lo.gh)
+y1 <- as.vector(varmeans$mean.lormi)
+ysem1 <-as.vector(varmeans$sem.lormi)
+arrows(x1,y1-ysem1,x1,y1+ysem1,code=3,angle=90,length=0.0, col=alpha(prettycol, arrowalpha))
+arrows(x1-xsem1,y1,x1+xsem1,y1,code=3,angle=90,length=0.0, col=alpha(prettycol, arrowalpha))
+# add linear fit
+abline(lm(mean.lormi~mean.lo.gh, data=varmeans))
+# label varieties
+text(varmeans$mean.lo.gh, varmeans$mean.lormi, 
+    varmeans$Var_corr,
+    cex = cextext, 
+    pos = 3)
 
-# plot the RMI data 
-y1 <- c(1:nrow(dat2))
-x1 <-as.vector(dat2$doy.bb)
-xsem1 <-as.vector(dat2$se.bb)
-arrows(x1-xsem1,y1,x1+xsem1,y1,code=3,angle=90,length=0.0)
-points(x1,y1,pch=wtpch[2], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
+dev.off()
 
+summary(lm(mean.lormi~mean.lo.gh, data=varmeans))
+summary(lm(mean.bbrmi~mean.bb.gh, data=varmeans))
 
-##
-## Step 2-4: Alternative version of above plot
-## Note: I think this one may be better as it highlights the two different data sources 
-##
+## Alternative Step 4: Put it all on one plot
+plot(mean.lormi~mean.lo.gh, data=varmeans, col=prettycol, pch=17,
+    xlim=c(10, 24), ylim=c(58, 84),
+    xlab="Day of budburst or leafout in greenhouse (day since forcing)",
+    ylab="Day of budburst or leafout in field (day of year)")
+points(mean.bbrmi~mean.bb.gh, data=varmeans, col=prettycol, pch=16)
+abline(lm(c(varmeans$mean.bbrmi, varmeans$mean.lormi)~c(varmeans$mean.bb.gh,
+    varmeans$mean.lo.gh)))
 
-y <-c(1:nrow(dat1))
-ytxt <- c(-30) # push the text way over left
-wtpch <- c(16, 18)
-yrangeusemod <- c(1, nrow(dat1))
-prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
-
-# Step 3: open a blank plot
-quartz("Quartz", width=4, height=8, pointsize=12)
-par(oma=c(8.5, 9, 1.1, 0))
-par(mar=c(0, 2, 0, 1))
-par(mfrow=c(1,3), cex=0.7, xpd=NA, yaxt="n")
-plot(c(5,25), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
-        xlab="day of event",
-        ylab="")
-# mtext(ytxt, side=2, 0, outer=TRUE)
-text(ytxt, c(1:nrow(dat1)), as.vector(dat1$Var_corr), adj=0, cex=1)
-# leg.txt<- c("greenhouse", "vineyard")
-# legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
-
-# Step 4: Now plot each set of data
-# plot the greenhouse data 
-x<-as.vector(dat1$mean.bb)
-xsem<-as.vector(dat1$sem.bb)
-arrows(x-xsem,y,x+xsem,y,code=3,angle=90,length=0.0)
-points(x,y,pch=wtpch[1], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
-
-# plot the RMI data
-par(mar=c(0, 1, 0, 2))
-plot(c(40,80), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
-        xlab="day of event",
-        ylab="")
-y1 <- c(1:nrow(dat2))
-x1 <-as.vector(dat2$doy.bb)
-xsem1 <-as.vector(dat2$se.bb)
-arrows(x1-xsem1,y1,x1+xsem1,y1,code=3,angle=90,length=0.0)
-points(x1,y1,pch=wtpch[2], bg='white', col=alpha(prettycol, 0.75), cex=1.2)
-
-
-## START alternative versions ##
-
-## Alternative versions of Steps 3-4 to plot ALL datapoints with means on top
-
-y <-c(1:nrow(dat1))
-ytxt <- c(-37) # push the text way over left
-wtpch <- c(16, 18, 1, 5)
-yrangeusemod <- c(1, nrow(dat1))
-prettycol <- colorRampPalette(brewer.pal(9,"YlOrRd")[2:9])(nrow(dat1))
-
-ytxt <- -115
-# Step 3 (alterative): open a blank plot
-quartz("Quartz", width=4, height=8, pointsize=12)
-par(oma=c(8.5, 9, 1.1, 0))
-par(mar=c(0, 2, 0, 1))
-par(mfrow=c(1,3), cex=0.7, xpd=NA, yaxt="n")
-plot(c(-5,30), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
-        xlab="day of event",
-        ylab="")
-text(ytxt, c(1:nrow(dat1)), vartxt, adj=0, cex=1)
-# leg.txt<- c("greenhouse", "vineyard")
-# legend(-8, (nrow(dat1)+2), leg.txt, pch=wtpch, bty="n")
-
-# Step 4 (alterative): Now plot each set of data
-# plot the greenhouse data
-
-for (i in c(1:length(dat1$Var_corr))){
-    subby <- subset(datep, Var_corr==dat1$Var_corr[i])
-    x<-as.vector(subby$days.to.bb)
-    points(x,rep(y[i], length(x)),pch=wtpch[1], bg='white',
-        col=alpha(prettycol[i], 0.75), cex=1.2)
-}
-x<-as.vector(dat1$mean.bb)
-points(x,y, pch=wtpch[3], bg='white', col="black", cex=1.2)
-
-# plot the RMI data (alterative)
-par(mar=c(0, 1, 0, 2))
-plot(c(40,90), yrangeusemod, type="n", # we may eventually want to zoom so you can see the SE
-        xlab="day of event",
-        ylab="")
-y1 <- c(1:nrow(dat2))
-
-for (i in c(1:length(dat1$Var_corr))){
-    subby <- subset(dat3, variety==dat1$Var_corr[i])
-    x<-as.vector(subby$doy)
-    points(x,rep(y[i], length(x)),pch=wtpch[2], bg='white',
-        col=alpha(prettycol[i], 0.75), cex=1.2)
-}
-x1<-as.vector(dat4$mean.bb)
-points(x1,y1, pch=wtpch[4], bg='white', col="black", cex=1)
-
-## END alternative versions ##
