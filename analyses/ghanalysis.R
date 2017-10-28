@@ -318,11 +318,17 @@ summary(lm(mean.lormi~mean.lo.gh, data=varmeans))
 summary(lm(mean.bbrmi~mean.bb.gh, data=varmeans))
 
 ## Alternative Step 4: Put it all on one plot
+pdf(file.path("graphs/ghrmi_vars_oneplot.pdf"), width = 8, height = 7)
+par(xpd=FALSE)
+par(mar=c(5.1, 4.1, 4.1, 6.5))
 plot(mean.lormi~mean.lo.gh, data=varmeans, col=prettycol, pch=17,
     xlim=c(10, 24), ylim=c(58, 84),
-    xlab="Day of budburst or leafout in greenhouse (day since forcing)",
-    ylab="Day of budburst or leafout in field (day of year)")
+    xlab="Day of event in greenhouse (day since forcing)",
+    ylab="Day of event in field (day of year)")
 points(mean.bbrmi~mean.bb.gh, data=varmeans, col=prettycol, pch=16)
 abline(lm(c(varmeans$mean.bbrmi, varmeans$mean.lormi)~c(varmeans$mean.bb.gh,
     varmeans$mean.lo.gh)))
-
+par(xpd=TRUE)
+legend("topleft", legend=c("budburst", "beafout"), bty="n",  pch=c(16, 17))
+legend(24.75, 86, varmeans$Var_corr, col=prettycol, bty="n", pch=16, cex=0.6)
+dev.off()
