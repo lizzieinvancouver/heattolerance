@@ -259,7 +259,7 @@ text(x = as.factor(row.names(nhere)), y = confint(mod.ni.lengthchange)[1:5,2]+20
 
 ## change in leaf number
 range(sumdat$max.lfchange) # make sure ylim is big enough
-plot(coef(mod.ni.lfchange)~as.factor(c(1:5)), ylim=c(-1, 10))
+plot(coef(mod.ni.lfchange)~as.factor(c(1:5)), ylim=c(0, 10))
 arrows(c(1:5), confint(mod.ni.lfchange)[1:5,1] , c(1:5), confint(mod.ni.lfchange)[1:5,2], length = 0)
 points(max.lfchange~as.factor(Treat), data=sumdat)
 nhere <- tapply(sumdat$max.lfchange, sumdat$Treat, length)
@@ -428,7 +428,7 @@ lfmeans <-
       sem = sd(max.lfchange)/sqrt(length(max.lfchange)))
 
 # Set up the blank plot, then do each data point; then plot the means and errors
-plot(mean~temp, data=lfmeans, ylim=c(-5, 15), type="n", xaxt="n",
+plot(mean~temp, data=lfmeans, ylim=c(0, 15), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Change in leaf number")
 axis(1, at=lfmeans$temp, labels=lfmeans$temp)
@@ -440,7 +440,7 @@ for (treatnum in c(1:length(unique(sumdat$temp)))){
 legend("topleft", legend=daynightemp, pch=16, 
     col=treatcol,  bty="n")
 
-points(mean~temp, data=lfmeans, ylim=c(-5, 15), lwd=2)
+points(mean~temp, data=lfmeans, ylim=c(0, 15), lwd=2)
 arrows(lfmeans$temp, lfmeans$mean-lfmeans$sem,  lfmeans$temp,
     lfmeans$mean+lfmeans$sem, length = 0, lwd=2)
 text(x = lfmeans$temp, y = lfmeans$max+1.5,
@@ -465,7 +465,7 @@ smmeans <-
 
 
 # Set up the blank plot, then do each data point; then plot the means and errors
-plot(mean~temp, data=smmeans, ylim=c(60,90), type="n", xaxt="n",
+plot(mean~temp, data=smmeans, ylim=c(65,80), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Mean soil moisture")
 axis(1, at=smmeans$temp, labels=smmeans$temp)
@@ -477,7 +477,7 @@ for (treatnum in c(1:length(unique(sumdat$temp)))){
 legend("topleft", legend=daynightemp, pch=16, 
     col=treatcol,  bty="n")
 
-points(mean~temp, data=smmeans, ylim=c(60, 90), lwd=2)
+points(mean~temp, data=smmeans, ylim=c(65, 80), lwd=2)
 arrows(smmeans$temp, smmeans$mean-smmeans$sem,  smmeans$temp,
     smmeans$mean+smmeans$sem, length = 0, lwd=2)
 text(x = smmeans$temp, y = smmeans$max+1.5,
@@ -550,7 +550,7 @@ ffmeans <-
       n = length(days),
       sem = sd(days)/sqrt(length(days)))
 
-plot(mean~temp, data=ffmeans, ylim=c(30, 70), type="n", xaxt="n",
+plot(mean~temp, data=ffmeans, ylim=c(35, 65), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Days to 50% flowering")
 axis(1, at=ffmeans$temp, labels=ffmeans$temp)
@@ -562,7 +562,7 @@ for (treatnum in c(1:length(unique(dat50$temp)))){
 legend("topleft", legend=daynightemp, pch=16, 
     col=treatcol,  bty="n")
 
-points(mean~temp, data=ffmeans, ylim=c(30, 70), lwd=2)
+points(mean~temp, data=ffmeans, ylim=c(35, 65), lwd=2)
 arrows(ffmeans$temp, ffmeans$mean-ffmeans$sem,  ffmeans$temp,
     ffmeans$mean+ffmeans$sem, length = 0, lwd=2)
 text(x = ffmeans$temp, y = ffmeans$max+5,
