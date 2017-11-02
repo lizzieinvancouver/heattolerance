@@ -226,6 +226,7 @@ plot(datnd$spurdiam_mean,datnd$flowering23yn,xlab="Spur diameter",ylab="Chance o
 
 curve(predict(mod.23diam,data.frame(spurdiam_mean=x),type="resp"),add=TRUE)
 
+logi.hist.plot(datnd$spurdiam_mean,datnd$flowering23yn,boxp=FALSE,type="hist",col="gray", xlab = "Spur diameter (mm)")
 
 #######################################
 ## Plotting RMI and GH data together ##
