@@ -17,6 +17,7 @@ library(colorspace)
 library(RColorBrewer) # makes nice colors
 library(plyr)
 library(dplyr)
+library(popbio)
 
 datep <- read.csv(file="output/clghestphen.csv", header = TRUE)
 datnd <- read.csv(file="output/cldiam_node.csv", header = TRUE)
@@ -223,10 +224,10 @@ summary(mod.4node)
 quartz(title="diam v. flowering") # creates a quartz window with title
 
 plot(datnd$spurdiam_mean,datnd$flowering23yn,xlab="Spur diameter",ylab="Chance of flowering") 
-
 curve(predict(mod.23diam,data.frame(spurdiam_mean=x),type="resp"),add=TRUE)
 
 logi.hist.plot(datnd$spurdiam_mean,datnd$flowering23yn,boxp=FALSE,type="hist",col="gray", xlab = "Spur diameter (mm)")
+curve(predict(mod.23diam,data.frame(spurdiam_mean=x),type="resp"),add=TRUE)
 
 #######################################
 ## Plotting RMI and GH data together ##
