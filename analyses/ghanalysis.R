@@ -226,9 +226,9 @@ quartz(title="diam v. flowering") # creates a quartz window with title
 plot(datnd$spurdiam_mean,datnd$flowering23yn,xlab="Spur diameter",ylab="Chance of flowering") 
 curve(predict(mod.23diam,data.frame(spurdiam_mean=x),type="resp"),add=TRUE)
 
-pdf(file.path("graphs/gh_loghist.pdf"), width = 8, height = 7)
+pdf(file.path("graphs/gh_loghistfin.pdf"), width = 8, height = 7)
 
-logi.hist.plot(datnd$spurdiam_mean,datnd$flowering23yn,boxp=FALSE,type="hist",col="gray", xlab = "Spur diameter (mm)")
+logi.hist.plot(datnd$spurdiam_mean,datnd$flowering23yn, boxp=FALSE,type="hist",col="gray", xlab = "Spur diameter (mm)")
 curve(predict(mod.23diam,data.frame(spurdiam_mean=x),type="resp"),add=TRUE)
 dev.off()
 

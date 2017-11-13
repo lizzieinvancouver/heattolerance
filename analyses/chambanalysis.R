@@ -369,6 +369,8 @@ bbudsmeans <-
       sem = sd(sum.bfall_mean)/sqrt(length(sum.bfall_mean)))
 
 # Set up the blank plot, then do each data point; then plot the means and errors
+
+pdf(file.path("graphs/chamber_bagbudsfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=bbudsmeans, ylim=c(-5, 180), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Flower buds lost")
@@ -387,6 +389,7 @@ arrows(bbudsmeans$temp, bbudsmeans$mean-bbudsmeans$sem,  bbudsmeans$temp,
 nhere <- tapply(sumdat$sum.capfall_mean, sumdat$Treat, length)
 text(x = bbudsmeans$temp, y = bbudsmeans$max+5,
      label = bbudsmeans$n, pos = 3, cex = 0.8, col = "black")
+dev.off()
 
 ## and stem length change
 lenmeans <-
@@ -398,6 +401,7 @@ lenmeans <-
       sem = sd(max.lengthchange)/sqrt(length(max.lengthchange)))
 
 # Set up the blank plot, then do each data point; then plot the means and errors
+pdf(file.path("graphs/chamber_stemlenfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=lenmeans, ylim=c(-5, 250), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Change in stem length")
@@ -415,6 +419,7 @@ arrows(lenmeans$temp, lenmeans$mean-lenmeans$sem,  lenmeans$temp,
     lenmeans$mean+lenmeans$sem, length = 0, lwd=2)
 text(x = lenmeans$temp, y = lenmeans$max+10,
      label = lenmeans$n, pos = 3, cex = 0.8, col = "black")
+dev.off()
      
      
 ## change in leaf number
@@ -428,6 +433,7 @@ lfmeans <-
       sem = sd(max.lfchange)/sqrt(length(max.lfchange)))
 
 # Set up the blank plot, then do each data point; then plot the means and errors
+pdf(file.path("graphs/chamber_leafnumfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=lfmeans, ylim=c(0, 15), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Change in leaf number")
@@ -445,7 +451,7 @@ arrows(lfmeans$temp, lfmeans$mean-lfmeans$sem,  lfmeans$temp,
     lfmeans$mean+lfmeans$sem, length = 0, lwd=2)
 text(x = lfmeans$temp, y = lfmeans$max+1.5,
      label = lfmeans$n, pos = 3, cex = 0.8, col = "black")
-
+dev.off()
 
 ## mean soil moisture
 
@@ -465,6 +471,7 @@ smmeans <-
 
 
 # Set up the blank plot, then do each data point; then plot the means and errors
+pdf(file.path("graphs/chamber_smfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=smmeans, ylim=c(65,80), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Mean soil moisture")
@@ -482,7 +489,7 @@ arrows(smmeans$temp, smmeans$mean-smmeans$sem,  smmeans$temp,
     smmeans$mean+smmeans$sem, length = 0, lwd=2)
 text(x = smmeans$temp, y = smmeans$max+1.5,
      label = smmeans$n, pos = 3, cex = 0.8, col = "black")
-
+dev.off()
 
 ## max percent flowering
 
@@ -523,6 +530,7 @@ tfmeans <-
       n = length(days),
       sem = sd(days)/sqrt(length(days)))
 
+pdf(file.path("graphs/chamber_10percfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=tfmeans, ylim=c(30, 70), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Days to 10% flowering")
@@ -540,6 +548,7 @@ arrows(tfmeans$temp, tfmeans$mean-tfmeans$sem,  tfmeans$temp,
     tfmeans$mean+tfmeans$sem, length = 0, lwd=2)
 text(x = tfmeans$temp, y = tfmeans$max+5,
      label = tfmeans$n, pos = 3, cex = 0.8, col = "black")
+dev.off()
      
 ##days to 50% flowering     
 ffmeans <-
@@ -550,6 +559,7 @@ ffmeans <-
       n = length(days),
       sem = sd(days)/sqrt(length(days)))
 
+pdf(file.path("graphs/chamber_50percfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=ffmeans, ylim=c(35, 65), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
     ylab="Days to 50% flowering")
@@ -567,6 +577,7 @@ arrows(ffmeans$temp, ffmeans$mean-ffmeans$sem,  ffmeans$temp,
     ffmeans$mean+ffmeans$sem, length = 0, lwd=2)
 text(x = ffmeans$temp, y = ffmeans$max+5,
      label = ffmeans$n, pos = 3, cex = 0.8, col = "black")
+dev.off()
           
 ##     
 
