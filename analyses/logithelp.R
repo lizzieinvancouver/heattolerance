@@ -15,6 +15,8 @@ mod.12diam <- glm(flowering12yn~spurdiam_mean, data=datnd, family = binomial(lin
 
 summary(mod.12diam)
 
+display(mod.12diam)
+
 # You can get the odd ratios with exp:
 exp(coef(mod.12diam))
 # The intercept is around 0, which is good, that makes sense! No big change in the odds of developing a flower when you have a diameter of zero.
@@ -35,12 +37,3 @@ coef(mod.12diam)[1]+coef(mod.12diam)[2]*mean(datnd$spurdiam_mean, na.rm=TRUE)
 # This should be similar to the divide by four rule ... (this works less well depending on the curve and when it passes through the middle of the data)
 coef(mod.12diam)[2]/4
 # This gives 6.5% but is not as accurate as the above method.
-
-# To discuss more tomorrow! http://www.gettinggeneticsdone.com/2010/12/using-divide-by-4-rule-to-interpret.html and http://www.mypolyuweb.hk/~sjpolit/logisticregression.html
-x=seq(-5,5,.01)
-invlogit=function(x) exp(x)/(1+exp(x))
-y=invlogit(x)
-plot(x,y,pch=16,ylab=expression(paste(logit^{-1},(x))))
-abline(v=0)
-abline(h=.5)
-text(.55,.55,expression(paste("Slope is ",beta/4)),adj=c(0,0))
