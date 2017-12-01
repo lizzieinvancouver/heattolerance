@@ -281,7 +281,10 @@ points(mean.smoist~as.factor(Treat), data=sumdat)
 # Set up plotting colors, symbols and treatment labels
 display.brewer.all() # these are all the RColorBrewer palettes
 treatcol <- rev(brewer.pal(10, "Spectral")[1:5])
+varcol <- brewer.pal(11, "RdYlGn")[-c(6:7)]
+varcol[5] <- "#AF8DC3"
 varsym <- c(0, 1, 3, 4, 6, 7, 15, 16, 18)
+varsym2 <- rep(c(0:2), 4)
 daynightemp <- c(expression(paste("17/23",degree,"C")),
     expression(paste("23/29",degree,"C")),
     expression(paste("27/33",degree,"C")),
@@ -369,7 +372,7 @@ bbudsmeans <-
       sem = sd(sum.bfall_mean)/sqrt(length(sum.bfall_mean)))
 
 # Set up the blank plot, then do each data point; then plot the means and errors
-
+# Colored by treatment...
 pdf(file.path("graphs/chamber_bagbudsfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=bbudsmeans, ylim=c(-5, 180), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
@@ -382,6 +385,28 @@ for (treatnum in c(1:length(unique(sumdat$temp)))){
     }
 legend("topleft", legend=daynightemp, pch=16, 
     col=treatcol,  bty="n")
+
+points(mean~temp, data=bbudsmeans, ylim=c(-5, 180), lwd=2)
+arrows(bbudsmeans$temp, bbudsmeans$mean-bbudsmeans$sem,  bbudsmeans$temp,
+    bbudsmeans$mean+bbudsmeans$sem, length = 0, lwd=2)
+nhere <- tapply(sumdat$sum.capfall_mean, sumdat$Treat, length)
+text(x = bbudsmeans$temp, y = bbudsmeans$max+5,
+     label = bbudsmeans$n, pos = 3, cex = 0.8, col = "black")
+dev.off()
+
+# Colored by variety
+pdf(file.path("graphs/chamber_bagbudsfinvar.pdf"), width = 8, height = 7)
+plot(mean~temp, data=bbudsmeans, ylim=c(-5, 180), type="n", xaxt="n",
+    xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
+    ylab="Flower buds lost")
+axis(1, at=bbudsmeans$temp, labels=bbudsmeans$temp)
+
+for (varname in c(1:length(unique(sumdat$Var_corr)))){
+    subvar <- subset(sumdat, Var_corr==sort(unique(sumdat$Var_corr))[varname])
+    points(sum.bfall_mean~temp, data=subvar, col=varcol[varname], pch=varsym2[varname], lwd=1.5)
+    }
+legend("topleft", legend=sort(unique(sumdat$Var_corr)), col=varcol,  
+    pch=varsym2[1:length(unique(sumdat$Var_corr))], bty="n")
 
 points(mean~temp, data=bbudsmeans, ylim=c(-5, 180), lwd=2)
 arrows(bbudsmeans$temp, bbudsmeans$mean-bbudsmeans$sem,  bbudsmeans$temp,
