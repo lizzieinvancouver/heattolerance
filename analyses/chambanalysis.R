@@ -51,6 +51,34 @@ sumdat$Var_corr[which(sumdat$Var_corr=="Durif2")] <- "Durif"
 sumdat$Var_corr[which(sumdat$Var_corr=="Valdepenas")] <- "Tempranillo"
 unique(sumdat$Var_corr)
 
+########################
+###Additions to plots### 
+###  (after meeting  ###
+###  with coauthors)  ##
+########################
+
+##Duration flowering 10-50%
+#clarify column names for joining
+names(dat10)[names(dat10)=="days"] <- "days10"
+names(dat50)[names(dat50)=="days"] <- "days50"
+#join dat10 and dat50
+datflo <- join(dat10, dat50, by=c("RowNumNumRep"))
+#create and fill flowering duration column
+datflo$flodur <- NA
+datflo$flodur <- datflo$days50 - datflo$days10
+#plot
+plot(flodur~temp, data=datflo)
+
+##percent buds excised
+sumdat$totalbuds <- NA
+sumdat$totalbuds <- sumdat$sum.bfall_mean + sumdat$sum.capfall_mean
+sumdat$perbudex <- NA
+sumdat$perbudex <- (sumdat$sum.bfall_mean/sumdat$totalbuds)*100
+#plot
+plot(perbudex~temp, data=sumdat)
+
+##leaf number / stem length
+plot(max.lengthchange~max.lfchange, data = sumdat)
 
 ##############
 ### Models ###
@@ -499,7 +527,7 @@ smmeans <-
 pdf(file.path("graphs/chamber_smfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=smmeans, ylim=c(65,80), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
-    ylab="Mean soil moisture")
+    ylab="Mean percent soil moisture")
 axis(1, at=smmeans$temp, labels=smmeans$temp)
 
 for (treatnum in c(1:length(unique(sumdat$temp)))){
