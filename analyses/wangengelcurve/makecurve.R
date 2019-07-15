@@ -9,9 +9,9 @@ options(stringsAsFactors = FALSE)
 library(ggplot2)
 
 ## set working directory
-setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses/wangengelcurve")
+setwd("~/GitHub/heattolerance/analyses/")
 
-source("source/Script_functions_pheno_models.R")
+source("~/GitHub/heattolerance/analyses/wangengelcurve/source/Script_functions_pheno_models.R")
 
 testclim.min <- seq(-5, 40, by=0.25)
 testclim.max <- seq(-4, 41, by=0.25) # higher than 41 and the curve freaks out
@@ -39,6 +39,8 @@ plot(we~tempF, data=wangeng27clim.sm, type="l")
 points(we~tempF, data=wangeng24clim.sm, type="l", col="red")
 
 ## for Nicole's work: Some simple curves
+pdf(file.path("graphs/wengeng_possible"), width = 8, height = 7)
 plot(we~tempC, data=wangeng27clim.sm, type="l", lwd=2, col="red",
-     ylab="Rate", xlab="C")
-points(we~tempC, data=wangeng24clim.sm, type="l", lwd=2)
+     ylab="Developmental rate", xlab=expression(paste("Temperature "( degree~C))), xlim=c(-5,42))
+points(we~tempC, data=wangeng24clim.sm, type="l", lwd=2, col="blue")
+dev.off()

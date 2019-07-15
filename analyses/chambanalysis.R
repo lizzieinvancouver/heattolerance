@@ -503,7 +503,7 @@ lenmeans <-
 pdf(file.path("graphs/chamber_stemlenfin.pdf"), width = 8, height = 7)
 plot(mean~temp, data=lenmeans, ylim=c(-5, 250), type="n", xaxt="n",
     xlab=expression(paste("Mean chamber temperature (",degree,"C)")),
-    ylab="Change in stem length")
+    ylab="Change in stem length (mm)")
 axis(1, at=lenmeans$temp, labels=lenmeans$temp)
 
 for (treatnum in c(1:length(unique(sumdat$temp)))){
