@@ -552,6 +552,30 @@ text(x = lfmeans$temp, y = lfmeans$max+1.5,
      label = lfmeans$n, pos = 3, cex = 0.8, col = "black")
 dev.off()
 
+## change stem length v change leaf num
+
+pdf(file.path("graphs/chamber_lfylnxchange.pdf"), width = 8, height = 7)
+plot(max.lfchange~max.lengthchange, data=sumdat, xlim=c(-5, 220), ylim=c(0, 15), xlab="Change in stem length (mm)", ylab="Change in leaf number")
+for (treatnum in c(1:length(unique(sumdat$temp)))){
+  subtreat <- subset(sumdat, temp==sort(unique(sumdat$temp))[treatnum])
+  points(max.lfchange~max.lengthchange, data=subtreat, col=treatcol[treatnum], lwd=2)
+}
+legend("topleft", legend=daynightemp, pch=16, 
+       col=treatcol,  bty="n")
+dev.off()
+
+#switch axis
+
+pdf(file.path("graphs/chamber_lfxlnychange.pdf"), width = 8, height = 7)
+plot(max.lengthchange~max.lfchange, data=sumdat, xlim=c(0, 10), ylim=c(-5, 250), xlab="Change in leaf number", ylab="Change in stem length (mm)")
+for (treatnum in c(1:length(unique(sumdat$temp)))){
+  subtreat <- subset(sumdat, temp==sort(unique(sumdat$temp))[treatnum])
+  points(max.lengthchange~max.lfchange, data=subtreat, col=treatcol[treatnum], lwd=2)
+}
+legend("topleft", legend=daynightemp, pch=16, 
+       col=treatcol,  bty="n")
+dev.off()
+
 ## mean soil moisture
 
 sumdat$corr_mean.smoist <- NA
