@@ -23,6 +23,12 @@ dater <- read.csv("input/phenmoist_grapes2016.csv", header=TRUE)
 ids <- read.csv("input/VitisExpReps2.csv", header=TRUE)
 nsdater <- read.csv("output/clnodespursize.csv", header=TRUE)
 
+# Fix the mid-IDed Durifs
+ids$Var[grep("Durif1", ids$Var)] <- "Durif" 
+ids$Var[grep("Durif2", ids$Var)] <- "Vinhao" 
+nsdater$Var[grep("Durif1", nsdater$Var)] <- "Durif" 
+nsdater$Var[grep("Durif2", nsdater$Var)] <- "Vinhao" 
+
 ## change header names here
 names(ids)[names(ids)=="Row"] <- "RowNum"
 names(ids)[names(ids)=="Plant"] <- "Num"

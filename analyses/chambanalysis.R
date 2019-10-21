@@ -29,25 +29,25 @@ sumdat <- read.csv ("output/chdatsum.csv", header=TRUE)
 
 dat$Var_corr <- dat$Var
 dat$Var_corr[which(dat$Var_corr=="Durif1")] <- "Durif"
-dat$Var_corr[which(dat$Var_corr=="Durif2")] <- "Durif"
+dat$Var_corr[which(dat$Var_corr=="Durif2")] <- "Vinhao"
 dat$Var_corr[which(dat$Var_corr=="Valdepenas")] <- "Tempranillo"
 unique(dat$Var_corr)
 
 dat10$Var_corr <- dat10$Var
 dat10$Var_corr[which(dat10$Var_corr=="Durif1")] <- "Durif"
-dat10$Var_corr[which(dat10$Var_corr=="Durif2")] <- "Durif"
+dat10$Var_corr[which(dat10$Var_corr=="Durif2")] <- "Vinhao"
 dat10$Var_corr[which(dat10$Var_corr=="Valdepenas")] <- "Tempranillo"
 unique(dat10$Var_corr)
 
 dat50$Var_corr <- dat50$Var
 dat50$Var_corr[which(dat50$Var_corr=="Durif1")] <- "Durif"
-dat50$Var_corr[which(dat50$Var_corr=="Durif2")] <- "Durif"
+dat50$Var_corr[which(dat50$Var_corr=="Durif2")] <- "Vinhao"
 dat50$Var_corr[which(dat50$Var_corr=="Valdepenas")] <- "Tempranillo"
 unique(dat50$Var_corr)
 
 sumdat$Var_corr <- sumdat$Var
 sumdat$Var_corr[which(sumdat$Var_corr=="Durif1")] <- "Durif"
-sumdat$Var_corr[which(sumdat$Var_corr=="Durif2")] <- "Durif"
+sumdat$Var_corr[which(sumdat$Var_corr=="Durif2")] <- "Vinhao"
 sumdat$Var_corr[which(sumdat$Var_corr=="Valdepenas")] <- "Tempranillo"
 unique(sumdat$Var_corr)
 

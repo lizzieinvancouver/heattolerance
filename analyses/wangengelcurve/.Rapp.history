@@ -1,6 +1,1606 @@
-## Started 20 March 2018 ###
-## from napaclim (in Nacho's Pheno_projections repo) ###
+agri.z <- scale(agri, center = TRUE, scale = TRUE)
+agri.z <- scale(agri, center = TRUE, scale = TRUE)m1 <- glm(y ~ agri.z, family = "binomial")
+m1 <- glm(y ~ agri, family = "binomial")#
 #
+agri.z <- scale(agri, center = TRUE, scale = TRUE)#
+#
+m2 <- glm(y ~ agri.z, family = "binomial")
+m2
+sd(agri)
+coef(m2)
+coef(m2)$agri.z
+coef(m2)["agri.z"]
+coef(m2)["agri.z"]/sd(agri)
+ndata <- 1000#
+agri <- rnorm(ndata, 0, 5)#
+ba <- -2#
+a <- 10#
+z <- a + ba*agri#
+p <- 1/(1+exp(-z))#
+y <- rbinom(ndata, 1, p)#
+#
+m1 <- glm(y ~ agri, family = "binomial")#
+#
+agri.z <- scale(agri, center = TRUE, scale = TRUE)#
+#
+m2 <- glm(y ~ agri.z, family = "binomial")#
+#
+coef(m2)["agri.z"]/sd(agri)
+m1
+m2
+15.906526/26.07621
+46.95728/110.51111
+100 - (46.95728/110.51111) # real data
+Variance declines:#
+1-(15.906526/26.07621) # at 1 degree#
+1 - (46.95728/110.51111) # real data
+-4.534630---3.611025
+-4.534630--3.611025
+library(nimble)
+p <- list(r = .05, K = 2, Q = 5, H = .38, sigma = .01, a = 0.023, N = 1e4)#
+growth <- function(x, p) x * p$r * (1 - x / p$K)#
+consumption <- function(x,p) p$a * x ^ p$Q / (x^p$Q + p$H^p$Q)
+library(tidyverse)#
+library(nimble)#
+#
+p <- list(r = .05, K = 2, Q = 5, H = .38, sigma = .01, a = 0.023, N = 1e4)#
+growth <- function(x, p) x * p$r * (1 - x / p$K)#
+consumption <- function(x,p) p$a * x ^ p$Q / (x^p$Q + p$H^p$Q)#
+#
+theory <- #
+  tibble(x= seq(0,2, length.out = 100)) %>%#
+  mutate(g = growth(x,p), #
+         c = consumption(x,p)) %>%#
+  mutate(potential = - cumsum(g - c)) %>%#
+  gather(curve, y, -x, -potential) #
+#
+theory %>%#
+  ggplot(aes(x, y, col=curve)) +#
+  geom_line(lwd=1)#
+#
+theory %>%#
+  ggplot(aes(x, potential)) + #
+  geom_line(lwd=1)
+# Define stochastic model in BUGS notation#
+may  <- nimble::nimbleCode({#
+  x[1] <- x0#
+  for(t in 1:(N-1)){#
+    # Determinstic mean looks like standard R#
+    mu[t] <- x[t] + x[t] * r * (1 - x[t] / K)  - a * x[t] ^ Q / (x[t] ^ Q + H ^ Q)#
+    # Note the use of ~ in BUGS to show 'distributed as normal' #
+    y[t+1] ~ dnorm(mu[t], sd = sigma)#
+    x[t+1] <- max(y[t+1],0)#
+  }#
+})#
+model <- nimbleModel(may,constants = p, inits = list(x0 = 0.2))#
+cmodel <- compileNimble(model)#
+set.seed(123)#
+simulate(cmodel)#
+df <- tibble(t = seq_along(cmodel$x), x = cmodel$x)#
+#
+df %>% filter(t< 1000) %>% ggplot(aes(t,x)) + geom_point()
+seq(0.01, 003, by=0.01)
+seq(0.01, 03, by=0.01)
+seq(0.01, 0.03, by=0.01)
+tibble(x= seq(0,2, length.out = 100)) %>%#
+       mutate(g = growth(x,p), #
+         c = consumption(x,p)) %>%#
+       mutate(potential = - cumsum(g - c)) %>%
+ex1 <- list(r = .05, K = 2, Q = 2, H = .38, sigma = .01, a = 0.053, N = 1e4)
+growth <- function(x, p) x * p$r * (1 - x / p$K)#
+consumption <- function(x,p) p$a * x ^ p$Q / (x^p$Q + p$H^p$Q)
+theory <- #
+  tibble(x= seq(0,2, length.out = 100)) %>%#
+  mutate(g = growth(x,p), #
+         c = consumption(x,p)) %>%#
+  mutate(potential = - cumsum(g - c)) %>%#
+  gather(curve, y, -x, -potential) #
+#
+theory %>%#
+  ggplot(aes(x, y, col=curve)) +#
+  geom_line(lwd=1)#
+#
+theory %>%#
+  ggplot(aes(x, potential)) + #
+  geom_line(lwd=1)
+# Set up the data#
+p <- list(r = .05, K = 2, Q = 5, H = .38, sigma = .01, a = 0.023, N = 1e4)#
+growth <- function(x, p) x * p$r * (1 - x / p$K)#
+consumption <- function(x,p) p$a * x ^ p$Q / (x^p$Q + p$H^p$Q)#
+# Define stochastic model in BUGS notation#
+may  <- nimble::nimbleCode({#
+  x[1] <- x0#
+  for(t in 1:(N-1)){#
+    # Determinstic mean looks like standard R#
+    mu[t] <- x[t] + x[t] * r * (1 - x[t] / K)  - a * x[t] ^ Q / (x[t] ^ Q + H ^ Q)#
+    # Note the use of ~ in BUGS to show 'distributed as normal' #
+    y[t+1] ~ dnorm(mu[t], sd = sigma)#
+    x[t+1] <- max(y[t+1],0)#
+  }#
+})#
+model <- nimbleModel(may,constants = p, inits = list(x0 = 0.2))#
+cmodel <- compileNimble(model)#
+set.seed(123)#
+simulate(cmodel)#
+#
+x=cmodel$x#
+goo <- list(x=x, N = length(x))
+173/582
+## Started 29 March 2018 ###
+## Started earlier, made from file now called cleanclim.foradelaide.firstpass.R ###
+#
+## This file reads in and cleans up climate data related to Adelaide data ###
+#
+## This file needs to be sourced. See also wine.diversity.clim.merge.R ###
+#
+## set working directory#
+# setwd("~/Documents/git/projects/vin/adelaideclimate/analyses")#
+#
+require(plyr, dplyr, tidy)#
+#
+# Read in the data#
+colnameshere <- c("lat", "lon", "latclim", "lonclim", "var", "bb", "harv",#
+    as.character(1951:2018))#
+#
+gdd <- read.csv("input/climate/Recd2019_Mo5/gdd10_bb2hv.csv", header=TRUE)#
+names(gdd) <- colnameshere#
+tmax35 <- read.csv("input/climate/Recd2019_Mo5/tmax35_bb2hv.csv", header=TRUE)#
+names(tmax35) <- colnameshere#
+tmaxHI <- read.csv("input/climate/Recd2019_Mo5/tmaxHI_bb2hv.csv", header=TRUE)#
+names(tmaxHI) <- colnameshere#
+tmin67 <- read.csv("input/climate/Recd2019_Mo5/tmin67_bb.csv", header=TRUE)#
+names(tmin67) <- colnameshere#
+tminbb <- read.csv("input/climate/Recd2019_Mo5/tminLO_bb.csv", header=TRUE)#
+names(tminbb) <- colnameshere#
+tminhv <- read.csv("input/climate/Recd2019_Mo5/tminLO_HV.csv", header=TRUE)#
+names(tminhv) <- colnameshere#
+# formatting#
+gdd.long <- gather(gdd, year, gdd, -lat, -lon, -var, -bb, -harv)#
+tmax35.long <- gather(tmax35, year, tmax35, -lat, -lon, -var, -bb, -harv)#
+tmaxHI.long <- gather(tmaxHI, year, tmaxHI, -lat, -lon, -var, -bb, -harv)#
+tmin67.long <- gather(tmin67, year, tmin67, -lat, -lon, -var, -bb, -harv)#
+tminbb.long <- gather(tminbb, year, tminbb, -lat, -lon, -var, -bb, -harv)#
+tminhv.long <- gather(tminhv, year, tminhv, -lat, -lon, -var, -bb, -harv)#
+#
+# check ... #
+gdd.long[duplicated(gdd.long),]#
+tmax35.long[duplicated(tmax35.long),]#
+tmaxHI.long[duplicated(tmaxHI.long),]#
+tmin67.long[duplicated(tmin67.long),]#
+tminbb.long[duplicated(tminbb.long),]#
+tminhv.long[duplicated(tminhv.long),]#
+#
+# merge ....#
+cc1 <- inner_join(gdd.long, tmax35.long, by=c("lat", "lon", "var", "bb","harv", "year"))#
+cc2 <- inner_join(cc1, tmaxHI.long, by=c("lat", "lon", "var", "bb", "harv", "year"))#
+cc3 <- inner_join(cc2, tmin67.long, by=c("lat", "lon", "var", "bb", "harv", "year"))#
+cc4 <- inner_join(cc3, tminbb.long, by=c("lat", "lon", "var", "bb", "harv", "year"))#
+climdat <- inner_join(cc4, tminhv.long, by=c("lat", "lon", "var", "bb", "harv", "year"))#
+if(FALSE){ # below is old stuff#
+#
+## Deal with some really small duplication issues#
+# Here's what's wrong... #
+cc.max1[duplicated(cc.max1),]#
+cc.min1.nodups <- cc.min1[!duplicated(cc.min1),]#
+cc.max1.nodups <- cc.max1[!duplicated(cc.max1),]#
+cc.min2.nodups <- cc.min2[!duplicated(cc.min2),]#
+cc.max2.nodups <- cc.max2[!duplicated(cc.max2),]#
+#
+cc.min1.long <- gather(cc.min1.nodups, year, tmin, -country, -winelat, -winelon, -crulat, -crulon)#
+cc.max1.long <- gather(cc.max1.nodups, year, tmax, -country, -winelat, -winelon, -crulat, -crulon)#
+cc.min2.long <- gather(cc.min2.nodups, year, tmin, -country, -winelat, -winelon, -crulat, -crulon)#
+cc.max2.long <- gather(cc.max2.nodups, year, tmax, -country, -winelat, -winelon, -crulat, -crulon)#
+#
+## Now merge#
+#
+## So. here's what I started with: using dplyr#
+cc.1 <- merge(cc.min1.long, cc.max1.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+#
+cc.1 <- inner_join(cc.min1.long, cc.max1.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+cc.1$when <- "1951-1980"#
+cc.2 <- inner_join(cc.min2.long, cc.max2.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+cc.2$when <- "1986-2015"#
+#
+cc.minmax.noelev <-  rbind(cc.1, cc.2)#
+#
+print("Checking some dimensions and some means (cell) ...")#
+dim(cc.min1.long)#
+dim(cc.1)#
+dim(cc.min2.long)#
+dim(cc.2)#
+mean(cc.max2.long$tmax, na.rm=TRUE)#
+mean(cc.2$tmax, na.rm=TRUE) #
+#
+####
+####
+#
+# Read in the tmin and tmax data using grid method#
+# cg mean climgrid (versus climcell method)#
+#
+cg.max1 <- read.csv ("input/climate/Recd2017_Mo9/wine_climgrid_tmax_Sep2017_cru401_1951-1980.rad0.5.csv", header=TRUE)#
+cg.max1$X <- NULL#
+names(cg.max1) <- c("country", "winelat", "winelon", "crulat", "crulon", "1951", "1952", "1953", "1954",#
+    "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967",#
+    "1968", "1969", "1970", "1971", "1972", "1973", "1974","1975", "1976", "1977", "1978", "1979", "1980")#
+cg.max1$country[which(cg.max1$country=="UnitedStates")] <- "United States"#
+cg.max1$country[which(cg.max1$country=="UnitedKingdom")] <- "United Kingdom"#
+cg.max1$country[which(cg.max1$country=="NewZealand")] <- "New Zealand"#
+cg.max1$country[which(cg.max1$country=="SouthAfrica")] <- "South Africa"#
+cg.max1$country[which(cg.max1$country=="SouthKorea")] <- "South Korea"#
+cg.max1$country[which(cg.max1$country=="CzechRepublic")] <- "Czech Republic"#
+#
+cg.min1 <- read.csv ("input/climate/Recd2017_Mo9/wine_climgrid_tmin_Sep2017_cru401_1951-1980.rad0.5.csv", header=TRUE)#
+cg.min1$X <- NULL#
+names(cg.min1) <- c("country", "winelat", "winelon", "crulat", "crulon", "1951", "1952", "1953", "1954",#
+    "1955", "1956", "1957", "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967",#
+    "1968", "1969", "1970", "1971", "1972", "1973", "1974","1975", "1976", "1977", "1978", "1979", "1980")#
+cg.min1$country[which(cg.min1$country=="UnitedStates")] <- "United States"#
+cg.min1$country[which(cg.min1$country=="UnitedKingdom")] <- "United Kingdom"#
+cg.min1$country[which(cg.min1$country=="NewZealand")] <- "New Zealand"#
+cg.min1$country[which(cg.min1$country=="SouthAfrica")] <- "South Africa"#
+cg.min1$country[which(cg.min1$country=="SouthKorea")] <- "South Korea"#
+cg.min1$country[which(cg.min1$country=="CzechRepublic")] <- "Czech Republic"#
+#
+cg.max2 <- read.csv ("input/climate/Recd2017_Mo9/wine_climgrid_tmax_Sep2017_cru401_1986-2015.rad0.5.csv", header=TRUE)#
+cg.max2$X <- NULL#
+names(cg.max2) <- c("country", "winelat", "winelon", "crulat", "crulon", "1986", "1987", "1988", "1989",#
+    "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002",#
+    "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015")#
+cg.max2$country[which(cg.max2$country=="UnitedStates")] <- "United States"#
+cg.max2$country[which(cg.max2$country=="UnitedKingdom")] <- "United Kingdom"#
+cg.max2$country[which(cg.max2$country=="NewZealand")] <- "New Zealand"#
+cg.max2$country[which(cg.max2$country=="SouthAfrica")] <- "South Africa"#
+cg.max2$country[which(cg.max2$country=="SouthKorea")] <- "South Korea"#
+cg.max2$country[which(cg.max2$country=="CzechRepublic")] <- "Czech Republic"#
+#
+cg.min2 <- read.csv ("input/climate/Recd2017_Mo9/wine_climgrid_tmin_Sep2017_cru401_1986-2015.rad0.5.csv", header=TRUE)#
+cg.min2$X <- NULL#
+names(cg.min2) <- c("country", "winelat", "winelon", "crulat", "crulon", "1986", "1987", "1988", "1989",#
+    "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002",#
+    "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015")#
+cg.min2$country[which(cg.min2$country=="UnitedStates")] <- "United States"#
+cg.min2$country[which(cg.min2$country=="UnitedKingdom")] <- "United Kingdom"#
+cg.min2$country[which(cg.min2$country=="NewZealand")] <- "New Zealand"#
+cg.min2$country[which(cg.min2$country=="SouthAfrica")] <- "South Africa"#
+cg.min2$country[which(cg.min2$country=="SouthKorea")] <- "South Korea"#
+cg.min2$country[which(cg.min2$country=="CzechRepublic")] <- "Czech Republic"#
+## Deal with some really small duplication issues#
+# Here's what's wrong... #
+cg.max1[duplicated(cg.max1),]#
+cg.min1.nodups <- cg.min1[!duplicated(cg.min1),]#
+cg.max1.nodups <- cg.max1[!duplicated(cg.max1),]#
+cg.min2.nodups <- cg.min2[!duplicated(cg.min2),]#
+cg.max2.nodups <- cg.max2[!duplicated(cg.max2),]#
+#
+cg.min1.long <- gather(cg.min1.nodups, year, tmin, -country, -winelat, -winelon, -crulat, -crulon)#
+cg.max1.long <- gather(cg.max1.nodups, year, tmax, -country, -winelat, -winelon, -crulat, -crulon)#
+cg.min2.long <- gather(cg.min2.nodups, year, tmin, -country, -winelat, -winelon, -crulat, -crulon)#
+cg.max2.long <- gather(cg.max2.nodups, year, tmax, -country, -winelat, -winelon, -crulat, -crulon)#
+#
+cg.1 <- inner_join(cg.min1.long, cg.max1.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+cg.1$when <- "1951-1980"#
+cg.2 <- inner_join(cg.min2.long, cg.max2.long, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon", "year"))#
+cg.2$when <- "1986-2015"#
+#
+cg.minmax.noelev <-  rbind(cg.1, cg.2)#
+#
+print("Checking some dimensions and some means (grid)...")#
+dim(cg.min1.long)#
+dim(cg.1)#
+dim(cg.min2.long)#
+dim(cg.2)#
+mean(cg.max2.long$tmax, na.rm=TRUE)#
+mean(cg.2$tmax, na.rm=TRUE) #
+#
+# merge in elevation data#
+cc.minmax <- merge(cc.minmax.noelev, elev, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon"), all.x=TRUE, all.y=TRUE)#
+cg.minmax <- merge(cg.minmax.noelev, elev, by=c("country", "winelat", "winelon", "crulat",#
+    "crulon"), all.x=TRUE, all.y=TRUE)#
+}
+# Master flags! Here you pick if you want the flags for the main model (figure in main text) versus the all spp model (supp)#
+use.flags.for.mainmodel <- TRUE#
+use.flags.for.allsppmodel <- TRUE#
+use.yourown.flagdesigh <- FALSE#
+#
+if(use.flags.for.mainmodel==TRUE & use.flags.for.allsppmodel) print("ALERT! You have set too many master flags to true, you must pick only one!")
+# Master flags! Here you pick if you want the flags for the main model (figure in main text) versus the all spp model (supp)#
+use.flags.for.mainmodel <- TRUE#
+use.flags.for.allsppmodel <- TRUE#
+use.yourown.flagdesign <- FALSE#
+#
+if(use.flags.for.mainmodel==TRUE & use.flags.for.allsppmodel | use.flags.for.mainmodel==TRUE & use.yourown.flagdesign |#
+    use.yourown.flagdesign  & use.flags.for.allsppmodel | use.flags.for.mainmodel==TRUE & use.flags.for.allsppmodel#
+    & use.yourown.flagdesign) print("ALERT! You have set too many master flags to true, you must pick only one!")
+use.flags.for.mainmodel <- TRUE#
+use.flags.for.allsppmodel <- FALSE#
+use.yourown.flagdesign <- FALSE#
+#
+if(use.flags.for.mainmodel==TRUE & use.flags.for.allsppmodel | use.flags.for.mainmodel==TRUE & use.yourown.flagdesign |#
+    use.yourown.flagdesign  & use.flags.for.allsppmodel | use.flags.for.mainmodel==TRUE & use.flags.for.allsppmodel#
+    & use.yourown.flagdesign) print("ALERT! You have set too many master flags to true, you must pick only one!")
+use.flags.for.allsppmodel <- TRUE
+use.flags.for.allsppmodel
+fakechill <- seq(0:1000, by=0.1)
+fakechill <- seq(from=0, to=1000, by=0.1)
+fakechill
+?seq
+fakechill <- seq(from=0, to=1000, by=0.1)#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))
+fakechill <- seq(from=0, to=1000, by=0.1)#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+ypredsig <- c(rep(NA, length(fakechill))#
+for (i in c(1:length(fakechill))){#
+ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill(fakechill-b_chillsig))))#
+    }
+ypredsig <- c(rep(NA, length(fakechill)))#
+for (i in c(1:length(fakechill))){#
+ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill(fakechill-b_chillsig))))#
+    }
+fakechill <- seq(from=0, to=1000, by=0.1)#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2
+ypredsig <- c(rep(NA, length(fakechill)))#
+for (i in c(1:length(fakechill))){#
+ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill(fakechill-b_chillsig))))#
+    }
+a_chill
+ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill-b_chillsig))))
+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill-b_chillsig))))
+i
+fakeforce[i]
+fakeforce
+mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill-b_chillsig))))
+b_forcesig
+ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))
+ypredsig
+fakechill <- seq(from=0, to=1000, by=0.1)#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+ypredsig <- c(rep(NA, length(fakechill)))#
+for (i in c(1:length(fakechill))){#
+ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    }
+ypredsig
+fakechill <- seq(from=0, to=1000, by=0.1)#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+ypredsig <- c(rep(NA, length(fakechill)))#
+for (i in c(1:length(fakechill))){#
+ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    }
+fakechill <- seq(from=0, to=1000, by=0.1)#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    }
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)
+hist(ypred)
+hist(ypredsig)
+fakechill <- seq(from=0, to=1000, by=0.1)#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+#... and fails
+fakechill <- seq(from=0, to=15, by=0.01)#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)
+# lizzie tries ...#
+fakechill <- seq(from=0, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- 5#
+b_chill.play <- 10#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="firebrickred")#
+#... and fails#
+}
+lines(ypredplay~fakechill, col="darkred")
+fakechill <- seq(from=0, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- 0.5#
+b_chill.play <- 2#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="darkred")#
+#... and fails
+fakechill <- seq(from=0, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- 0.5#
+b_chill.play <- 20#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="darkred")#
+#... and fails
+fakechill <- seq(from=0, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- 0.5#
+b_chill.play <- 200#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="darkred")
+fakechill <- seq(from=0, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- 500#
+b_chill.play <- 200#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="darkred")#
+#... and fails
+fakechill <- seq(from=0, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- 500#
+b_chill.play <- 2000#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="darkred")
+fakechill <- seq(from=0, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- 10#
+b_chill.play <- 10#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="darkred")
+fakechill <- seq(from=0, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- 10#
+b_chill.play <- -0.2#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="darkred")#
+#... and fails
+fakechill <- seq(from=-1, to=15, by=0.01) # what range should this be? It affects how crazy things look#
+fakeforce <- seq(from=5, to=30, length.out=length(fakechill))#
+fakephoto <- seq(from=6, to=24, length.out=length(fakechill))#
+b_forcesig <- -0.9385382#
+b_photosig <- -0.2641393#
+a_chill <- 10.0604101#
+b_chillsig <- 4.9189167#
+mu_a <- 40#
+b_force <- -0.93#
+b_photo <- -0.29#
+b_chill <- -2.2#
+#
+a_chill.play <- -0.2#
+b_chill.play <- 10#
+ypredsig <- c(rep(NA, length(fakechill)))#
+ypred <- c(rep(NA, length(fakechill)))#
+ypredplay <- c(rep(NA, length(fakechill)))#
+#
+for (i in c(1:length(fakechill))){#
+    ypredsig[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill*(fakechill[i]-b_chillsig))))#
+    ypred[i] = mu_a+b_force*fakeforce[i] + b_photo * fakephoto[i] + b_chill*fakechill[i]#
+    ypredplay[i] = mu_a+b_forcesig*fakeforce[i] + b_photosig * fakephoto[i] + (1 /(1 + exp(a_chill.play*(fakechill[i]-b_chill.play))))#
+#
+    }#
+#
+plot(ypredsig~fakechill)#
+lines(ypred~fakechill)#
+lines(ypredplay~fakechill, col="darkred")
+library(ape)
+goo <- read.tre(""~/Documents/git/projects/vin/davis/data/wgss/tree/600k_snp_tree.tre")
+goo <- read.tre("~/Documents/git/projects/vin/davis/data/wgss/tree/600k_snp_tree.tre")
+goo <- read.tree("~/Documents/git/projects/vin/davis/data/wgss/tree/600k_snp_tree.tre")
+ndata <- 1000#
+agri <- rnorm(ndata, 0, 10)#
+cc <- rnorm(ndata, 0, 1)#
+ba <- -0.5#
+bc <- 0.5#
+a <- -1#
+z <- a + ba*agri + bc*cc#
+p <- 1/(1+exp(-z))#
+y <- rbinom(ndata, 1, p)
+m1 <- glm(y ~ agri + cc +agri:cc, family = "binomial")
+agri.z <- (agri-mean(agri,na.rm=TRUE))/(2*sd(agri,na.rm=TRUE))#
+cc.z <- (cc-mean(cc,na.rm=TRUE))/(2*sd(cc,na.rm=TRUE))#
+#
+m2 <- glm(y ~ agri.z + cc.z + agri.z:cc.z, family = "binomial")
+m1
+m2
+coef(m2)[2]
+coef(m2)[2]/(4*2*sd(agri))
+#############################################
+## housekeeping#
+rm(list=ls()) #
+options(stringsAsFactors = FALSE)#
+#
+## Questions (for both experiments):#
+# Are there really enough to estimate effects?#
+# Is flask coded for time in treatment? It should be ... it cannot change for each bud.#
+# Should treatment be a factor? Yes, I think so (i.e., not divided into day and night temperatures)#
+#
+library(lme4)#
+library(rstan)#
+library(rstanarm)#
+library(plyr)#
+library(dplyr)
+alpha
+quit()
+#############################################
+## housekeeping#
+rm(list=ls()) #
+options(stringsAsFactors = FALSE)
+alpha
+library(plyr)#
+library(dplyr)
+alpha
+library(rstanarm)
+alpha
+library(lme4)
+alpha
+library(rstan)
+alpha
+library(rstan)
+quit()
+library(rstan)
+alpha
+quit()
+data <- 1000#
+agri <- rnorm(ndata, 0, 10)#
+cc <- rnorm(ndata, 0, 1)#
+ba <- -0.5#
+bc <- 0.5#
+a <- -1#
+z <- a + ba*agri + bc*cc#
+p <- 1/(1+exp(-z))#
+y <- rbinom(ndata, 1, p)#
+#
+m1 <- glm(y ~ agri + cc +agri:cc, family = "binomial")#
+#
+agri.z <- (agri-mean(agri,na.rm=TRUE))/(2*sd(agri,na.rm=TRUE))#
+cc.z <- (cc-mean(cc,na.rm=TRUE))/(2*sd(cc,na.rm=TRUE))#
+#
+m2 <- glm(y ~ agri.z + cc.z + agri.z:cc.z, family = "binomial")#
+#
+### Divide by 4 rule: need to multiply by 100 to convert to percent as above#
+(coef(m1)[2]/4)*100 # -11.7% (vs. -10.6% using GH long equation)#
+(coef(m2)[2]/4)/(sd(agri)*2)*100 # -11.7% (vs. -11.0% using GH long equation)#
+Versus suggested new approach:#
+(coef(m2)[2]/4)*2*sd(agri)*100 # -234.0%
+ndata <- 1000#
+agri <- rnorm(ndata, 0, 10)#
+cc <- rnorm(ndata, 0, 1)#
+ba <- -0.5#
+bc <- 0.5#
+a <- -1#
+z <- a + ba*agri + bc*cc#
+p <- 1/(1+exp(-z))#
+y <- rbinom(ndata, 1, p)#
+#
+m1 <- glm(y ~ agri + cc +agri:cc, family = "binomial")#
+#
+agri.z <- (agri-mean(agri,na.rm=TRUE))/(2*sd(agri,na.rm=TRUE))#
+cc.z <- (cc-mean(cc,na.rm=TRUE))/(2*sd(cc,na.rm=TRUE))#
+#
+m2 <- glm(y ~ agri.z + cc.z + agri.z:cc.z, family = "binomial")#
+#
+### Divide by 4 rule: need to multiply by 100 to convert to percent as above#
+(coef(m1)[2]/4)*100 # -11.7% (vs. -10.6% using GH long equation)#
+(coef(m2)[2]/4)/(sd(agri)*2)*100 # -11.7% (vs. -11.0% using GH long equation)#
+Versus suggested new approach:#
+(coef(m2)[2]/4)*2*sd(agri)*100 # -234.0%
+coef(m2)[2]/(4*2*sd(agri))
+set.seed(7779)#
+ndata <- 1000#
+agri <- rnorm(ndata, 0, 10)#
+cc <- rnorm(ndata, 0, 1)#
+ba <- -0.5#
+bc <- 0.5#
+a <- -1#
+z <- a + ba*agri + bc*cc#
+p <- 1/(1+exp(-z))#
+y <- rbinom(ndata, 1, p)#
+#
+m1 <- glm(y ~ agri + cc +agri:cc, family = "binomial")#
+#
+agri.z <- (agri-mean(agri,na.rm=TRUE))/(2*sd(agri,na.rm=TRUE))#
+cc.z <- (cc-mean(cc,na.rm=TRUE))/(2*sd(cc,na.rm=TRUE))#
+#
+m2 <- glm(y ~ agri.z + cc.z + agri.z:cc.z, family = "binomial")#
+#
+### Divide by 4 rule: need to multiply by 100 to convert to percent as above#
+(coef(m1)[2]/4)*100 # -11.7% (vs. -10.6% using GH long equation)#
+(coef(m2)[2]/4)/(sd(agri)*2)*100 # -11.7% (vs. -11.0% using GH long equation)#
+# versus suggested new approach:#
+(coef(m2)[2]/4)*2*sd(agri)*100 # -234.0%
+set.seed(7777)#
+ndata <- 1000#
+agri <- rnorm(ndata, 0, 10)#
+cc <- rnorm(ndata, 0, 1)#
+ba <- -0.5#
+bc <- 0.5#
+a <- -1#
+z <- a + ba*agri + bc*cc#
+p <- 1/(1+exp(-z))#
+y <- rbinom(ndata, 1, p)#
+#
+m1 <- glm(y ~ agri + cc +agri:cc, family = "binomial")#
+#
+agri.z <- (agri-mean(agri,na.rm=TRUE))/(2*sd(agri,na.rm=TRUE))#
+cc.z <- (cc-mean(cc,na.rm=TRUE))/(2*sd(cc,na.rm=TRUE))#
+#
+m2 <- glm(y ~ agri.z + cc.z + agri.z:cc.z, family = "binomial")#
+#
+### Divide by 4 rule: need to multiply by 100 to convert to percent as above#
+(coef(m1)[2]/4)*100 # -11.7% (vs. -10.6% using GH long equation)#
+(coef(m2)[2]/4)/(sd(agri)*2)*100 # -11.7% (vs. -11.0% using GH long equation)#
+# versus suggested new approach:#
+(coef(m2)[2]/4)*2*sd(agri)*100 # -234.0%
+(coef(m2)[2]/4) / (2*sd(agri))
+coef(m2)[2]/(4*2*sd(agri))#
+(coef(m2)[2]/4)/(2*sd(agri))
+(coef(m2)[2]/4)*2*sd(agri)*100 # -234.0%
+(coef(m2)[2]/4)
+set.seed(7777)#
+ndata <- 1000#
+agri <- rnorm(ndata, 0, 10)#
+cc <- rnorm(ndata, 0, 1)#
+ba <- -0.5#
+bc <- 0.5#
+a <- -1#
+z <- a + ba*agri + bc*cc#
+p <- 1/(1+exp(-z))#
+y <- rbinom(ndata, 1, p)#
+#
+m1 <- glm(y ~ agri + cc +agri:cc, family = "binomial")#
+#
+agri.z <- (agri-mean(agri,na.rm=TRUE))/(2*sd(agri,na.rm=TRUE))#
+cc.z <- (cc-mean(cc,na.rm=TRUE))/(2*sd(cc,na.rm=TRUE))#
+#
+m2 <- glm(y ~ agri.z + cc.z + agri.z:cc.z, family = "binomial")#
+#
+### Divide by 4 rule: need to multiply by 100 to convert to percent as above#
+(coef(m1)[2]/4)*100 # -11.7% (vs. -10.6% using GH long equation)#
+(coef(m2)[2]/4)/(sd(agri)*2)*100 # -11.7% (vs. -11.0% using GH long equation)#
+# versus suggested new approach:#
+coef(m2)[2]/(4*2*sd(agri))#
+(coef(m2)[2]/4)/(2*sd(agri))#
+#
+# wrong approaches ...#
+(coef(m2)[2]/4)*2*sd(agri)*100
+tolower("WITHIN VINEYARD TEMPERATURE STRUCTURE AND VARIABILITY IN THE#
+UMPQUA VALLEY OF OREGON")
+tolower("LIGHT QUALITY AND VERNALIZATION INTERACT IN CONTROLLING LATE FLOWERING ARABIDOPSIS ECOTYPES AND MUTANTS")
+?showNonASCII
+??
+??showNonASCII
+library(tools)
+showNonASCII(""~/Documents/git/projects/vin/climatefuture/docs/manuscripts/toPNAS/revision/winefuturePNAS_supp_rev.Rnw")
+showNonASCII("~/Documents/git/projects/vin/climatefuture/docs/manuscripts/toPNAS/revision/winefuturePNAS_supp_rev.Rnw")
+out <- c(#
+"fa\xE7ile test of showNonASCII():",#
+"\\details{",#
+"   This is a good line",#
+"   This has an \xfcmlaut in it.",#
+"   OK again.",#
+"}")#
+f <- tempfile()#
+cat(out, file = f, sep = "\n")#
+#
+showNonASCIIfile(f)#
+unlink(f)
+# Clear workspace#
+#rm(list=ls()) # remove everything currently held in the R memory#
+options(stringsAsFactors=FALSE)#
+#
+library(xtable) # needed for Sweaving#
+data.summ<-read.csv("../data/regionsvars/Pheno_data_summ_new.csv")#
+mytable <- data.summ[,1:10]#
+make.mytable3 <- xtable(mytable, #
+                        caption="Summary of data used to parameterize phenological models. For each site for which we had data,#
+                        we indicate its geographic coordinates, the minimum and maximum year of observation, the phenological#
+                        stage (BB for budbreak, FL for flowering, VER for verasison) for which there was data (marked with x), and the winegrape varieties observed. Part of these data #
+                        are from Phenoclim Database (INRA Vassal, Colmar, Angers, Bordeaux, Pech Rouge - #
+                        https://www6.inra.fr/soere-tempo/Ressources/Portail-de-donnees) - Seguin (2004).", label="tablephendat",#
+                        digits=c(0, 2, 2, 0, 0, 0,0,0,0,0,0))#
+align(make.mytable3) <- c( 'p{0.25}',  'p{0.5in}', 'p{0.25in}', 'r{0.25in}', 'p{0.35in}', 'p{0.35in}','p{0.25in}', 'p{0.2in}' , 'p{0.2in}', 'p{1.7in}', 'p{0.1in}')#
+#
+add.to.row <- list(pos = list(0), command = NULL)#
+command <- paste0("\\hline\n\\endhead\n",#
+                  "\\hline\n",#
+                  "\\multicolumn{", dim(mytable)[2] + 0, "}{l}",#
+                  "{\\footnotesize Continued on next page}\n",#
+                  "\\endfoot\n",#
+                  "\\endlastfoot\n")#
+add.to.row$command <- command
+# Started June 2018 ##
+# Source file for some of the climatefuture supp stuff ##
+#
+# Clear workspace#
+#rm(list=ls()) # remove everything currently held in the R memory#
+options(stringsAsFactors=FALSE)#
+#
+library(xtable) # needed for Sweaving#
+data.summ<-read.csv("../data/regionsvars/Pheno_data_summ_new.csv")#
+mytable <- data.summ[,1:10]#
+make.mytable3 <- xtable(mytable, #
+                        caption="Summary of data used to parameterize phenological models. For each site for which we had data,#
+                        we indicate its geographic coordinates, the minimum and maximum year of observation, the phenological#
+                        stage (BB for budbreak, FL for flowering, VER for verasison) for which there was data (marked with x), and the winegrape varieties observed. Part of these data #
+                        are from Phenoclim Database (INRA Vassal, Colmar, Angers, Bordeaux, Pech Rouge - #
+                        ) - Seguin (2004).", label="tablephendat",#
+                        digits=c(0, 2, 2, 0, 0, 0,0,0,0,0,0)) # https://www6.inra.fr/soere-tempo/Ressources/Portail-de-donnees#
+align(make.mytable3) <- c( 'p{0.25}',  'p{0.5in}', 'p{0.25in}', 'r{0.25in}', 'p{0.35in}', 'p{0.35in}','p{0.25in}', 'p{0.2in}' , 'p{0.2in}', 'p{1.7in}', 'p{0.1in}')#
+#
+add.to.row <- list(pos = list(0), command = NULL)#
+command <- paste0("\\hline\n\\endhead\n",#
+                  "\\hline\n",#
+                  "\\multicolumn{", dim(mytable)[2] + 0, "}{l}",#
+                  "{\\footnotesize Continued on next page}\n",#
+                  "\\endfoot\n",#
+                  "\\endlastfoot\n")#
+add.to.row$command <- command
+library(xtolls)
+library(xtools)
+mytable <- data.summ[,1:10]
+data.summ<-read.csv("../data/regionsvars/Pheno_data_summ_new.csv")
+tolower("CONSTRAINTS ON PHENOTYPIC EVOLUTION")
+tolower("EVOLUTION, SPECIES AND FOSSILS - HOW DOES LIFE EVOLVE")
+tolower("ENVIRONMENT AND EVOLUTION - ALTERNATIVE CAUSES OF THE TEMPORAL DISTRIBUTION OF EVOLUTIONARY EVENTS")
+0.35 - 0.83 + 0.42 -0.12 -0.05
+-0.23/4
+0.35/4
+?dbeta
+tauP <- dbeta(10, 10)
+tauP <- pbeta(10, 10)
+tauP <- rbeta(10000, 10, 10)
+hist(tauP)
+?dbeta
+x <- seq(0, 1, length = 21)#
+dbeta(x, 1, 1)#
+pbeta(x, 1, 1)
+plot(dbeta)
+plot(dbeta(x, 1, 1))
+plot(pbeta(x, 1, 1))
+plot(dbeta(x, 10, 10))
+plot(rbeta(10000, 10, 10))
+hist(rbeta(10000, 10, 10))
+plot.start.tauP <- dbeta(x, 10, 10)
+plot(plot.start.tauP, type="l")
+plot.start.tauP <- pbeta(x, 10, 10)#
+plot(plot.start.tauP, type="l")
+x <- seq(0, 1, length = 10000)
+plot.start.tauP <- dbeta(x, 10, 10)#
+plot(plot.start.tauP, type="l")
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n")
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n")#
+lines(plot.end.tauP, ylab="", xlab="", xaxt="n", yaxt="n")
+plot.start.tauP <- dbeta(x, p=10, q=10)#
+plot.end.tauP <- dbeta(x, p=5, q=15)#
+#
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n")#
+lines(plot.end.tauP, ylab="", xlab="", xaxt="n", yaxt="n")
+plot.start.tauP <- dbeta(x, 10, 10)#
+plot.end.tauP <- dbeta(x, 5, 15)#
+#
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n")#
+lines(plot.end.tauP, ylab="", xlab="", xaxt="n", yaxt="n", col="blue")
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n", ylim=c(0,5))#
+lines(plot.end.tauP, ylab="", xlab="", xaxt="n", yaxt="n", col="blue")
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n", ylim=c(0,4))#
+lines(plot.end.tauP, ylab="", xlab="", xaxt="n", yaxt="n", col="blue")
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n", ylim=c(0, 4.5))#
+lines(plot.end.tauP, ylab="", xlab="", xaxt="n", yaxt="n", col="blue")
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n", ylim=c(0, 4.3))#
+lines(plot.end.tauP, ylab="", xlab="", xaxt="n", yaxt="n", col="blue")
+mean(rbeta(10000, 10, 10))
+mean(rbeta(10000, 5, 15))
+-1.43+-0.52
+-0.88 + 0.35
+-0.88+-0.07
+(-0.88+-0.07) + 0.35 + 0.06
+-0.88+-0.06) + 0.35 + 0.06
+()-0.88+-0.06) + 0.35 + 0.06
+(-0.88+-0.06) + 0.35 + 0.06
+-0.88+0.12) + 0.35 + -0.32
+(-0.88+0.12) + 0.35 + -0.32
+(-0.88+0.12)
+-0.88+-0.35
+-0.88+-0.35+ 0.35 + -0.52
+(-0.88+-0.35)
+-1.23
+-1.23+ 0.35 + -0.32
+-0.88+-1.43
+(-0.88+-1.43) + 0.35 + -0.52
+(-0.88+-1.03)
+(-0.88+-1.03) + 0.35 + -0.41
+(-0.88+-0.35)
+(-0.88+-1.43)
+(-0.88+-1.03)
+0.35+(0.14+-0.83)+(-0.48+42)+(0.04+-0.12)+(0.19+0)+(-0.06+-0.05)
+0.35+(0.14+-0.83)+(-0.48+0.42)+(0.04+-0.12)+(0.19+0)+(-0.06+-0.05)
+0.04+-0.12
+0.35+0.14+-0.48+0.04+0.19-0.05
+0.35+0.14+-0.48+0.04+0.19-0.06
+0.35+0.14+-0.83+-0.48+0.42+0.04+-0.12+0.19+-0.06+-0.05
+0.14+-0.83+-0.48+0.42+0.04+-0.12+0.19+-0.06+-0.05
+0.35+0.14+-0.48+0.04+0.19-0.06
+0.35+0.14+-0.83+-0.48+0.42+0.04+-0.12+0.19+-0.06+-0.05
+0.35+0.14+-0.83+-0.48+0.42
+0.35+0.14+-0.48
+## Plotting the ideal tauP distributions ...#
+x <- seq(0, 1, length = 10000)#
+plot.start.tauP <- dbeta(x, 10, 10)#
+plot.end.tauP <- dbeta(x, 5, 15)#
+plot(plot.start.tauP, type="l", ylab="", xlab="", xaxt="n", yaxt="n", ylim=c(0, 4.25))#
+lines(plot.end.tauP, ylab="", xlab="", xaxt="n", yaxt="n", col="blue")#
+mean(rbeta(10000, 10, 10))#
+mean(rbeta(10000, 5, 15))
+x <- seq(0, 1, length = 20)#
+plot.start.tauP <- dbeta(x, 10, 10)
+plot.start.tauP
+## Next! #
+taui.spa <- 0.65#
+taui.spb <- 0.99#
+alpha <- 0.5#
+taup <- 0.5#
+tauihat.spb <- tauP+(1-alpha)*taui.spb
+tauP <- 0.5#
+tauihat.spb <- tauP+(1-alpha)*taui.spb
+tauihat.spb
+tauihat.spb <- alpha*tauP+(1-alpha)*taui.spb
+tauihat.spb
+## housekeeping#
+rm(list=ls()) #
+options(stringsAsFactors = FALSE)#
+## Plotting the ideal tauP distributions ...#
+x <- seq(0, 1, length = 10000)#
+plot.start.tauP <- dbeta(x, 10, 10)#
+plot.end.tauP <- dbeta(x, 5, 15)#
+plot(plot.start.tauP, type="l", ylab="", xlab="", yaxt="n", ylim=c(0, 4.25))#
+lines(plot.end.tauP, ylab="", xlab="", yaxt="n", col="blue")#
+mean(rbeta(10000, 10, 10))#
+mean(rbeta(10000, 5, 15))
+goo <- read.csv("~/Documents/git/projects/vin/adelaideclimate/analyses/input/climate/Recd2019_Mo8/adj_gdd10_bb2hv.csv")
+head(goo)
+goo <- read.csv("~/Documents/git/projects/vin/adelaideclimate/analyses/output/regionsPhenAdj.csv")
+head(goo)
+# housekeeping#
+rm(list=ls()) # remove everything currently held in the R memory#
+options(stringsAsFactors=FALSE)#
+#
+# Setting working directory. Add in your own path in an if statement for your file structure#
+if(length(grep("Lizzie", getwd())>0)) { #
+  setwd("~/Documents/git/projects/vinmisc/bc/hardiness") #
+} else setwd("~/Documents/git/boopboop")#
+#
+# libraries#
+library(reshape)#
+#
+## Da data#
+# 2X/month bud hardiness data#
+# 2-day average of daily mean temperature (Environment Canada Penticton Stn) and its deviation from the 2-day average historical mean temperature#
+#
+clim <- read.delim("analyses/input/envcanada_penticton.csv", skip=25, sep=",", header=TRUE)#
+clim$date <- as.Date(clim$Date.Time, format="%m/%d/%y")#
+clim$month <- format(clim$date, "%b")#
+clim$day<- format(clim$date,"%d")#
+#
+# Historical climate (pulled from Carl's Excel file)#
+histclim <- read.csv("analyses/input/climhist_19812010.csv", header=TRUE)#
+names(histclim) <- c("Date", "meanC", "meanC2day", "meanC3day")#
+# faking a year, otherwise it assumes 2019 and the leap day=NA (and breaks my GDD loop)#
+histclim$doy <- format(as.Date(paste("2016-", histclim$Date), format="%Y-%d-%b"), "%j")#
+histclim$month <- format(as.Date(paste("2016-", histclim$Date), format="%Y-%d-%b"), "%b")#
+histclim$day<- format(as.Date(paste("2016-", histclim$Date), format="%Y-%d-%b"), "%d")#
+#
+# hardiness data#
+budhardiness2012to13 <- read.csv("analyses/input/budhardiness2012to13.csv", header=TRUE)#
+budhardiness2013to14 <- read.csv("analyses/input/budhardiness2013to14.csv", header=TRUE)#
+budhardiness2014to15 <- read.csv("analyses/input/budhardiness2014to15.csv", header=TRUE)#
+budhardiness2015to16 <- read.csv("analyses/input/budhardiness2015to16.csv", header=TRUE)#
+budhardiness2016to17 <- read.csv("analyses/input/budhardiness2016to17.csv", header=TRUE)#
+budhardiness2017to18 <- read.csv("analyses/input/budhardiness2017to18.csv", header=TRUE) #
+budhardiness2018to19 <- read.csv("analyses/input/budhardiness2018to19.csv", header=TRUE) #
+bh12 <- melt(budhardiness2012to13, id.var=c("X2012...2013", "Variety"))#
+bh13 <- melt(budhardiness2013to14, id.var=c("X2013...2014", "Variety"))#
+bh14 <- melt(budhardiness2014to15, id.var=c("X2014...2015", "Variety"))#
+bh15 <- melt(budhardiness2015to16, id.var=c("X2015...2016", "Variety"))#
+bh16 <- melt(budhardiness2016to17, id.var=c("site", "Variety")) #
+bh17 <- melt(budhardiness2017to18, id.var=c("site", "X2017...2018")) #
+bh18 <- melt(budhardiness2018to19, id.var=c("site", "Variety")) #
+#
+nameshere <- c("site", "variety", "Date", "lte")#
+names(bh12) <- nameshere#
+names(bh13) <- nameshere#
+names(bh14) <- nameshere#
+names(bh15) <- nameshere#
+names(bh16) <- nameshere#
+names(bh17) <- nameshere#
+names(bh18) <- nameshere#
+bh12$years <- "2012to2013"#
+bh13$years <- "2013to2014"#
+bh14$years <- "2014to2015"#
+bh15$years <- "2015to2016"#
+bh16$years <- "2016to2017"#
+bh17$years <- "2017to2018"#
+bh18$years <- "2018to2019"#
+#
+bhall.rbind <- rbind(bh12, bh13, bh14, bh15, bh16, bh17, bh18)#
+#
+# remove the averages....#
+bhall <- subset(bhall.rbind, site!="Average Bud Hardiness (all sites, all varieties)")#
+#
+# cleaning names#
+sort(unique(bhall$site))#
+bhall$site[bhall$site=="Naramata bench"] <- "Naramata Bench"#
+sort(unique(bhall$variety))#
+sort(unique(bhall$Date))#
+# cleaning dates#
+breakbyperiod <- strsplit(as.character(bhall$Date), ".", fixed=TRUE) #
+bhall$Day <- unlist(lapply(breakbyperiod, function(x) x[1]))#
+bhall$month <- unlist(lapply(breakbyperiod, function(x) x[2]))#
+bhall$day <- unlist(lapply(strsplit(as.character(bhall$Day), "X", fixed=TRUE), function(x) x[2]))#
+#
+# right, so now, we need to fix year!#
+bhall$year <- NA#
+bhall$year[bhall$years=="2012to2013" & (bhall$month=="Oct"|bhall$month=="Nov"|bhall$month=="Dec")] <- 2012#
+bhall$year[bhall$years=="2012to2013" & (bhall$month=="Jan"|bhall$month=="Feb"|bhall$month=="Mar"|bhall$month=="Apr")] <- 2013#
+bhall$year[bhall$years=="2013to2014" & (bhall$month=="Oct"|bhall$month=="Nov"|bhall$month=="Dec")] <- 2013#
+bhall$year[bhall$years=="2013to2014" & (bhall$month=="Jan"|bhall$month=="Feb"|bhall$month=="Mar"|bhall$month=="Apr")] <- 2014#
+bhall$year[bhall$years=="2014to2015" & (bhall$month=="Oct"|bhall$month=="Nov"|bhall$month=="Dec")] <- 2014#
+bhall$year[bhall$years=="2014to2015" & (bhall$month=="Jan"|bhall$month=="Feb"|bhall$month=="Mar"|bhall$month=="Apr")] <- 2015#
+bhall$year[bhall$years=="2015to2016" & (bhall$month=="Oct"|bhall$month=="Nov"|bhall$month=="Dec")] <- 2015#
+bhall$year[bhall$years=="2015to2016" & (bhall$month=="Jan"|bhall$month=="Feb"|bhall$month=="Mar"|bhall$month=="Apr")] <- 2016#
+bhall$year[bhall$years=="2016to2017" & (bhall$month=="Oct"|bhall$month=="Nov"|bhall$month=="Dec")] <- 2016#
+bhall$year[bhall$years=="2016to2017" & (bhall$month=="Jan"|bhall$month=="Feb"|bhall$month=="Mar"|bhall$month=="Apr")] <- 2017#
+bhall$year[bhall$years=="2017to2018" & (bhall$month=="Oct"|bhall$month=="Nov"|bhall$month=="Dec")] <- 2017#
+bhall$year[bhall$years=="2017to2018" & (bhall$month=="Jan"|bhall$month=="Feb"|bhall$month=="Mar"|bhall$month=="Apr")] <- 2018#
+bhall$year[bhall$years=="2018to2019" & (bhall$month=="Oct"|bhall$month=="Nov"|bhall$month=="Dec")] <- 2018#
+bhall$year[bhall$years=="2018to2019" & (bhall$month=="Jan"|bhall$month=="Feb"|bhall$month=="Mar"|bhall$month=="Apr")] <- 2019#
+#
+# and make a useful df#
+bh <- subset(bhall, select=c("year", "month", "day", "variety", "lte", "site"))#
+###
+## some f(x)s to help calculate GDD#
+###
+#
+## this f(x) makes a column which zeroes out all data#
+# below your threshold temperature#
+#
+makethreshold.data <- function(dater, temp.col, thresh){ #
+    ifelse(dater[[temp.col]]>thresh,#
+       (dater[[temp.col]]-thresh), 0)#
+  }#
+#
+makestartdatecounter <- function(dater, monthcol, daycol, countercol, whatmon, whatday){#
+    dater[[countercol]][which(dater[[monthcol]]==whatmon & dater[[daycol]]==whatday)] <- 0#
+    for(j in c(2:nrow(dater))){#
+        if(is.na(dater[[countercol]][j])){#
+        dater[[countercol]][j] <- dater[[countercol]][j-1]+1#
+        }#
+    }#
+    return(dater)#
+}#
+clim$seasonday <- NA#
+clim <- makestartdatecounter(clim, "Month", "Day", "seasonday", 9, 1)#
+#
+## this f(x) adds up gdd#
+## requires data ordered by doy (I do this in the loop below)#
+## this f(x) returns the value while treating NA as zeroes#
+# needstartdate is when you require data to start that year, otherwise it returns NA#
+# for example, 5 means you need data that starts before 5 January to actually count#
+makegdd.data.skipNA <- function(dater, gdd.col, doy.col, startdate, needstartdate){#
+     saveme <- c()#
+     for(i in 1:nrow(dater)){#
+     # start the counter with the starting doy of the data ...#
+     # j <- dater[[doy.col]][1]#
+     # deal with cases where the data start after Jan 1#
+     if (dater[[doy.col]][1]>needstartdate) saveme[i] <- NA#
+     else#
+     # deal with cases where the entire column is NA#
+     if (sum(is.na(dater[[gdd.col]]))==length(dater[[gdd.col]])) saveme[i] <- NA#
+     else#
+     # deal with cases before startdate#
+     if (dater[[doy.col]][i]<startdate) saveme[i] <- NA#
+     else#
+     # okay, finally calculate the GDD#
+     if (dater[[doy.col]][i]==startdate) saveme[i] <- (dater[[gdd.col]][i])#
+     else#
+     # if a cell is NA, just add 0 instead of the cell#
+     if (is.na(dater[[gdd.col]][i])) saveme[i] <- (0+saveme[i-1])#
+     else#
+     saveme[i] <- (dater[[gdd.col]][i]+saveme[i-1])#
+ }#
+ return(saveme)#
+}#
+#
+## And some code to make 2-day rolling average climate data#
+n <- 2#
+cx <- c(0,cumsum(histclim$meanC)) # https://stackoverflow.com/questions/743812/calculating-moving-average#
+rsum <- (cx[(n+1):length(cx)] - cx[1:(length(cx) - n)]) / n#
+#
+# Add in GDD and rolling averages of meanC#
+histclim$doynum <- as.numeric(histclim$doy)#
+histclim$gddtemp <- makethreshold.data(histclim, "meanC", 5)#
+histclim$gdd <- makegdd.data.skipNA(histclim, "gddtemp", "doynum", 288, 366) # or 1, 366#
+#
+histclim$meanC2day <- c(NA, rsum)#
+#
+climsm <- subset(clim, select=c("Year", "month","day", "Mean.Temp..C.", "Mean.Temp.Flag", "date", "seasonday"))#
+names(climsm) <- c("Year", "month","day", "meanC", "meanC.flag", "date", "seasonday")#
+climsm$doy <- format(climsm$date, "%j")#
+climsm$doynum <- as.numeric(climsm$doy)#
+# Should probably do below on imputed data?#
+climsm$gddtemp <- makethreshold.data(climsm, "meanC", 10)#
+climsm$gdd <- makegdd.data.skipNA(climsm, "gddtemp", "doynum", 1, 366) # or 1, 366#
+#
+# impute missing meanC data! (not using MICE since it overwrites rbind) and our imputation is easy#
+meanimpute <- function(df, colname){#
+for (i in 1:nrow(df)){#
+   if (is.na(df[[colname]][i])==TRUE) {#
+       df[[colname]][i] <- sum(df[[colname]][i-1]+ df[[colname]][i+2])/2#
+        }#
+       }#
+   return(df)#
+}#
+#
+climsm$meanC.imp <- climsm$meanC#
+#
+climsm <- meanimpute(climsm, "meanC.imp")#
+climsm <- meanimpute(climsm, "meanC.imp")#
+#
+# START here ... can we fix so it does all years? Then go down to next START here ....#
+cx <- c(0,cumsum(climsm$meanC.imp)) # https://stackoverflow.com/questions/743812/calculating-moving-average#
+rsum <- (cx[(n+1):length(cx)] - cx[1:(length(cx) - n)]) / n#
+climsm$meanC2day <- c(NA, rsum)#
+#
+## Merge the climate datasets ###
+climall <- merge(climsm, histclim, by=c("month", "day", "doy"), all.x=TRUE, suffixes=c("", ".hist"))#
+climall <- climall[order(climall$date),]#
+climall$avgTdiff <- climall$meanC2day-climall$meanC2day.hist # column CC (looks good, except where I imputed) -- created by Q-M#
+#
+##############################################################
+## Acclimation, max hardiness and de-acclimation equations ###
+##############################################################
+#
+## Here's the spot in the code where I wondered about how to generate the acclimation, max hardiness and de-acclimatoon curves#
+# see my notes on this in hardiness_questionsnotes ... we'll just type them in for now ...#
+# chard <- subset(bh, variety=="Chardonnay")#
+#
+eqacc <- function(x){#
+    0.121*x^2 + 0.4898*x -23.175#
+} #
+eqmaxh <- function(x){#
+    0.5371*x - 23.229#
+}#
+eqdeacc <- function(x){#
+    0.232*x^ + 0.0314*x - 23.336#
+}#
+#
+# If acclimation change in one day is smaller than -0.5 (e.g., if it's -2 or such) then make it max out at -0.5 ...#
+# Actually the f(x) is more flexible than that but that's the current usage#
+makediffs.lte <- function(df, colname, newcolname, maxdiffcol, maxdiff){#
+    # First find the day to start accumulating on ...#
+    whichrows <- which(df[["seasonday"]]==1)#
+    for (i in c(whichrows[1]:nrow(df))){#
+        df[[newcolname]][i] <- df[[colname]][i]-df[[colname]][i-1]#
+    }#
+    df[[maxdiffcol]][which(df[[newcolname]]<maxdiff)] <- maxdiff#
+    df[[maxdiffcol]][which(df[[newcolname]]>maxdiff)] <- df[[newcolname]][which(df[[newcolname]]>maxdiff)]  #
+    return(df)#
+}#
+# Okay, now let's try to calculate! No accumulation before 21 September#
+#
+# Working on CD-CO columns in Carl's xls .... if I can get through these than I should understand the process better ... #
+# have done column CC (diff from historical), which is used for CD and CE (have not done)#
+#
+## START HERE! # below looks pretty good, start trying to create CD onward (CC is okay, but off around imputed dates) ... currently on CD -- have done early part of year need to do new eqn on 8 Dec, and then ANOTHER new eqn on 7 Jan#
+#
+climall$acc <- eqacc(climall$meanC2day.hist) # col CA is using the equations and the 2-day historical climate (BX)#
+climall$accdiff <-NA # change in estimated LTE each day#
+climall$accdiffmax <-NA # should be same as col CB#
+climall <- makediffs.lte(climall, "acc", "accdiff", "accdiffmax", -0.5)#
+climall[58:77,] # looking good...#
+#
+climall$adjustcd <- NA#
+#
+# Column CD tdiff less than zero#
+# need to add while loop for dates ...#
+# https://stackoverflow.com/questions/32610271/looping-over-dates-with-r#
+adjustcd <- function(df){#
+    adjustcd <- c()#
+    for(i in c(1:nrow(df))){#
+    if(is.na(df[["avgTdiff"]][i])==TRUE) {#
+        adjustcd[i] <- NA} else {#
+    if(df[["avgTdiff"]][i]< -7) {#
+        adjustcd[i] <- 1.8} else {#
+    if(df[["avgTdiff"]][i]< -5) {#
+        adjustcd[i] <- 1.4} else {#
+    if(df[["avgTdiff"]][i]< -4) {#
+        adjustcd[i] <- 1.3} else {#
+    if(df[["avgTdiff"]][i]< -3) {#
+        adjustcd[i] <- 1.2} else {#
+    if(df[["avgTdiff"]][i]< -2) {#
+        adjustcd[i] <- 1.1} else {#
+        if(df[["avgTdiff"]][i]< -0) {#
+            adjustcd[i] <- 1} else {#
+                adjustcd[i] <- 0} # need to check this very last statement is correct#
+               }#
+              }#
+            }#
+          }#
+        }#
+     }#
+    }#
+    return(adjustcd)#
+}#
+#
+climall$adjustcd <- adjustcd(climall) # quick glance: looks fine...
+429/36
+72/6
+12*800
+goo <- read.csv("~/Documents/git/projects/treegarden/budreview/ospree/analyses/output/ospree_clean_withchill_BB.csv")
+names(goo)
+hist(goo$response)
+hist(as.numeric(goo$response))
+names(respvar.simple)
+names(dgoo$respvar.simple)
+names(goo$respvar.simple)
+unique(goo$respvar.simple)
+goober <- subset(goo, respvar.simple=="percentbudburst")
+hist(as.numeric(goober$response))
+hist(as.numeric(as.character(goober$response)))
+goober1 <- subset(goo, respvar.simple=="percentbudburst" & response==100)
+dim(goober)
+dim(goober1)
+## housekeeping#
+rm(list=ls()) #
+options(stringsAsFactors = FALSE)#
+#
+## SpA is non-tracking; spB is tracking #
+taui.A <- 0.55#
+taui.B <- 0.75#
+alpha.A <- 0#
+alpha.B <- 0.5#
+tauP <- c(0.45,0.18)#
+tauihat.A <- alpha.A*tauP+(1-alpha.A)*taui.A#
+tauihat.B <- alpha.B*tauP+(1-alpha.B)*taui.B#
+spcol <- c("purple","green")#
+#
+## tauP in STA and NS; and two draws#
+x <- seq(0, 1, length = 10000)#
+plot.start.tauP <- dbeta(x, 10, 10)#
+plot.end.tauP <- dbeta(x, 5, 15)#
+tauPcol <- c("dark blue","light blue")#
+#
+##germination for sp A and B#
+gmax <- 0.5#
+h <- 100#
+g.A <- gmax*exp(-h*(matrix(rep(x,2),nrow=length(x),ncol=2,byrow=FALSE)-matrix(rep(tauihat.A,length(x)),nrow=length(x), ncol=2,byrow=TRUE))^2)#
+g.B <- gmax*exp(-h*(matrix(rep(x,2),nrow=length(x),ncol=2,byrow=FALSE)-matrix(rep(tauihat.B,length(x)),nrow=length(x), ncol=2,byrow=TRUE))^2)#
+#
+#Set up for four panels#
+def.par <- par(no.readonly = TRUE) # save default, for resetting...#
+nf<-layout(matrix(c(1,1,2,3,4,4),6,1,byrow=TRUE),widths=2,heights=1)#
+layout.show(nf)#
+#
+## Plot the ideal tauP distributions ...#
+par(mar=c(2,0,1,0))#
+plot(x,plot.end.tauP, type="l", axes=FALSE, bty="o",#
+     ylab = expression(paste("P(",tau[p],")")),xlab="", #
+     ylim=c(-2, 5),col=tauPcol[2],xaxp=c(0,1,1))#
+lines(x,plot.start.tauP, ylab="", xlab="", yaxt="n", col=tauPcol[1])#
+#legend("topright",legend=c("Stationary Period","End of NonStationary Period"), col=c("black","cyan"), cex=.7, lty=1, bty="n")#
+arrows(.5,4.75,.225,4.75,length=0.1,col="black")#
+arrows(taui.A,-1,taui.A,-0.05,length=0.1, col = spcol[1])#
+text(taui.A,-1,pos=1,expression(paste(tau[i[A]])),cex=2,font=3, col=spcol[1])#
+arrows(taui.B,-1,taui.B,-0.05,length=0.1, col = spcol[2])#
+text(taui.B,-1,pos=1,expression(paste(tau[i[B]])),cex=2,font=3, col = spcol[2])#
+axis(1,at=c(0,1),pos=0)
+## Working on idealized plotting ## #
+#
+## housekeeping#
+rm(list=ls()) #
+options(stringsAsFactors = FALSE)#
+#
+## SpA is non-tracking; spB is tracking #
+taui.A <- 0.55#
+taui.B <- 0.75#
+alpha.A <- 0#
+alpha.B <- 0.5#
+tauP <- c(0.45,0.18)#
+tauihat.A <- alpha.A*tauP+(1-alpha.A)*taui.A#
+tauihat.B <- alpha.B*tauP+(1-alpha.B)*taui.B#
+spcol <- c("purple","green")#
+#
+## tauP in STA and NS; and two draws#
+x <- seq(0, 1, length = 10000)#
+plot.start.tauP <- dbeta(x, 10, 10)#
+plot.end.tauP <- dbeta(x, 5, 15)#
+tauPcol <- c("dark blue","light blue")#
+#
+##germination for sp A and B#
+gmax <- 0.5#
+h <- 100#
+g.A <- gmax*exp(-h*(matrix(rep(x,2),nrow=length(x),ncol=2,byrow=FALSE)-matrix(rep(tauihat.A,length(x)),nrow=length(x), ncol=2,byrow=TRUE))^2)#
+g.B <- gmax*exp(-h*(matrix(rep(x,2),nrow=length(x),ncol=2,byrow=FALSE)-matrix(rep(tauihat.B,length(x)),nrow=length(x), ncol=2,byrow=TRUE))^2)#
+#
+#Set up for four panels#
+def.par <- par(no.readonly = TRUE) # save default, for resetting...#
+nf<-layout(matrix(c(1,1,2,3,4,4),6,1,byrow=TRUE),widths=2,heights=1)#
+layout.show(nf)#
+#
+## Plot the ideal tauP distributions ...#
+par(mar=c(2,0,1,0))#
+plot(x,plot.end.tauP, type="l", axes=FALSE, bty="o",#
+     ylab = expression(paste("P(",tau[p],")")),xlab="", #
+     ylim=c(-2, 5),col=tauPcol[2],xaxp=c(0,1,1))#
+lines(x,plot.start.tauP, ylab="", xlab="", yaxt="n", col=tauPcol[1])#
+#legend("topright",legend=c("Stationary Period","End of NonStationary Period"), col=c("black","cyan"), cex=.7, lty=1, bty="n")#
+arrows(.5,4.75,.225,4.75,length=0.1,col="black")#
+arrows(taui.A,-1,taui.A,-0.05,length=0.1, col = spcol[1])#
+text(taui.A,-1,pos=1,expression(paste(tau[i[A]])),cex=2,font=3, col=spcol[1])#
+arrows(taui.B,-1,taui.B,-0.05,length=0.1, col = spcol[2])#
+text(taui.B,-1,pos=1,expression(paste(tau[i[B]])),cex=2,font=3, col = spcol[2])#
+axis(1,at=c(0,1),pos=0)#
+#
+## Plotting two instances of tau P#
+ycol=c("dark","light")#
+for (y in c(1,2)) {#
+  par(mar=c(0,0,0,0))#
+  plot(x,rep(0,length(x)),type="n",ylim = c(-3.5,3),axes=FALSE, ylab="",xlab="")#
+  axis(1,at=c(0,1),pos=0)#
+  arrows(tauP[y],1.5,tauP[y],0,length=0.1, col="black")#
+  text(tauP[y],1.5,pos=3,expression(paste(tau[p[t]])),cex=2,font=3, col = tauPcol[y])#
+  arrows(tauihat.A[y],-1.5,tauihat.A[y],-0.05,length=0.1, col = spcol[1])#
+  text(tauihat.A[y],-1.5,pos=1,expression(paste(hat(tau[i[A]]))),cex=2,font=3, col = spcol[1])#
+  arrows(tauihat.B[y],-1.5,tauihat.B[y],-0.05,length=0.1, col = spcol[2])#
+  text(tauihat.B[y],-1.5,pos=1,expression(paste(hat(tau[i[B]]))),cex=2,font=3, col = paste(ycol[y],spcol[2]))#
+}#
+#
+#plot germination#
+par(mar=c(0,0,1,0))#
+plot(x,g.A[,1], type="l", axes=FALSE,bty="n",#
+     ylim=c(-2, .5),col=spcol[1],xaxp=c(0,1,1))#
+for (y in c(1,2)) {#
+  lines(x,g.B[,y], ylab="", xlab="", yaxt="n", col=paste(ycol[y],spcol[2]))#
+}#
+axis(1,at=c(0,1),pos=0)#
+text(.5,-1,pos=3,expression(paste("Timing of Resource Pulse",tau[p])),cex=1.5)#
+text(0,0.5,pos=3,"germination",cex=1.5,srt=90)
+## Started 12 August 2019 ###
+## By Lizzie ###
+#
+## Working on idealized plotting ## #
+#
+## housekeeping#
+rm(list=ls()) #
+options(stringsAsFactors = FALSE)#
+#
+## SpA is non-tracking; spB is tracking #
+taui.A <- 0.55#
+taui.B <- 0.75#
+alpha.A <- 0#
+alpha.B <- 0.5#
+tauP <- c(0.45,0.18)#
+tauihat.A <- alpha.A*tauP+(1-alpha.A)*taui.A#
+tauihat.B <- alpha.B*tauP+(1-alpha.B)*taui.B#
+spcol <- c("purple","green")#
+#
+## tauP in STA and NS; and two draws#
+x <- seq(0, 1, length = 10000)#
+plot.start.tauP <- dbeta(x, 10, 10)#
+plot.end.tauP <- dbeta(x, 5, 15)#
+tauPcol <- c("dark blue","light blue")#
+#
+##germination for sp A and B#
+gmax <- 0.5#
+h <- 100#
+g.A <- gmax*exp(-h*(matrix(rep(x,2),nrow=length(x),ncol=2,byrow=FALSE)-matrix(rep(tauihat.A,length(x)),nrow=length(x), ncol=2,byrow=TRUE))^2)#
+g.B <- gmax*exp(-h*(matrix(rep(x,2),nrow=length(x),ncol=2,byrow=FALSE)-matrix(rep(tauihat.B,length(x)),nrow=length(x), ncol=2,byrow=TRUE))^2)#
+#
+#Set up for four panels#
+def.par <- par(no.readonly = TRUE) # save default, for resetting...#
+nf<-layout(matrix(c(1,1,2,3,4,4),6,1,byrow=TRUE),widths=2,heights=1)#
+layout.show(nf)#
+#
+## Plot the ideal tauP distributions ...#
+par(mar=c(2,0,1,0))#
+plot(x,plot.end.tauP, type="l", axes=FALSE, bty="o",#
+     ylab = expression(paste("P(",tau[p],")")),xlab="", #
+     ylim=c(-2, 5),col=tauPcol[2],xaxp=c(0,1,1))#
+lines(x,plot.start.tauP, ylab="", xlab="", yaxt="n", col=tauPcol[1])#
+#legend("topright",legend=c("Stationary Period","End of NonStationary Period"), col=c("black","cyan"), cex=.7, lty=1, bty="n")#
+arrows(.5,4.75,.225,4.75,length=0.1,col="black")#
+arrows(taui.A,-1,taui.A,-0.05,length=0.1, col = spcol[1])#
+text(taui.A,-1,pos=1,expression(paste(tau[i[A]])),cex=2,font=3, col=spcol[1])#
+arrows(taui.B,-1,taui.B,-0.05,length=0.1, col = spcol[2])#
+text(taui.B,-1,pos=1,expression(paste(tau[i[B]])),cex=2,font=3, col = spcol[2])#
+axis(1,at=c(0,1),pos=0)#
+#
+## Plotting two instances of tau P#
+ycol=c("dark","light")#
+for (y in c(1,2)) {#
+  par(mar=c(0,0,0,0))#
+  plot(x,rep(0,length(x)),type="n",ylim = c(-3.5,3),axes=FALSE, ylab="",xlab="")#
+  axis(1,at=c(0,1),pos=0)#
+  arrows(tauP[y],1.5,tauP[y],0,length=0.1, col="black")#
+  text(tauP[y],1.5,pos=3,expression(paste(tau[p[t]])),cex=2,font=3, col = tauPcol[y])#
+  arrows(tauihat.A[y],-1.5,tauihat.A[y],-0.05,length=0.1, col = spcol[1])#
+  text(tauihat.A[y],-1.5,pos=1,expression(paste(hat(tau[i[A]]))),cex=2,font=3, col = spcol[1])#
+  arrows(tauihat.B[y],-1.5,tauihat.B[y],-0.05,length=0.1, col = spcol[2])#
+  text(tauihat.B[y],-1.5,pos=1,expression(paste(hat(tau[i[B]]))),cex=2,font=3, col = paste(ycol[y],spcol[2]))#
+}#
+#
+#plot germination#
+par(mar=c(0,0,1,0))#
+plot(x,g.A[,1], type="l", axes=FALSE,bty="n",#
+     ylim=c(-2, .5),col=spcol[1],xaxp=c(0,1,1))#
+for (y in c(1,2)) {#
+  lines(x,g.B[,y], ylab="", xlab="", yaxt="n", col=paste(ycol[y],spcol[2]))#
+}#
+axis(1,at=c(0,1),pos=0)#
+text(.5,-1,pos=3,expression(paste("Timing of Resource Pulse",tau[p])),cex=1.5)#
+text(0,0.5,pos=3,"germination",cex=1.5,srt=90)
+feff <- -8.8/5#
+peff <- -4.5/4
+feff
+peff
+library(textclean)
 ## housekeeping#
 rm(list=ls()) #
 options(stringsAsFactors = FALSE)#
@@ -9,10 +1609,15 @@ options(stringsAsFactors = FALSE)#
 library(ggplot2)#
 #
 ## set working directory#
+# setwd("~/GitHub/heattolerance/analyses/")#
+# source("~/GitHub/heattolerance/analyses/wangengelcurve/source/Script_functions_pheno_models.R")#
 setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses/wangengelcurve")#
-#
-source("source/Script_functions_pheno_models.R")#
-#
+source("~/Documents/git/projects/vin/climatefuture/analyses/projections/input/Script_future_projections.R")
+## set working directory#
+# setwd("~/GitHub/heattolerance/analyses/")#
+# source("~/GitHub/heattolerance/analyses/wangengelcurve/source/Script_functions_pheno_models.R")#
+setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses/wangengelcurve")#
+source("source/Script_functions_pheno_models.R")
 testclim.min <- seq(-5, 40, by=0.25)#
 testclim.max <- seq(-4, 41, by=0.25) # higher than 41 and the curve freaks out#
 testclim.avg <- (testclim.min+testclim.max)/2#
@@ -24,8 +1629,7 @@ testalpha <- Alphafx(testclim.min, testclim.max, 29)#
 # Wang & Engel model seems to want static values for first 4 inputs:#
 # WangEngelfx <- function(Tmin, Tmax, Topt, Alpha, Tavg)#
 wangeng24 <- WangEngelfx(0, 41, 24.3, 2.6, testclim.avg)#
-wangeng27 <- WangEngelfx(0, 41, 27, 2.85, testclim.avg)#
-#
+wangeng27 <- WangEngelfx(0, 41, 27, 2.85, testclim.avg)
 # Now just format and plot#
 wangeng24clim <- data.frame(we=wangeng24[,1], tempC=testclim.avg,#
    tempF=testclim.avg.F)#
@@ -36,9 +1640,62 @@ wangeng24clim.sm <- subset(wangeng24clim, we>=0)#
 wangeng27clim.sm <- subset(wangeng27clim, we>=0)#
 #
 plot(we~tempF, data=wangeng27clim.sm, type="l")#
-points(we~tempF, data=wangeng24clim.sm, type="l", col="red")#
+points(we~tempF, data=wangeng24clim.sm, type="l", col="red")
+# Now just format and plot#
+wangeng24clim <- data.frame(we=wangeng24[,1], tempC=testclim.avg,#
+   temp=testclim.avg)#
+wangeng27clim <- data.frame(we=wangeng27[,1], tempC=testclim.avg,#
+   temp=testclim.avg)
+# Now just format and plot#
+wangeng24clim <- data.frame(we=wangeng24[,1], tempC=testclim.avg,#
+   temp=testclim.avg)#
+wangeng27clim <- data.frame(we=wangeng27[,1], tempC=testclim.avg,#
+   temp=testclim.avg)#
 #
+wangeng24clim.sm <- subset(wangeng24clim, we>=0)#
+wangeng27clim.sm <- subset(wangeng27clim, we>=0)#
+#
+plot(we~temp, data=wangeng27clim.sm, type="l")#
+points(we~temp, data=wangeng24clim.sm, type="l", col="red")
+plot(we~temp, data=wangeng27clim.sm, type="l")#
+points(we~temp, data=wangeng24clim.sm, type="l", col="red")#
+abline(v=20)
+abline(v=c(20, 26, 30, 34, 37))
+plot(we~temp, data=wangeng27clim.sm, type="l", xlab=c(0,40))#
+points(we~temp, data=wangeng24clim.sm, type="l", col="red")#
+abline(v=c(20, 26, 30, 34, 37))
+plot(we~temp, data=wangeng27clim.sm, type="l", xlim=c(0,40))#
+points(we~temp, data=wangeng24clim.sm, type="l", col="red")#
+abline(v=c(20, 26, 30, 34, 37))
+plot(we~temp, data=wangeng27clim.sm, type="l", xlim=c(0,40))#
+points(we~temp, data=wangeng24clim.sm, type="l", col="red")#
+abline(v=c(20, 26, 30, 34, 37), col="cornsilk")
+plot(we~temp, data=wangeng27clim.sm, type="l", xlim=c(0,40))#
+points(we~temp, data=wangeng24clim.sm, type="l", col="red")#
+abline(v=c(20, 26, 30, 34, 37), col="darkslategray1")
 ## for Nicole's work: Some simple curves#
+pdf(file.path("graphs/wengeng_possible"), width = 8, height = 7)#
 plot(we~tempC, data=wangeng27clim.sm, type="l", lwd=2, col="red",#
-     ylab="Rate", xlab="C")#
-points(we~tempC, data=wangeng24clim.sm, type="l", lwd=2)
+     ylab="Developmental rate", xlab=expression(paste("Temperature "( degree~C))), xlim=c(-5,42), type="n")#
+abline(v=c(20, 26, 30, 34, 37), col="darkslategray2")#
+plot(we~tempC, data=wangeng27clim.sm, type="l", lwd=2, col="red",#
+     ylab="Developmental rate", xlab=expression(paste("Temperature "( degree~C))), xlim=c(-5,42))#
+points(we~tempC, data=wangeng24clim.sm, type="l", lwd=2, col="blue")#
+dev.off()
+## for Nicole's work: Some simple curves#
+pdf(file.path("graphs/wengeng_possible"), width = 8, height = 7)#
+plot(we~tempC, data=wangeng27clim.sm,  xlim=c(-5,42), type="n")#
+abline(v=c(20, 26, 30, 34, 37), col="darkslategray2")#
+plot(we~tempC, data=wangeng27clim.sm, type="l", lwd=2, col="red",#
+     ylab="Developmental rate", xlab=expression(paste("Temperature "( degree~C))), xlim=c(-5,42))#
+points(we~tempC, data=wangeng24clim.sm, type="l", lwd=2, col="blue")#
+dev.off()
+## for Nicole's work: Some simple curves#
+pdf(file.path("graphs/wengeng_possible"), width = 8, height = 7)#
+plot(we~tempC, data=wangeng27clim.sm,  xlim=c(-5,42), type="n")#
+abline(v=c(20, 26, 30, 34, 37), col="darkslategray2")#
+plot(we~tempC, data=wangeng27clim.sm, type="l", lwd=2, col="red",#
+     ylab="Developmental rate", xlab=expression(paste("Temperature "( degree~C))), xlim=c(-5,42))#
+points(we~tempC, data=wangeng24clim.sm, type="l", lwd=2, col="blue")#
+dev.off()
+getwd()

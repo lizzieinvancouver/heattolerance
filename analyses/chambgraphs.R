@@ -12,6 +12,17 @@ library(ggplot2)
 dat <- read.csv ("output/clchambdata.csv", header=TRUE)
 dat50 <- read.csv ("output/chamb50fl.csv", header=TRUE)
 
+# Fix the mid-IDed Durifs (takes more lines of code when they are factors)
+levels(dat$Var)[levels(dat$Var)=="Durif1"] <- "Durif"
+levels(dat$Var)[levels(dat$Var)=="Durif2"] <- "Vinhao"
+levels(dat50$Var)[levels(dat50$Var)=="Durif1"] <- "Durif"
+levels(dat50$Var)[levels(dat50$Var)=="Durif2"] <- "Vinhao"
+
+dat$Var[grep("18.5", dat$RowNumNumRep)] <- "Durif" # Durif1 
+dat$Var[grep("22.9", dat$RowNumNumRep)] <- "Vinhao" # Durif2
+dat50$Var[grep("18.5", dat50$RowNumNumRep)] <- "Durif"
+dat50$Var[grep("22.9", dat50$RowNumNumRep)] <- "Vinhao"
+
 ##subset
 chds <- subset(dat, select=c(
   "Date",

@@ -9,9 +9,10 @@ options(stringsAsFactors = FALSE)
 library(ggplot2)
 
 ## set working directory
-setwd("~/GitHub/heattolerance/analyses/")
-
-source("~/GitHub/heattolerance/analyses/wangengelcurve/source/Script_functions_pheno_models.R")
+# setwd("~/GitHub/heattolerance/analyses/")
+# source("~/GitHub/heattolerance/analyses/wangengelcurve/source/Script_functions_pheno_models.R")
+setwd("~/Documents/git/projects/vinmisc/heattolerance/analyses")
+source("wangengelcurve/source/Script_functions_pheno_models.R")
 
 testclim.min <- seq(-5, 40, by=0.25)
 testclim.max <- seq(-4, 41, by=0.25) # higher than 41 and the curve freaks out
@@ -28,19 +29,22 @@ wangeng27 <- WangEngelfx(0, 41, 27, 2.85, testclim.avg)
 
 # Now just format and plot
 wangeng24clim <- data.frame(we=wangeng24[,1], tempC=testclim.avg,
-   tempF=testclim.avg.F)
+   temp=testclim.avg)
 wangeng27clim <- data.frame(we=wangeng27[,1], tempC=testclim.avg,
-   tempF=testclim.avg.F)
+   temp=testclim.avg)
 
 wangeng24clim.sm <- subset(wangeng24clim, we>=0)
 wangeng27clim.sm <- subset(wangeng27clim, we>=0)
 
-plot(we~tempF, data=wangeng27clim.sm, type="l")
-points(we~tempF, data=wangeng24clim.sm, type="l", col="red")
+plot(we~temp, data=wangeng27clim.sm, type="l", xlim=c(0,40))
+points(we~temp, data=wangeng24clim.sm, type="l", col="red")
+abline(v=c(20, 26, 30, 34, 37), col="darkslategray2")
 
 ## for Nicole's work: Some simple curves
-pdf(file.path("graphs/wengeng_possible"), width = 8, height = 7)
-plot(we~tempC, data=wangeng27clim.sm, type="l", lwd=2, col="red",
-     ylab="Developmental rate", xlab=expression(paste("Temperature "( degree~C))), xlim=c(-5,42))
+pdf(file.path("graphs/wengeng_possible.pdf"), width = 8, height = 7)
+plot(we~tempC, data=wangeng27clim.sm,  xlim=c(-5,42), ylab="Developmental rate",
+     xlab=expression(paste("Temperature "( degree~C))), type="n")
+abline(v=c(20, 26, 30, 34, 37), col="darkslategray2")
+points(we~tempC, data=wangeng27clim.sm, type="l", lwd=2, col="red")
 points(we~tempC, data=wangeng24clim.sm, type="l", lwd=2, col="blue")
 dev.off()
