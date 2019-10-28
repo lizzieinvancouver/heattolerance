@@ -32,7 +32,7 @@ rmilo <- read.csv(file="input/leafout_est_2015.csv", header=TRUE)
 
 datep$Var_corr <- datep$Var
 datep$Var_corr[which(datep$Var_corr=="Durif1")] <- "Durif"
-datep$Var_corr[which(datep$Var_corr=="Durif2")] <- "Durif"
+datep$Var_corr[which(datep$Var_corr=="Durif2")] <- "Vinhao"
 datep$Var_corr[which(datep$Var_corr=="Valdepenas")] <- "Tempranillo"
 datep$Var_corr[which(datep$Var_corr=="Alicante Bouchet")] <- "Alicante Bouschet"
 datep$Var_corr[which(datep$Var_corr=="Pinot  Meunier")] <- "Pinot Meunier"
@@ -40,7 +40,7 @@ datep$Var_corr[which(datep$Var_corr=="Gewurtztraminer")] <- "Gewurztraminer"
 
 datnd$Var_corr <- datnd$Var
 datnd$Var_corr[which(datnd$Var_corr=="Durif1")] <- "Durif"
-datnd$Var_corr[which(datnd$Var_corr=="Durif2")] <- "Durif"
+datnd$Var_corr[which(datnd$Var_corr=="Durif2")] <- "Vinhao"
 datnd$Var_corr[which(datnd$Var_corr=="Valdepenas")] <- "Tempranillo"
 datnd$Var_corr[which(datnd$Var_corr=="Alicante Bouchet")] <- "Alicante Bouschet"
 datnd$Var_corr[which(datnd$Var_corr=="Pinot  Meunier")] <- "Pinot Meunier"
@@ -50,7 +50,7 @@ unique(datnd$Var_corr)
 
 gendat$Var_corr <- gendat$Var
 gendat$Var_corr[which(gendat$Var_corr=="Durif1")] <- "Durif"
-gendat$Var_corr[which(gendat$Var_corr=="Durif2")] <- "Durif"
+gendat$Var_corr[which(gendat$Var_corr=="Durif2")] <- "Vinhao"
 gendat$Var_corr[which(gendat$Var_corr=="Valdepenas")] <- "Tempranillo"
 gendat$Var_corr[which(gendat$Var_corr=="Alicante Bouchet")] <- "Alicante Bouschet"
 gendat$Var_corr[which(gendat$Var_corr=="Pinot  Meunier")] <- "Pinot Meunier"
