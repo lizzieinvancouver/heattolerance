@@ -131,6 +131,7 @@ chambdats$stem1_vFper <- NA
 chambdats$stem2_vFper <- NA
 
 
+##
 for(i in seq_along(unique.ind)){ # i = 1
   indhere <- unique.ind[i]
   # indhere <- "16.1.R3" # example of one with a couple values ... 
@@ -146,7 +147,6 @@ for(i in seq_along(unique.ind)){ # i = 1
 }
 
 
-##
 # 
 #attempting to use code for leafnum and stem length
 #check for non-numerics
