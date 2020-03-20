@@ -1,0 +1,8 @@
+Started 19 March 2020
+Notes on these papers 
+
+By Lizzie: 
+- Gouot_etal_2019 is a cool study, but focuses only on berry ripening so not included (we said: excluding all studies without experimental warming or of warming applied to dormant cuttings or plants, or focused only on berry ripening)
+- Gouot_etal_2019a does report some photosynthesis so I added it to the manuscript table
+- Greer & Weedon 2016 seems to report identical experiment to the 2013 paper we already have so I did not add it
+- Kadir 2008 similarly seemed eerily similar to Kadie 2005 so I did not add it
