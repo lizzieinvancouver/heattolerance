@@ -609,7 +609,25 @@ text(x = ffmeans$temp, y = ffmeans$max+5,
      label = ffmeans$n, pos = 3, cex = 0.8, col = "black")
 dev.off()
           
-##     
+## Add in figure for climate in chambers
+chambclim <- data.frame(hour=rep(1:24, 5), chambID=rep(1:5, each=24),
+    temp=rep(c(17, 23, 23, 17, 23, 29, 29, 23, 27, 33, 33, 27, 31, 37, 37, 31, 34, 40, 40, 34), each=6))
+
+pdf(file.path("graphs/chamber_climate.pdf"), width = 8, height = 7)
+plot(temp~hour, data=chambclim, type="n",
+    xlab="Hour",
+    ylab=expression(paste("Chamber temperature (",degree,"C)")))
+
+for (chambIDhere in c(1:5)){
+    subtreat <- subset(chambclim, chambID==chambIDhere)
+    lines(temp~hour, data=subtreat, col=treatcol[chambIDhere], lwd=1.5)
+    }
+legend("topleft", legend=daynightemp, pch=16, 
+    col=treatcol,  bty="n")
+
+dev.off()
+
+##
 
 write.csv(tfmeans, file="output/tenpercentstat.csv", row.names = FALSE)
 write.csv(ffmeans, file="output/fiftypercentstat.csv", row.names = FALSE)

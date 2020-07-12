@@ -1,0 +1,66 @@
+﻿@article{RN4792,
+   author = {Yang, P. C. and Black, T. A. and Neumann, H. H. and Novak, M. D. and Blanken, P. D.},
+   title = {Spatial and temporal variability of CO2 concentration and flux in a boreal aspen forest},
+   journal = {Journal of Geophysical Research-Atmospheres},
+   volume = {104},
+   number = {D22},
+   pages = {27653-27661},
+   ISSN = {2169-897X},
+   DOI = {10.1029/1999jd900295},
+   url = {<Go to ISI>://WOS:000083874700034},
+   year = {1999},
+   type = {Journal Article}
+}
+
+@article{RN4791,
+   author = {Mortazavi, B. and Chanton, J. P.},
+   title = {Carbon isotopic discrimination and control of nighttime canopy delta O-18-CO2 in a pine forest in the southeastern United States},
+   journal = {Global Biogeochemical Cycles},
+   volume = {16},
+   number = {1},
+   ISSN = {0886-6236},
+   DOI = {10.1029/2000gb001390},
+   url = {<Go to ISI>://WOS:000178880800013},
+   year = {2002},
+   type = {Journal Article}
+}
+
+@article{RN4790,
+   author = {Pataki, D. E. and Ehleringer, J. R. and Flanagan, L. B. and Yakir, D. and Bowling, D. R. and Still, C. J. and Buchmann, N. and Kaplan, J. O. and Berry, J. A.},
+   title = {The application and interpretation of Keeling plots in terrestrial carbon cycle research},
+   journal = {Global Biogeochemical Cycles},
+   volume = {17},
+   number = {1},
+   ISSN = {0886-6236},
+   DOI = {10.1029/2001gb001850},
+   url = {<Go to ISI>://WOS:000182109600001},
+   year = {2003},
+   type = {Journal Article}
+}
+
+@article{RN4789,
+   author = {Schneider, J. and Kutzbach, L. and Schulz, S. and Wilmking, M.},
+   title = {Overestimation of CO2 respiration fluxes by the closed chamber method in low-turbulence nighttime conditions},
+   journal = {Journal of Geophysical Research-Biogeosciences},
+   volume = {114},
+   ISSN = {0148-0227},
+   DOI = {10.1029/2008jg000909},
+   url = {<Go to ISI>://WOS:000269030000002},
+   year = {2009},
+   type = {Journal Article}
+}
+
+@article{RN4788,
+   author = {Rubio-Asensio, J. S. and Rachmilevitch, S. and Bloom, A. J.},
+   title = {Responses of Arabidopsis and Wheat to Rising CO2 Depend on Nitrogen Source and Nighttime CO2 Levels},
+   journal = {Plant Physiology},
+   volume = {168},
+   number = {1},
+   pages = {156-163},
+   ISSN = {0032-0889},
+   DOI = {10.1104/pp.15.00110},
+   url = {<Go to ISI>://WOS:000356967800013},
+   year = {2015},
+   type = {Journal Article}
+}
+
