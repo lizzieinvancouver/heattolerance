@@ -1,6 +1,7 @@
-Notes on revision 2
+Notes on files started during revision 2
 By Lizzie
 Started 11 July 2020
+Last updated: 22 July 2020
 
 Files:
 (1) manuscript_revised2.docx is my revision of the text (used manuscript.docx as base, not that manuscript_revised1.docx is NOT the previously submitted version, see below). 
