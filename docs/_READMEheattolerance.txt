@@ -10,3 +10,7 @@ Files:
 
 What was submitted last?
 I downloaded 516527_Merrill_Manuscript.pdf from the Frontiers site and it looks to agree with manuscript.docx. That's my best guess as I have not heard from Nicole and can't tell from GitHub.
+
+On 16 October 2020
+
+I still could not figure out what (if anything) changed here, so I downloaded what we submitted (see docs/submitted) and worked from there on the next (and hopefully final) revision for reviewers.
